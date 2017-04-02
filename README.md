@@ -1,1 +1,3 @@
-# boos
+# BOOS RT
+[Homepage](http://baigudin.software/boos/) | [API](http://baigudin.software/en/solution/boos/api/) | [Events](http://baigudin.software/events/) | [About Us](http://baigudin.software/about/project/) | [Contact Us](http://baigudin.software/contact/)<br/><br/>
+BOOS RT is an object-oriented real-time operating system (RTOS), which has been written in C++ programming language and should be used into microprocessor-based systems. The operating system helps developers to create embedded high-safe applications.
