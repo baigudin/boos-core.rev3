@@ -494,7 +494,7 @@ namespace driver
     static ContextLow contextLow_[NUMBER_VECTORS];
     
     /**
-     * The kernel configuration (no boot).
+     * The operating system configuration (no boot).
      */
     static ::Configuration config_;
 
@@ -540,7 +540,7 @@ namespace driver
   InterruptController::ContextLow InterruptController::contextLow_[NUMBER_VECTORS];
 
   /**
-   * The kernel configuration (no boot).
+   * The operating system configuration (no boot).
    */
   ::Configuration InterruptController::config_; 
 

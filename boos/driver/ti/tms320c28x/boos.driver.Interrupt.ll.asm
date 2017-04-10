@@ -1,19 +1,15 @@
 ; ----------------------------------------------------------------------------
 ; Interrupt low level module
 ;
-; @author    Sergey Baigudin, baigudin@mail.ru
+; @author    Sergey Baigudin, sergey@baigudin.software
 ; @copyright 2014-2016 Sergey Baigudin
 ; @license   http://baigudin.software/license/
 ; @link      http://baigudin.software
 ; ----------------------------------------------------------------------------
     .c28_amode
-    .def  m_core_int_enable
-    .def  m_core_int_disable
-    
-    .ref  m_core_start
 
-    .def  _globalDisable__Q2_6driver19InterruptControllerSFv
-    .def  _globalEnable__Q2_6driver19InterruptControllerSFb
+    .def  _globalDisable__Q2_6driver9InterruptSFv
+    .def  _globalEnable__Q2_6driver9InterruptSFb
     .def  _disableLow__Q2_6driver19InterruptControllerSFUi
     .def  _enableLow__Q2_6driver19InterruptControllerSFUib
     .def  _setLow__Q2_6driver19InterruptControllerSFUi
@@ -25,8 +21,8 @@
     .ref  _contextLow___Q2_6driver19InterruptController
     
     .asg  bss,                                                m_bss
-    .asg  _globalDisable__Q2_6driver19InterruptControllerSFv, m_global_disable
-    .asg  _globalEnable__Q2_6driver19InterruptControllerSFb,  m_global_enable
+    .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
+    .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
     .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
     .asg  _enableLow__Q2_6driver19InterruptControllerSFUib,   m_enable
     .asg  _setLow__Q2_6driver19InterruptControllerSFUi,       m_set
@@ -127,9 +123,9 @@ han_:n: b               han_:n:, unc
 ; Nonreset interrupt service routine.
 ; ----------------------------------------------------------------------------
         .text
-m_core_handler:
+m_isr:
         nop
-        b               m_core_handler, unc
+        b               m_isr, unc
 
 ; ----------------------------------------------------------------------------
 ; Disables all maskable interrupts.
@@ -138,9 +134,10 @@ m_core_handler:
 ; ----------------------------------------------------------------------------
         .text
 m_global_disable:
-m_core_int_disable:
-        nop
-        b               m_global_disable, unc
+        push            st1
+        dint
+        pop             st1        
+        lretr
 
 ; ----------------------------------------------------------------------------
 ; Enables all maskable interrupts.
@@ -149,9 +146,8 @@ m_core_int_disable:
 ; ----------------------------------------------------------------------------
         .text
 m_global_enable:
-m_core_int_enable:
-        nop
-        b               m_global_enable, unc
+        eint
+        lretr
 
 ; ----------------------------------------------------------------------------
 ; Locks maskable interrupt source.

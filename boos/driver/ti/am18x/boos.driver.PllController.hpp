@@ -20,7 +20,6 @@
 #include "boos.driver.reg.Syscfg1.hpp"
 #include "boos.driver.reg.Pllc0.hpp"
 #include "boos.driver.reg.Pllc1.hpp"
-#include "boos.Configuration.hpp"
 
 namespace driver
 {

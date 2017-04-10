@@ -103,7 +103,7 @@ namespace system
       acc_ = dc * 1000000000 + acc_;
       // The nanoseconds left time after previous updating
       dt = acc_ / timerFrequency;
-      // Increment kernel working time in nsec
+      // Increment operating system working time in nsec
       time = time_ += dt;
       // Store the remainder for next updating
       acc_ = acc_ - dt * timerFrequency;
@@ -171,7 +171,7 @@ namespace system
     uint64 acc_;
     
     /**
-     * The kernel working time in nsec.
+     * The operating system working time in nsec.
      */        
     uint64 time_;
 

@@ -6,6 +6,7 @@
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software
  */
+#include "boos.driver.Register.hpp" 
 #include "boos.driver.RegisterController.hpp"
 
 namespace driver
@@ -25,13 +26,17 @@ namespace driver
   }
   
   /** 
-   * Access to protected memory mapped CPU registers.
-   *
-   * @return the interface, or NULL if CPU family does not have protected registers, or error has been occurred.
+   * Allows an access to protected memory mapped CPU registers.
    */    
-  ::api::Toggle* Register::access()
+  void Register::allow()
   {
-    return NULL;
+  }
+  
+  /** 
+   * Protects an access to protected memory mapped CPU registers.
+   */    
+  void Register::protect()
+  {
   }
   
   /**

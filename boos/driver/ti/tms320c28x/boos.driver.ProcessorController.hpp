@@ -1,5 +1,5 @@
 /** 
- * TI TMS320C64x processor family.
+ * TI TMS320F28x3x processor family.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017 Sergey Baigudin
@@ -9,6 +9,7 @@
 #ifndef BOOS_DRIVER_PROCESSOR_CONTROLLER_HPP_
 #define BOOS_DRIVER_PROCESSOR_CONTROLLER_HPP_
 
+#include "boos.driver.Watchdog.hpp"
 #include "boos.driver.ProcessorResource.hpp"
 #include "boos.driver.Pll.hpp"
 #include "boos.driver.Register.hpp"
@@ -52,6 +53,9 @@ namespace driver
       stage_ = 0;
       // Stage 1 
       stage_++;
+      if( not ::driver::Watchdog::init(config) ) return false;    
+      // Stage 1 
+      stage_++;
       if( not ::driver::Pll::init(config) ) return false;    
       // Stage 2 
       stage_++;
@@ -75,10 +79,11 @@ namespace driver
       switch(stage_)
       {
         default:
-        case  4: ::driver::Timer::deinit();
-        case  3: ::driver::Interrupt::deinit();
-        case  2: ::driver::Register::deinit();      
-        case  1: ::driver::Pll::deinit();
+        case  5: ::driver::Timer::deinit();
+        case  4: ::driver::Interrupt::deinit();
+        case  3: ::driver::Register::deinit();      
+        case  2: ::driver::Pll::deinit();
+        case  1: ::driver::Watchdog::deinit();        
         case  0: break;
       }
     }

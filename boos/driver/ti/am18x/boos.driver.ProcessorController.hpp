@@ -1,5 +1,5 @@
 /** 
- * TI TMS320C64x processor family.
+ * TI AM18x processor family.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017 Sergey Baigudin

@@ -39,7 +39,7 @@ namespace driver
     TimerController() : Parent(),
       index_ (-1),
       reg_   (NULL){
-      for(int32 i=0; i<NUMBER_TIMERS; i++) 
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         if( construct(i) == true )
         {
@@ -222,9 +222,9 @@ namespace driver
       bool is = Interrupt::globalDisable();
       switch(index)
       {
-        case  0: addr = reg::Timer::TIMER0; break;
-        case  1: addr = reg::Timer::TIMER1; break;
-        case  2: addr = reg::Timer::TIMER2; break;
+        case  0: addr = reg::Timer::ADDRESS0; break;
+        case  1: addr = reg::Timer::ADDRESS1; break;
+        case  2: addr = reg::Timer::ADDRESS2; break;
         default: return Interrupt::globalEnable(is, false);
       }    
       if(lock_[index] == true) return Interrupt::globalEnable(is, false); 
@@ -243,13 +243,13 @@ namespace driver
     static bool init(const ::Configuration& config)
     {
       config_ = config;
-      for(int32 i=0; i<NUMBER_TIMERS; i++) 
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         switch(i)
         {
-          case  0: new (reg::Timer::TIMER0) reg::Timer(); break;
-          case  1: new (reg::Timer::TIMER1) reg::Timer(); break;
-          case  2: new (reg::Timer::TIMER2) reg::Timer(); break;
+          case  0: new (reg::Timer::ADDRESS0) reg::Timer(); break;
+          case  1: new (reg::Timer::ADDRESS1) reg::Timer(); break;
+          case  2: new (reg::Timer::ADDRESS2) reg::Timer(); break;
           default: return false;
         }
         lock_[i] = false;      
@@ -282,17 +282,17 @@ namespace driver
     /**
      * Number of HW timers.
      */
-    static const int32 NUMBER_TIMERS = 3;
+    static const int32 RESOURCES_NUMBER = 3;
     
     /**
-     * The kernel configuration (no boot).
+     * The operating system configuration (no boot).
      */
     static ::Configuration config_;     
     
     /**
      * Locked by some object flag of each HW timer (no boot).
      */    
-    static bool lock_[NUMBER_TIMERS];
+    static bool lock_[RESOURCES_NUMBER];
     
     /**
      * Number of hardware timer
@@ -307,14 +307,14 @@ namespace driver
   };
   
   /**
-   * The kernel configuration (no boot).
+   * The operating system configuration (no boot).
    */
   ::Configuration TimerController::config_;
 
   /**
    * Locked by some object flag of each HW timer (no boot).  
    */
-  bool TimerController::lock_[TimerController::NUMBER_TIMERS];
+  bool TimerController::lock_[TimerController::RESOURCES_NUMBER];
   
 }
 #endif // BOOS_DRIVER_TIMER_CONTROLLER_HPP_

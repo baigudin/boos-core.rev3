@@ -3,9 +3,6 @@
  * 
  * This is an example of command linker file which represents 
  * 8K ARM Local RAM and 128K On-chip RAM for TI AM18x ARM Microprocessors.
- * Note: Every user project should have a self command file; 
- * map of that should be mirrored in a self assembly file 
- * of core configuration (boos.core.config.asm).
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2016-2017 Sergey Baigudin
@@ -20,7 +17,7 @@ MEMORY
   HWI          : origin = 0xffff0000, len = 0x00000040
   /** TI RTS Library heap */
   HEAP         : origin = 0xffff0040, len = 0x000000c0
-  /** BOOS Core heap */
+  /** BOOS heap */
   MEMORY       : origin = 0xffff0100, len = 0x00001f00
   /** Programme memory */
   CODE         : origin = 0x80000000, len = 0x00020000

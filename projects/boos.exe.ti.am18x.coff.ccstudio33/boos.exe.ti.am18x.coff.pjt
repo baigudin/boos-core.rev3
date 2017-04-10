@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="D:\baigudin\boos.v3\projects\boos.exe.ti.am18x.coff.ccstudio33\"
+ProjectDir="D:\baigudin\github\baigudin\boos-core.rev3\projects\boos.exe.ti.am18x.coff.ccstudio33\"
 ProjectType=Executable
 CPUFamily=TMS470R2X
 Tool="Compiler"
@@ -27,8 +27,6 @@ Source="..\..\boos\system\boos.system.System.cpp"
 Source="..\..\boos\system\boos.system.Thread.cpp"
 Source="..\..\boos\system\boos.system.Timer.cpp"
 Source="..\..\boos\system\boos.system.TimerInterrupt.cpp"
-Source="Debug\boos.am18x.debug.map"
-Source="Release\boos.am18x.map"
 Source="Source\boos.Board.cpp"
 Source="Source\boos.Configuration.cpp"
 Source="Source\boos.Main.cpp"
@@ -46,18 +44,6 @@ Options=--abi=ti_arm9_abi -c -m".\Debug\boos.am18x.debug.map" -o".\Debug\boos.am
 
 ["Linker" Settings: "Release"]
 Options=--abi=ti_arm9_abi -c -m".\Release\boos.am18x.map" -o".\Release\boos.am18x.out" -w -x
-
-["Debug\boos.am18x.debug.map" Settings: "Debug"]
-ExcludeFromBuild=true
-
-["Debug\boos.am18x.debug.map" Settings: "Release"]
-ExcludeFromBuild=true
-
-["Release\boos.am18x.map" Settings: "Debug"]
-ExcludeFromBuild=true
-
-["Release\boos.am18x.map" Settings: "Release"]
-ExcludeFromBuild=true
 
 ["..\..\boos\driver\ti\am18x\cmd\boos.memory.am18x.coff.cmd" Settings: "Debug"]
 LinkOrder=1

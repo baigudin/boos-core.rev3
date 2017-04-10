@@ -57,11 +57,14 @@ namespace driver
     static ::driver::Register* create();
 
     /** 
-     * Access to protected memory mapped CPU registers.
-     *
-     * @return the interface, or NULL if CPU family does not have protected registers, or error has been occurred.
+     * Allows an access to protected memory mapped CPU registers.
      */    
-    static ::api::Toggle* access();    
+    static void allow();
+    
+    /** 
+     * Protects an access to protected memory mapped CPU registers.
+     */    
+    static void protect();    
     
   private:
     

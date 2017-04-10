@@ -3,11 +3,8 @@
  * 
  * This is an example of command linker file which represents 
  * 8K ARM Local RAM and 128K On-chip RAM for TI AM18x ARM Microprocessors.
- * Note: Every user project should have a self command file; 
- * map of that should be mirrored in a self assembly file 
- * of core configuration (boos.core.config.asm).
  * 
- * @author    Sergey Baigudin, baigudin@mail.ru
+ * @author    Sergey Baigudin, sergey@baigudin.software 
  * @copyright 2016 Sergey Baigudin
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software

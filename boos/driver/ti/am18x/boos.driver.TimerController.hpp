@@ -15,7 +15,6 @@
 #include "boos.driver.reg.Syscfg0.hpp"
 #include "boos.driver.reg.Pllc0.hpp"
 #include "boos.driver.reg.Pllc1.hpp"
-#include "boos.Configuration.hpp"
 
 namespace driver
 {
@@ -46,7 +45,7 @@ namespace driver
     TimerController() : Parent(),
       index_ (-1),
       reg_   (NULL){
-      for(int32 i=0; i<NUMBER_TIMERS; i++) 
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         if( construct(i) == true )
         {
@@ -309,10 +308,12 @@ namespace driver
       syscfg0->suspsrc.bit.timer64p2src = 0;
       syscfg0->suspsrc.bit.timer64p1src = 0;
       syscfg0->suspsrc.bit.timer64p0src = 0;
-      for(int32 i=0; i<NUMBER_TIMERS; i++) 
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         lock_[i] = false;      
-        timer = new ( address(i) ) reg::Timer(); 
+        uint32 addr = address(i);
+        if(addr == 0) return false;        
+        timer = new (addr) reg::Timer(); 
         reset(*timer);
       }
       // Lock the SYSCFG module
@@ -326,9 +327,11 @@ namespace driver
      */
     static void deinit()
     {
-      for(int32 i=0; i<NUMBER_TIMERS; i++) 
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
-        reg::Timer* reg = new ( address(i) ) reg::Timer(); 
+        uint32 addr = address(i);
+        if(addr == 0) break;       
+        reg::Timer* reg = new (addr) reg::Timer(); 
         reg->tcr.bit.enamode12 = 0;        
       }
     }
@@ -386,12 +389,12 @@ namespace driver
     } 
     
     /**
-     * Resets timer registers.
+     * Returns a timer register address.
      *
      * @param index timer index.
      * @return memory address of given timer index.
      */
-    static int32 address(int32 index)
+    static uint32 address(int32 index)
     {
       switch(index)
       {
@@ -421,17 +424,17 @@ namespace driver
     /**
      * Number of timers .
      */
-    static const int32 NUMBER_TIMERS = 4;
+    static const int32 RESOURCES_NUMBER = 4;
     
     /**
-     * The kernel configuration (no boot).
+     * The operating system configuration (no boot).
      */
     static Configuration config_;    
     
     /**
      * Locked by some object flag of each HW timer (no boot).
      */    
-    static bool lock_[NUMBER_TIMERS];
+    static bool lock_[RESOURCES_NUMBER];
     
     /**
      * Index of hardware timer
@@ -446,14 +449,14 @@ namespace driver
   };
   
   /**
-   * The kernel configuration (no boot).
+   * The operating system configuration (no boot).
    */
   ::Configuration TimerController::config_;
   
   /**
    * Locked by some object flag of each HW timer (no boot).  
    */
-  bool TimerController::lock_[TimerController::NUMBER_TIMERS];
+  bool TimerController::lock_[TimerController::RESOURCES_NUMBER];
 
 }
 #endif // BOOS_DRIVER_TIMER_CONTROLLER_HPP_

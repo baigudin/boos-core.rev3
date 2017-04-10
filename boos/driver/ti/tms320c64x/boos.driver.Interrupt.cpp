@@ -2,10 +2,11 @@
  * Target processor interrupts factory.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016 Sergey Baigudin
+ * @copyright 2016-2017 Sergey Baigudin
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software
  */
+#include "boos.driver.Interrupt.hpp" 
 #include "boos.driver.InterruptController.hpp"
 
 namespace driver

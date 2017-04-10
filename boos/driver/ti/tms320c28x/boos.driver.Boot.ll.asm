@@ -3,7 +3,7 @@
 ;
 ; The module performs the tasks to initialize C/C++ run-time environment.
 ; 
-; @author    Sergey Baigudin, baigudin@mail.ru
+; @author    Sergey Baigudin, sergey@baigudin.software
 ; @copyright 2017 Sergey Baigudin
 ; @license   http://baigudin.software/license/
 ; @link      http://baigudin.software
@@ -23,16 +23,16 @@
     .asg  _main__Q2_6system4MainSFv,       m_main
     .asg  _getCRecord__Q2_6driver4BootSFv, m_get_cinit
     .asg  _getPRecord__Q2_6driver4BootSFv, m_get_pinit    
-    .asg  _init__Q2_6driver4BootSFv,       m_boot_init    
-    .asg  _c_int00,                        m_bootstrap        
+    .asg  _init__Q2_6driver4BootSFv,       m_boot_init   
+    .asg  _c_int00,                        m_bootstrap
     .asg  cinit,                           v_cinit
     .asg  pinit,                           v_pinit 
     .asg  bss,                             v_bss
 
     ; Mode stacks sizes
-    .asg  3c0h, STACK_SIZE_CORE
+    .asg  3c0h, STACK_SIZE
     ; Mode stacks
-    .bss  v_stack_core, STACK_SIZE_CORE, 8
+    .bss  v_stack, STACK_SIZE, 8
       
 
 ; ----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ m_bootstrap:
         c28obj                             ; Enable C28x Object Mode
         c28addr                            ; Enable C28x Address Mode
         c28map                             ; Enable C28x Mapping Of M0 and M1 blocks
-        mov             sp, #v_stack_core  ; Set kernel stack pointer
+        mov             sp, #v_stack       ; Set stack pointer
         clrc            c, tc, ovm, sxm    ; Clear Status Register 0
         spm             0                  ; Set product shift mode
         clrc            vmap, page0        ; Clear Status Register 1
@@ -67,9 +67,13 @@ m_bootstrap:
         movb            xar6, #0                
         movb            xar7, #0
         .if             .TMS320C2800_FPU32        
-        setflg          rndf32=1           ; Enable rounding in FPU32 mode.
+        ; Enable rounding in FPU32 mode.        
+        setflg          rndf32=1
         .endif
-        lcr             m_main             ; Call target kernel
+        ; Call the boot initialization        
+        lcr             m_boot_init
+        ; Call the system main method
+        lcr             m_main
         
 ; ----------------------------------------------------------------------------
 ; The termination routine.

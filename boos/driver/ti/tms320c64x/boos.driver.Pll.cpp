@@ -6,6 +6,7 @@
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software
  */
+#include "boos.driver.Pll.hpp" 
 #include "boos.driver.PllController.hpp"
 
 namespace driver

@@ -123,7 +123,7 @@ a_v_stack_fiq   .word v_stack_fiq + STACK_SIZE_FIQ
 a_v_stack_sys   .word v_stack_sys + STACK_SIZE_SYS
 
 ; ----------------------------------------------------------------------------
-; Finishes the kernel executing
+; The termination routine.
 ; ----------------------------------------------------------------------------
     .text
 m_termination:

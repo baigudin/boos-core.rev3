@@ -71,7 +71,7 @@ typedef uint32              size_t;
 // Minimal addressable memory cell
 typedef signed char         cell;
 typedef unsigned char       ucell;
-// Byte types of byte addressing cores
+// Byte types of byte addressing
 typedef signed char         int8;
 typedef unsigned char       uint8;
 

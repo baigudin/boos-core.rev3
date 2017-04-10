@@ -92,7 +92,7 @@ handler .macro          num
      || mvkl            v_context, b1
         stdw            a1:a0, *-sp[2]
      || mvkh            v_context, b1
-     || b               m_core_handler
+     || b               m_isr
         ldw             *++b1[ (num - 4) * 2 ], a0
         mvk             num - 4, b0
         nop             3
@@ -102,9 +102,9 @@ handler .macro          num
 ; Hardware interrupts table.
 ; ----------------------------------------------------------------------------
         .sect           ".hwi"
-m_core_reset:
+m_reset:
         ; Reset interrupt vector
-        b               m_core_reset+24
+        b               m_reset+24
         mvc             csr, b0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
         mvc             b0, csr
@@ -140,7 +140,7 @@ m_core_reset:
 ; 55 cycles is total service time.
 ; ----------------------------------------------------------------------------
         .text
-m_core_handler:
+m_isr:
         ; Store the context 
         stdw            b1:b0, *-sp[1]
      || add             a0, 8, b0
@@ -372,10 +372,10 @@ m_jump:
         b               m_jmp?
      || mvc             csr, b0
         and             C_REG_CSR_GIE, b0, a0
-     || mvkl            m_core_reset, b4
+     || mvkl            m_reset, b4
         shl             a0, 1, a0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
-     || mvkh            m_core_reset, b4
+     || mvkh            m_reset, b4
         or              b0, a0, b0
      || shl             a4, 5, a4
         mvc             b0, csr

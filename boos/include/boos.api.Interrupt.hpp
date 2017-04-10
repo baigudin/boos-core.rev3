@@ -40,4 +40,4 @@ namespace api
     
   };
 }
-#endif // BOOS_CORE_INTERRUPT_HPP_
+#endif // BOOS_API_INTERRUPT_HPP_

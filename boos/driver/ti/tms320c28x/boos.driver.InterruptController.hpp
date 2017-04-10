@@ -12,7 +12,6 @@
 #include "boos.driver.InterruptResource.hpp"
 #include "boos.driver.Register.hpp"
 #include "boos.util.Stack.hpp"
-#include "boos.Configuration.hpp"
 
 namespace driver
 {
@@ -153,7 +152,7 @@ namespace driver
     /**
      * Initialization.
      *
-     * @param config the kernel configuration.
+     * @param config the operating system configuration.
      * @return true if no errors.
      */
     static bool init(const Configuration& config)
@@ -185,7 +184,7 @@ namespace driver
     InterruptController& operator =(const InterruptController& obj);
 
     /**
-     * The kernel configuration (no boot).
+     * The operating system configuration (no boot).
      */
     static Configuration config_;
 
@@ -212,7 +211,7 @@ namespace driver
   };
   
   /**
-   * The kernel configuration (no boot).
+   * The operating system configuration (no boot).
    */
   ::Configuration InterruptController::config_;
 

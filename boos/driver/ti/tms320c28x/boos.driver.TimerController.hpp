@@ -2,7 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017 Sergey Baigudin
+ * @copyright 2017 Sergey Baigudin
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software
  */
@@ -11,7 +11,9 @@
 
 #include "boos.driver.TimerResource.hpp"
 #include "boos.driver.Interrupt.hpp"
-#include "boos.Configuration.hpp"
+#include "boos.driver.Register.hpp"
+#include "boos.driver.reg.Timer.hpp"
+#include "boos.driver.reg.System.hpp"
 
 namespace driver
 {
@@ -27,20 +29,28 @@ namespace driver
      * Constructor.
      */      
     TimerController() : Parent(),
-      number_ (0),
-      count_  (0),
-      period_ (0){
+      index_  (-1),
+      regTim_ (NULL){
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
+      {
+        if( construct(i) == true )
+        {
+          setConstruct(true);
+          return;
+        }
+      }
+      setConstruct(false);
     }  
     
     /** 
      * Constructor.
      *
-     * @param number available timer number.
+     * @param index available timer index.
      */
-    TimerController(int32 number) : Parent(),
-      number_ (number),
-      count_  (0),
-      period_ (0){
+    TimerController(int32 index) : Parent(),
+      index_  (-1),
+      regTim_ (NULL){
+      setConstruct( construct(index) );
     }
 
     /** 
@@ -57,7 +67,6 @@ namespace driver
      */      
     virtual int64 getCount() const
     {
-      return count_;
     }
     
     /**
@@ -67,7 +76,6 @@ namespace driver
      */      
     virtual int64 getPeriod() const
     {
-      return period_;
     }  
     
     /**
@@ -77,7 +85,6 @@ namespace driver
      */      
     virtual void setCount(int64 count)
     {
-      count_ = count;
     }      
     
     /**
@@ -87,7 +94,6 @@ namespace driver
      */      
     virtual void setPeriod(int64 us=0)
     {
-      period_ = us == 0 ? -1 : us;
     }
     
     /**
@@ -111,7 +117,6 @@ namespace driver
      */      
     virtual int32 number() const
     {
-      return number_;
     }
     
     /**
@@ -121,7 +126,7 @@ namespace driver
      */  
     virtual int32 digits() const
     {
-      return 0;
+      return 32;
     }
     
     /**
@@ -131,7 +136,6 @@ namespace driver
      */  
     virtual int64 internalClock() const
     {
-      return 0;        
     }    
     
     /**
@@ -151,10 +155,42 @@ namespace driver
      */  
     virtual int32 interrupSource() const
     {
-      return -1;
     }
     
   private:
+  
+    /** 
+     * Constructor.
+     *
+     * @param index available timer index.
+     * @return boolean result.
+     */  
+    bool construct(int32 index)
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;    
+      bool res = false;
+      bool is = Interrupt::globalDisable();
+      do{
+        if(lock_[index] == true) break; 
+        uint32 addr = address(index);
+        if(addr == 0) break;
+        regTim_ = new (addr) reg::Timer();
+        Register::allow();
+        // Set the CPU Timer is clocked
+        switch(index)
+        {
+          case  0: regSys_->pclkcr3.bit.cputimer0enclk = 1; break;
+          case  1: regSys_->pclkcr3.bit.cputimer1enclk = 1; break;
+          case  2: regSys_->pclkcr3.bit.cputimer2enclk = 1; break;               
+          default: break;
+        }
+        Register::protect();      
+        index_ = index;        
+        lock_[index_] = true;
+        res = true;
+      }while(false);
+      return Interrupt::globalEnable(is, res);    
+    }
     
     /**
      * Initialization.
@@ -165,6 +201,22 @@ namespace driver
     static bool init(const Configuration& config)
     {
       config_ = config;
+      isInitialized_ = 0;      
+      regSys_ = new (reg::System::ADDRESS) reg::System();            
+      Register::allow();
+      // Set CPU Timers are not clocked
+      regSys_->pclkcr3.bit.cputimer0enclk = 0;
+      regSys_->pclkcr3.bit.cputimer1enclk = 0;
+      regSys_->pclkcr3.bit.cputimer2enclk = 0;                
+      Register::protect();      
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
+      {
+        uint32 addr = address(i);
+        if(addr == 0) return false;
+        reg::Timer* timer = new (addr) reg::Timer();;
+        lock_[i] = false;      
+      } 
+      isInitialized_ = IS_INITIALIZED;      
       return true;
     }
     
@@ -173,34 +225,88 @@ namespace driver
      */
     static void deinit()
     {
+      isInitialized_ = 0;    
     }
+    
+    /**
+     * Returns a timer register address.
+     *
+     * @param index timer index.
+     * @return memory address of given timer index.
+     */
+    static uint32 address(int32 index)
+    {
+      switch(index)
+      {
+        case 0: return reg::Timer::ADDRESS0;
+        case 1: return reg::Timer::ADDRESS1;
+        case 2: return reg::Timer::ADDRESS2;
+        default: return 0;
+      }
+    }    
+    
+    /**
+     * Number of HW timers.
+     */
+    static const int32 RESOURCES_NUMBER = 3;    
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x123abc73;
+    
 
     /**
-     * The kernel configuration (no boot).
+     * The operating system configuration (no boot).
      */
     static Configuration config_;
 
     /**
-     * Number of this timer
-     */
-    int32 number_;
-
+     * Locked by some object flag of each HW timer (no boot).
+     */    
+    static bool lock_[RESOURCES_NUMBER];
+    
     /**
-     * Number of this timer
-     */
-    int64 count_;
-
+     * System Control Registers (no boot).
+     */  
+    static reg::System* regSys_;
+    
     /**
-     * Number of this timer
+     * Driver has been initialized successfully (no boot).
      */
-    int64 period_;
+    static int32 isInitialized_;    
+    
+    /**
+     * Number of hardware timer
+     */
+    int32 index_;
+    
+    /**
+     * HW timer registers.
+     */
+    reg::Timer* regTim_;
     
   }; 
   
   /**
-   * The kernel configuration (no boot).
+   * The operating system configuration (no boot).
    */
   ::Configuration TimerController::config_;
-     
+  
+  /**
+   * Locked by some object flag of each HW timer (no boot).  
+   */
+  bool TimerController::lock_[TimerController::RESOURCES_NUMBER];
+  
+  /**
+   * System Control Registers (no boot).
+   */  
+  ::driver::reg::System* TimerController::regSys_;
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 TimerController::isInitialized_;
+       
 }
 #endif // BOOS_DRIVER_TIMER_CONTROLLER_HPP_

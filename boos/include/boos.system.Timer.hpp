@@ -96,7 +96,7 @@ namespace system
   protected:
 
     /** 
-     * Returns extended core interface of interrupt.
+     * Returns extended interface of interrupt.
      *
      * @return extended interface.
      */  

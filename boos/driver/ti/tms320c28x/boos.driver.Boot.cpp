@@ -3,7 +3,7 @@
  *
  * The module performs the tasks to initialize C/C++ run-time environment.
  * 
- * @author    Sergey Baigudin, baigudin@mail.ru
+ * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2016-2017 Sergey Baigudin
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software

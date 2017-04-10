@@ -23,6 +23,13 @@ namespace driver
     
     public:
     
+      /**
+       * Memory mapped addresses.
+       */    
+      static const uint32 ADDRESS0 = 0x01940000;
+      static const uint32 ADDRESS1 = 0x01980000;
+      static const uint32 ADDRESS2 = 0x01ac0000;            
+    
       /** 
        * Constructor.
        */  
@@ -73,13 +80,6 @@ namespace driver
       {
         return reinterpret_cast<void*>(ptr);
       }      
-    
-      /**
-       * Memory mapped addresses.
-       */    
-      static const uint32 TIMER0 = 0x01940000;
-      static const uint32 TIMER1 = 0x01980000;
-      static const uint32 TIMER2 = 0x01ac0000;            
     
       /**
        * Timer Control Register (CTL).

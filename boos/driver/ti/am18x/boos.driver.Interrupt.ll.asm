@@ -38,29 +38,29 @@
 ; Hardware interrupt vectors
 ; ----------------------------------------------------------------------------
     .sect   ".hwi"                             ; Priorities
-    ldr     pc, a_m_core_handler_rst           ; 0
-    ldr     pc, a_m_core_handler_und           ; 5
-    ldr     pc, a_m_core_handler_svc           ; 5
-    ldr     pc, a_m_core_handler_abt_prefetch  ; 4
-    ldr     pc, a_m_core_handler_abt_data      ; 1
-    ldr     pc, a_m_core_handler_res           ;
-    ldr     pc, a_m_core_handler_irq           ; 3
-    ldr     pc, a_m_core_handler_fiq           ; 2
+    ldr     pc, a_m_handler_rst           ; 0
+    ldr     pc, a_m_handler_und           ; 5
+    ldr     pc, a_m_handler_svc           ; 5
+    ldr     pc, a_m_handler_abt_prefetch  ; 4
+    ldr     pc, a_m_handler_abt_data      ; 1
+    ldr     pc, a_m_handler_res           ;
+    ldr     pc, a_m_handler_irq           ; 3
+    ldr     pc, a_m_handler_fiq           ; 2
     
-a_m_core_handler_rst          .word m_core_handler_rst
-a_m_core_handler_und          .word m_core_handler_und
-a_m_core_handler_svc          .word m_core_handler_svc
-a_m_core_handler_abt_prefetch .word m_core_handler_abt_prefetch
-a_m_core_handler_abt_data     .word m_core_handler_abt_data
-a_m_core_handler_res          .word m_core_handler_res
-a_m_core_handler_irq          .word m_core_handler_irq
-a_m_core_handler_fiq          .word m_core_handler_fiq
+a_m_handler_rst          .word m_handler_rst
+a_m_handler_und          .word m_handler_und
+a_m_handler_svc          .word m_handler_svc
+a_m_handler_abt_prefetch .word m_handler_abt_prefetch
+a_m_handler_abt_data     .word m_handler_abt_data
+a_m_handler_res          .word m_handler_res
+a_m_handler_irq          .word m_handler_irq
+a_m_handler_fiq          .word m_handler_fiq
     
 ; ----------------------------------------------------------------------------
 ; Reset 
 ; ----------------------------------------------------------------------------    
     .text   
-m_core_handler_rst:
+m_handler_rst:
     ldr     pc, a__c_int00
 
 a__c_int00 .word _c_int00   
@@ -69,8 +69,8 @@ a__c_int00 .word _c_int00
 ; Undefined instructions
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_und:   
-    b       m_core_handler_und
+m_handler_und:   
+    b       m_handler_und
     
 ; ----------------------------------------------------------------------------
 ; Supervisor mode
@@ -78,7 +78,7 @@ m_core_handler_und:
 ; @param R0 hardware interrupt source number.
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_svc:
+m_handler_svc:
     push    {lr}
     bl      m_supervisor
     blx     r0      
@@ -89,43 +89,43 @@ m_core_handler_svc:
 ; Prefetch abort
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_abt_prefetch:
-    b       m_core_handler_abt_prefetch
+m_handler_abt_prefetch:
+    b       m_handler_abt_prefetch
     
 ; ----------------------------------------------------------------------------
 ; Data abort
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_abt_data:
-    b       m_core_handler_abt_data
+m_handler_abt_data:
+    b       m_handler_abt_data
     
 ; ----------------------------------------------------------------------------
 ; Reserved
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_res:
-    b       m_core_handler_res
+m_handler_res:
+    b       m_handler_res
     
 ; ----------------------------------------------------------------------------
 ; IRQ
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_irq:
+m_handler_irq:
     sub     lr, lr, #4
     ; Test if no interrupt is pending
     push    {lr}                      ; Push Interrupt Return Point to stack
     ldr     lr, a_r_aintc_gpir
     ldr     lr, [lr]
     subs    lr, lr, #0h
-    bmi     m_core_handler_irq_return?
+    bmi     m_handler_irq_return?
     ; An interrupt is pending
     ldr     lr, a_r_aintc_gpvr
     ldr     lr, [lr]
     stmfd   sp, {lr}
-    ldr     lr, a_m_core_handler_irq_return
+    ldr     lr, a_m_handler_irq_return
     ; Branch to the source routine
     ldmea   sp, {pc}
-m_core_handler_irq_return?
+m_handler_irq_return?
     push    {r0, r1}
     ldr     r0, a_r_aintc_gpir
     ldr     r1, a_r_aintc_sicr
@@ -134,17 +134,17 @@ m_core_handler_irq_return?
     pop     {r0, r1, lr}
     movs    pc, lr
 
-a_m_core_handler_irq_return .word m_core_handler_irq_return?   
-a_r_aintc_sicr              .word 0fffee024h
-a_r_aintc_gpir              .word 0fffee080h
-a_r_aintc_gpvr              .word 0fffee084h
+a_m_handler_irq_return .word m_handler_irq_return?   
+a_r_aintc_sicr         .word 0fffee024h
+a_r_aintc_gpir         .word 0fffee080h
+a_r_aintc_gpvr         .word 0fffee084h
 
 ; ----------------------------------------------------------------------------
 ; FIQ
 ; ----------------------------------------------------------------------------
     .text
-m_core_handler_fiq:
-    b       m_core_handler_fiq
+m_handler_fiq:
+    b       m_handler_fiq
     
 ; ----------------------------------------------------------------------------
 ; HW interrupt service routines.

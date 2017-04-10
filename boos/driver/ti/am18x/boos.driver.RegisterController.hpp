@@ -203,7 +203,7 @@ namespace driver
     int64 align8_;
   
     /**
-     * Core registers.
+     * CPU registers.
      *
      * IMPORTANT: The order of CPU registers must not be changed,
      * because these are used by low level interrupt routine.

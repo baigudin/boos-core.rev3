@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="D:\baigudin\boos.v3\projects\boos.exe.ti.tms320c64x.coff.ccstudio33\"
+ProjectDir="D:\baigudin\github\baigudin\boos-core.rev3\projects\boos.exe.ti.tms320c64x.coff.ccstudio33\"
 ProjectType=Executable
 CPUFamily=TMS320C64XX
 Tool="Compiler"
@@ -29,8 +29,6 @@ Source="..\..\boos\system\boos.system.System.cpp"
 Source="..\..\boos\system\boos.system.Thread.cpp"
 Source="..\..\boos\system\boos.system.Timer.cpp"
 Source="..\..\boos\system\boos.system.TimerInterrupt.cpp"
-Source="Debug\boos.tms320c64x.debug.map"
-Source="Release\boos.tms320c64x.map"
 Source="Source\boos.Board.cpp"
 Source="Source\boos.Configuration.cpp"
 Source="Source\boos.Main.cpp"
@@ -48,18 +46,6 @@ Options=-c -h -m".\Debug\boos.tms320c64x.debug.map" -o".\Debug\boos.tms320c64x.d
 
 ["Linker" Settings: "Release"]
 Options=-a -c -m".\Release\boos.tms320c64x.map" -o".\Release\boos.tms320c64x.out" -w -x
-
-["Debug\boos.tms320c64x.debug.map" Settings: "Debug"]
-ExcludeFromBuild=true
-
-["Debug\boos.tms320c64x.debug.map" Settings: "Release"]
-ExcludeFromBuild=true
-
-["Release\boos.tms320c64x.map" Settings: "Debug"]
-ExcludeFromBuild=true
-
-["Release\boos.tms320c64x.map" Settings: "Release"]
-ExcludeFromBuild=true
 
 ["..\..\boos\driver\ti\tms320c64x\cmd\boos.memory.tms320c64x.coff.cmd" Settings: "Debug"]
 LinkOrder=1

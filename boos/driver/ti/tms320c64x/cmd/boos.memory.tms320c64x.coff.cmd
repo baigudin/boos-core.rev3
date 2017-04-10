@@ -20,7 +20,7 @@ MEMORY
   CODE       : origin = 0x00000200, len = 0x0002fe00
   /** Heap of TI RTS Library */
   HEAP       : origin = 0x00030000, len = 0x00001000    
-  /** User heap of BOOS Core */
+  /** User heap of BOOS */
   MEMORY     : origin = 0x00031000, len = 0x0000f000
 }
 
