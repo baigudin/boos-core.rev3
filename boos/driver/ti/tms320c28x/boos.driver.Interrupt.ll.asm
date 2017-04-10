@@ -135,14 +135,16 @@ m_isr:
         .text
 m_global_disable:
         push            st1
-        dint
-        pop             st1        
+        dint        
+        pop             al
+        and             al, #1
+        xor             al, #1
         lretr
 
 ; ----------------------------------------------------------------------------
 ; Enables all maskable interrupts.
 ;
-; @param AR4 the returned status by disable method.
+; @param AL the returned status by disable method.
 ; ----------------------------------------------------------------------------
         .text
 m_global_enable:

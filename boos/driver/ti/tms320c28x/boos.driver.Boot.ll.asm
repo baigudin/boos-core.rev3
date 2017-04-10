@@ -8,31 +8,31 @@
 ; @license   http://baigudin.software/license/
 ; @link      http://baigudin.software
 ; ----------------------------------------------------------------------------
-    .c28_amode
-    .def  _c_int00
+        .c28_amode
+        .def  _c_int00
 
-    .def  _getCRecord__Q2_6driver4BootSFv
-    .def  _getPRecord__Q2_6driver4BootSFv
+        .def  _getCRecord__Q2_6driver4BootSFv
+        .def  _getPRecord__Q2_6driver4BootSFv
 
-    .ref  _init__Q2_6driver4BootSFv    
-    .ref  _main__Q2_6system4MainSFv
-    .ref  cinit
-    .ref  pinit
-    .ref  bss    
-    
-    .asg  _main__Q2_6system4MainSFv,       m_main
-    .asg  _getCRecord__Q2_6driver4BootSFv, m_get_cinit
-    .asg  _getPRecord__Q2_6driver4BootSFv, m_get_pinit    
-    .asg  _init__Q2_6driver4BootSFv,       m_boot_init   
-    .asg  _c_int00,                        m_bootstrap
-    .asg  cinit,                           v_cinit
-    .asg  pinit,                           v_pinit 
-    .asg  bss,                             v_bss
+        .ref  _init__Q2_6driver4BootSFv    
+        .ref  _main__Q2_6system4MainSFv
+        .ref  cinit
+        .ref  pinit
+        .ref  bss    
+        
+        .asg  _main__Q2_6system4MainSFv,       m_main
+        .asg  _getCRecord__Q2_6driver4BootSFv, m_get_cinit
+        .asg  _getPRecord__Q2_6driver4BootSFv, m_get_pinit    
+        .asg  _init__Q2_6driver4BootSFv,       m_boot_init   
+        .asg  _c_int00,                        m_bootstrap
+        .asg  cinit,                           v_cinit
+        .asg  pinit,                           v_pinit 
+        .asg  bss,                             v_bss
 
-    ; Mode stacks sizes
-    .asg  3c0h, STACK_SIZE
-    ; Mode stacks
-    .bss  v_stack, STACK_SIZE, 8
+        ; Mode stacks sizes
+        .asg  3c0h, STACK_SIZE
+        ; Mode stacks
+        .bss  v_stack, STACK_SIZE, 8
       
 
 ; ----------------------------------------------------------------------------

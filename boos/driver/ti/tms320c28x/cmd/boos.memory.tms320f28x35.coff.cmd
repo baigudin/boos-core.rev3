@@ -42,9 +42,9 @@ SECTIONS
    .switch             : > DATA,    PAGE = 1     
 
    /** Uninitalized data sections */
-   .stack              : > DATA,    PAGE = 1   
-   .ebss               : > DATA,    PAGE = 1
-   .esysmem            : > DATA,    PAGE = 1
-   .bss                : > DATA1,   PAGE = 1   
+   .stack              : > DATA,    PAGE = 1, fill = 0xffff   
+   .ebss               : > DATA,    PAGE = 1, fill = 0xffff
+   .esysmem            : > DATA,    PAGE = 1, fill = 0xffff
+   .bss                : > DATA1,   PAGE = 1, fill = 0xffff
    
 }
