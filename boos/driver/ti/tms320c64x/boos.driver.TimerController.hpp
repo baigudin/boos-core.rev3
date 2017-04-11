@@ -37,8 +37,8 @@ namespace driver
      * Constructor.
      */      
     TimerController() : Parent(),
-      index_ (-1),
-      reg_   (NULL){
+      index_  (-1),
+      regTim_ (NULL){
       for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         if( construct(i) == true )
@@ -56,8 +56,8 @@ namespace driver
      * @param index available timer index.
      */
     TimerController(int32 index) : Parent(),
-      index_ (-1),
-      reg_   (NULL){
+      index_  (-1),
+      regTim_ (NULL){
       setConstruct( construct(index) );
     }
 
@@ -70,7 +70,7 @@ namespace driver
       bool is = Interrupt::globalDisable();
       lock_[index_] = false;
       stop();
-      reg_ = NULL;
+      regTim_ = NULL;
       index_ = -1;      
       Interrupt::globalEnable(is);    
     }
@@ -82,7 +82,7 @@ namespace driver
      */      
     virtual int64 getCount() const
     {
-      return isConstructed_ ? reg_->cnt.value : 0;
+      return isConstructed_ ? regTim_->cnt.value : 0;
     }
     
     /**
@@ -92,7 +92,7 @@ namespace driver
      */      
     virtual int64 getPeriod() const
     {
-      return isConstructed_ ? reg_->prd.value : 0;
+      return isConstructed_ ? regTim_->prd.value : 0;
     }  
     
     /**
@@ -106,7 +106,7 @@ namespace driver
       uint64 cnt = count;
       uint64 prd = getPeriod();
       if(cnt > prd) return;
-      reg_->cnt.value = cnt bitand 0x00000000ffffffff;
+      regTim_->cnt.value = cnt bitand 0x00000000ffffffff;
     }      
     
     /**
@@ -119,12 +119,14 @@ namespace driver
       if(!isConstructed_) return;
       if(us == 0) 
       {
-        reg_->prd.value = 0xffffffff;
+        regTim_->prd.value = 0xffffffff;
       }
       else
       {
-        uint64 prd = (us * internalClock()) / 1000000;
-        if( (prd & 0xffffffff00000000) == 0) reg_->prd.value = prd & 0x00000000ffffffff;
+        int64 clock = internalClock();
+        if(clock == 0) return;      
+        uint64 prd = (us * clock) / 1000000;
+        if( (prd & 0xffffffff00000000) == 0) regTim_->prd.value = prd & 0x00000000ffffffff;
         else return setPeriod();
       }    
     }
@@ -140,7 +142,7 @@ namespace driver
       ctl.bit.clksrc = 1;
       ctl.bit.spnd = 1;     
       ctl.bit.go = 1;
-      reg_->ctl = ctl;    
+      regTim_->ctl = ctl;    
     }
     
     /**
@@ -149,7 +151,7 @@ namespace driver
     virtual void stop()
     {
       if(!isConstructed_) return;
-      reg_->ctl.value = 0;     
+      regTim_->ctl.value = 0;     
     }
 
     /**
@@ -159,7 +161,7 @@ namespace driver
      */      
     virtual int32 getIndex() const
     {
-      return index_; 
+      return isConstructed_ ? index_ : -1;
     }
     
     /**
@@ -228,7 +230,7 @@ namespace driver
         default: return Interrupt::globalEnable(is, false);
       }    
       if(lock_[index] == true) return Interrupt::globalEnable(is, false); 
-      reg_ = new (addr) reg::Timer();
+      regTim_ = new (addr) reg::Timer();
       lock_[index] = true;
       index_ = index;
       return Interrupt::globalEnable(is, true);    
@@ -302,7 +304,7 @@ namespace driver
     /**
      * HW timer registers.
      */
-    reg::Timer* reg_;        
+    reg::Timer* regTim_;        
   
   };
   

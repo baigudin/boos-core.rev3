@@ -43,8 +43,8 @@ namespace driver
      * Constructs this object and allocs a first free hardware timer.
      */      
     TimerController() : Parent(),
-      index_ (-1),
-      reg_   (NULL){
+      index_  (-1),
+      regTim_ (NULL){
       for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         if( construct(i) == true )
@@ -62,8 +62,8 @@ namespace driver
      * @param index available timer index.
      */
     TimerController(int32 index) : Parent(),
-      index_ (-1),
-      reg_   (NULL){
+      index_  (-1),
+      regTim_ (NULL){
       setConstruct( construct(index) );
     }
 
@@ -76,7 +76,7 @@ namespace driver
       bool is = Interrupt::globalDisable();
       lock_[index_] = false;
       stop();
-      reg_ = NULL;
+      regTim_ = NULL;
       index_ = -1;
       Interrupt::globalEnable(is);    
     }
@@ -90,9 +90,9 @@ namespace driver
     {
       if(!isConstructed_) return 0;
       uint64 cnt;
-      cnt = reg_->tim34.value;
+      cnt = regTim_->tim34.value;
       cnt = cnt << 32;      
-      cnt = cnt bitor reg_->tim12.value;
+      cnt = cnt bitor regTim_->tim12.value;
       return cnt;
     }
     
@@ -105,9 +105,9 @@ namespace driver
     {
       if(!isConstructed_) return 0;
       uint64 prd;
-      prd = reg_->prd34.value;
+      prd = regTim_->prd34.value;
       prd = prd << 32;      
-      prd = prd bitor reg_->prd12.value;
+      prd = prd bitor regTim_->prd12.value;
       return prd;
     }  
     
@@ -124,9 +124,9 @@ namespace driver
       if(cnt > prd) return;
       bool is = isStarted();
       if(is) stop();
-      reg_->tim12.value = cnt bitand 0xffffffff;
+      regTim_->tim12.value = cnt bitand 0xffffffff;
       cnt = cnt >> 32;       
-      reg_->tim34.value = cnt bitand 0xffffffff;
+      regTim_->tim34.value = cnt bitand 0xffffffff;
       if(is) start();
     }      
     
@@ -137,13 +137,15 @@ namespace driver
      */      
     virtual void setPeriod(int64 us=0)
     {
-      if(!isConstructed_) return; 
-      uint64 prd = us != 0 ? (us * internalClock()) / 1000000 : 0xffffffffffffffff;
+      if(!isConstructed_) return;
+      int64 clock = internalClock();
+      if(clock == 0) return;       
+      uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffffffffffff;
       bool is = isStarted();
       if(is) stop();
-      reg_->prd12.value = prd bitand 0xffffffff;
+      regTim_->prd12.value = prd bitand 0xffffffff;
       prd = prd >> 32;       
-      reg_->prd34.value = prd bitand 0xffffffff;
+      regTim_->prd34.value = prd bitand 0xffffffff;
       if(is) start();
     }
     
@@ -154,7 +156,7 @@ namespace driver
     {
       if(!isConstructed_) return;
       // The timer is enabled continuously
-      reg_->tcr.bit.enamode12 = 2;
+      regTim_->tcr.bit.enamode12 = 2;
     }
     
     /**
@@ -164,7 +166,7 @@ namespace driver
     {
       if(!isConstructed_) return;
       // The timer is disabled
-      reg_->tcr.bit.enamode12 = 0;
+      regTim_->tcr.bit.enamode12 = 0;
     }
 
     /**
@@ -174,7 +176,7 @@ namespace driver
      */      
     virtual int32 getIndex() const
     {
-      return index_;
+      return isConstructed_ ? index_ : -1;
     }
     
     /**
@@ -349,16 +351,16 @@ namespace driver
       if(addr == 0) return false;
       bool is = Interrupt::globalDisable();
       if(lock_[index] == true) return Interrupt::globalEnable(is, false); 
-      reg_ = new (addr) reg::Timer();
+      regTim_ = new (addr) reg::Timer();
       lock_[index] = true;
       index_ = index;
-      reset(*reg_);
+      reset(*regTim_);
       // Set an internal clock as the selected clock source for the timer
-      reg_->tcr.bit.clksrc12 = 0;
+      regTim_->tcr.bit.clksrc12 = 0;
       // Enable the 64-Bit mode
-      reg_->tgcr.bit.timmode = 0;
-      reg_->tgcr.bit.tim12rs = 1;
-      reg_->tgcr.bit.tim34rs = 1;
+      regTim_->tgcr.bit.timmode = 0;
+      regTim_->tgcr.bit.tim12rs = 1;
+      regTim_->tgcr.bit.tim34rs = 1;
       return Interrupt::globalEnable(is, true);
     }
     
@@ -369,7 +371,7 @@ namespace driver
      */        
     bool isStarted()
     {
-      return reg_->tcr.bit.enamode12 == 0 ? false : true;
+      return regTim_->tcr.bit.enamode12 == 0 ? false : true;
     }    
     
     /**
@@ -444,7 +446,7 @@ namespace driver
     /**
      * HW timet registers (no boot).
      */
-    reg::Timer* reg_;      
+    reg::Timer* regTim_;      
     
   };
   

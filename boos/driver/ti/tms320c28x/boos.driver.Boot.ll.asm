@@ -30,7 +30,7 @@
         .asg  bss,                             v_bss
 
         ; Mode stacks sizes
-        .asg  3c0h, STACK_SIZE
+        .asg  300h, STACK_SIZE
         ; Mode stacks
         .bss  v_stack, STACK_SIZE, 8
       
@@ -47,8 +47,8 @@ m_bootstrap:
         mov             sp, #v_stack       ; Set stack pointer
         clrc            c, tc, ovm, sxm    ; Clear Status Register 0
         spm             0                  ; Set product shift mode
-        clrc            vmap, page0        ; Clear Status Register 1
-        setc            dbgm, intm         ; Set Status Register 1
+        clrc            page0              ; Clear Status Register 1
+        setc            vmap, dbgm, intm   ; Set Status Register 1
         movw            dp, #0             ; Initialize DP
         nop             *, arp0            ; Set ARP pointer to XAR0        
         asp                                ; Ensure SP is aligned

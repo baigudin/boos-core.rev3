@@ -218,7 +218,6 @@ namespace system
       global_.enable(is);
       return task;
     }
-    
 
     /**
      * Initiates an execution of thread tasks.

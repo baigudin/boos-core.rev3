@@ -92,6 +92,7 @@ namespace system
     {
       int64 time, dc, dt;
       int64 timerFrequency = Timer::extension().internalClock();
+      if(timerFrequency == 0) return time_;
       bool is = global().disable();
       // Set delta count it the value in timer clocks
       // which equals a time from previous updating.

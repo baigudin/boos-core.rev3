@@ -42,7 +42,7 @@ vec_:n: .ulong          han_:n:
 ; Hardware interrupt handler.
 ; ----------------------------------------------------------------------------
 handler .macro          n
-han_:n: b               han_:n:, unc
+han_:n: bf              m_isr, unc
         .endm
         
 ; ----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ han_:n: b               han_:n:, unc
         .text
 m_isr:
         nop
-        b               m_isr, unc
+        bf              m_isr, unc
 
 ; ----------------------------------------------------------------------------
 ; Disables all maskable interrupts.
@@ -148,8 +148,10 @@ m_global_disable:
 ; ----------------------------------------------------------------------------
         .text
 m_global_enable:
+        cmp             al, #0
+        bf              m_ret0?, eq
         eint
-        lretr
+m_ret0? lretr
 
 ; ----------------------------------------------------------------------------
 ; Locks maskable interrupt source.
@@ -160,7 +162,7 @@ m_global_enable:
         .text
 m_disable:
         nop
-        b               m_disable, unc
+        bf              m_disable, unc
 
 ; ----------------------------------------------------------------------------
 ; Unlocks maskable interrupt source.
@@ -171,7 +173,7 @@ m_disable:
         .text
 m_enable:
         nop
-        b               m_enable, unc
+        bf              m_enable, unc
    
 ; ----------------------------------------------------------------------------
 ; Sets a maskable interrupt status.
@@ -181,7 +183,7 @@ m_enable:
         .text
 m_set:
         nop
-        b               m_set, unc
+        bf              m_set, unc
 
 ; ----------------------------------------------------------------------------
 ; Clears a maskable interrupt status.
@@ -191,7 +193,7 @@ m_set:
         .text
 m_clear:
         nop
-        b               m_clear, unc
+        bf              m_clear, unc
           
 ; ----------------------------------------------------------------------------
 ; Jumps to interrupt HW vector.
@@ -201,5 +203,5 @@ m_clear:
         .text
 m_jump:
         nop
-        b               m_jump, unc
+        bf              m_jump, unc
         

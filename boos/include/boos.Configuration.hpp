@@ -17,7 +17,7 @@ struct Configuration
 public:
 
   /**
-   * Source clock in Hz.
+   * Source clock of CPU oscillator in Hz.
    */      
   int64 sourceClock;
   

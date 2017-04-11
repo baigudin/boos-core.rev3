@@ -25,6 +25,16 @@ namespace driver
 
   public:
   
+    /**
+     * Available interrupt sources.
+     */
+    enum InterruptSource
+    {
+      CPU_TIMER0_TINT0     = 0x0071,    
+      CPU_TIMER1_TINT1     = 0x0200,
+      CPU_TIMER2_TINT2     = 0x0210
+    }; 
+    
     /** 
      * Constructor.
      */      
@@ -67,6 +77,12 @@ namespace driver
      */      
     virtual int64 getCount() const
     {
+      if( not isConstructed_ ) return 0;
+      uint64 cnt;
+      cnt = regTim_->timh.value;
+      cnt = cnt << 16;
+      cnt = cnt | regTim_->tim.value;
+      return cnt;
     }
     
     /**
@@ -76,6 +92,12 @@ namespace driver
      */      
     virtual int64 getPeriod() const
     {
+      if( not isConstructed_ ) return 0;
+      uint64 prd;
+      prd = regTim_->prdh.value;
+      prd = prd << 16;      
+      prd = prd | regTim_->prd.value;
+      return prd;
     }  
     
     /**
@@ -85,6 +107,16 @@ namespace driver
      */      
     virtual void setCount(int64 count)
     {
+      if( not isConstructed_ ) return;
+      uint64 cnt = count;
+      uint64 prd = getPeriod();
+      if(cnt > prd) return;
+      bool is = isStarted();
+      if(is) stop();
+      regTim_->tim.value = cnt & 0xffff;
+      cnt = cnt >> 16;       
+      regTim_->timh.value = cnt & 0xffff;
+      if(is) start();    
     }      
     
     /**
@@ -94,6 +126,16 @@ namespace driver
      */      
     virtual void setPeriod(int64 us=0)
     {
+      if( not isConstructed_ ) return; 
+      int64 clock = internalClock();
+      if(clock == 0) return; 
+      uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffff;
+      bool is = isStarted();
+      if(is) stop();
+      regTim_->prd.value = prd & 0xffff;
+      prd = prd >> 16;       
+      regTim_->prdh.value = prd & 0xffff;
+      if(is) start();
     }
     
     /**
@@ -101,6 +143,8 @@ namespace driver
      */      
     virtual void start()
     {
+      if( not isConstructed_ ) return;
+      regTim_->tcr.bit.tss = 0;    
     }
     
     /**
@@ -108,6 +152,8 @@ namespace driver
      */      
     virtual void stop()
     {
+      if( not isConstructed_ ) return;
+      regTim_->tcr.bit.tss = 1;
     }
 
     /**
@@ -115,8 +161,9 @@ namespace driver
      *
      * @return number of this timer, or -1 if error has been occurred.
      */      
-    virtual int32 number() const
+    virtual int32 getIndex() const
     {
+      return isConstructed_ ? index_ : -1;
     }
     
     /**
@@ -136,6 +183,9 @@ namespace driver
      */  
     virtual int64 internalClock() const
     {
+      if( not isConstructed_ ) return 0;    
+      int64 div = (regTim_->tprh.bit.tddrh << 8) | regTim_->tpr.bit.tddr;
+      return sysclk_ / (div + 1);
     }    
     
     /**
@@ -145,7 +195,8 @@ namespace driver
      */  
     virtual bool isInterrupting() const
     {
-      return true;
+      if( not isConstructed_ ) return false;
+      return regTim_->tcr.bit.tie == 1 ? true : false;
     }
     
     /**
@@ -155,6 +206,13 @@ namespace driver
      */  
     virtual int32 interrupSource() const
     {
+      switch(index_)
+      {
+        case 0: return CPU_TIMER0_TINT0;
+        case 1: return CPU_TIMER1_TINT1;
+        case 2: return CPU_TIMER2_TINT2;
+      }
+      return -1;     
     }
     
   private:
@@ -174,7 +232,6 @@ namespace driver
         if(lock_[index] == true) break; 
         uint32 addr = address(index);
         if(addr == 0) break;
-        regTim_ = new (addr) reg::Timer();
         Register::allow();
         // Set the CPU Timer is clocked
         switch(index)
@@ -185,11 +242,29 @@ namespace driver
           default: break;
         }
         Register::protect();      
+        regTim_ = new (addr) reg::Timer();        
+        // Set the timer emulation mode
+        regTim_->tcr.bit.free = 0;
+        regTim_->tcr.bit.soft = 0;
+        // Stop the timer
+        regTim_->tcr.bit.tss = 1;        
+        // Enable timer interrupt
+        regTim_->tcr.bit.tie = 1;
         index_ = index;        
         lock_[index_] = true;
         res = true;
       }while(false);
       return Interrupt::globalEnable(is, res);    
+    }
+    
+    /**
+     * Tests if this timer is counting.
+     *
+     * @return true if this timer is counting.
+     */        
+    bool isStarted()
+    {
+      return regTim_->tcr.bit.tss == 1 ? false : true;
     }
     
     /**
@@ -200,9 +275,10 @@ namespace driver
      */
     static bool init(const Configuration& config)
     {
-      config_ = config;
       isInitialized_ = 0;      
       regSys_ = new (reg::System::ADDRESS) reg::System();            
+      sysclk_ = getCpuClock(config.sourceClock);
+      if(sysclk_ <= 0) return false;
       Register::allow();
       // Set CPU Timers are not clocked
       regSys_->pclkcr3.bit.cputimer0enclk = 0;
@@ -226,6 +302,33 @@ namespace driver
     static void deinit()
     {
       isInitialized_ = 0;    
+    }
+    
+    /** 
+     * Returns SYSCLK based on OSCCLK.
+     *     
+     * @param sourceClock source clock in Hz.    
+     * @return CPU clock in Hz.
+     */  
+    static int64 getCpuClock(int64 sourceClock)
+    {
+      int32 sysclk, m, d;
+      if(regSys_ == NULL) return -1;
+      // Test the oscillator is not off
+      if(regSys_->pllsts.bit.oscoff == 1) return false;
+      // Test the PLL is set correctly
+      if(regSys_->pllsts.bit.plloff == 1 && regSys_->pllcr.bit.div > 0) return false;
+      // Calculate the CPU frequency
+      m = regSys_->pllcr.bit.div != 0 ? regSys_->pllcr.bit.div : 1;
+      switch(regSys_->pllsts.bit.divsel)
+      {
+        case  0: 
+        case  1: d = 4; break;
+        case  2: d = 2; break;       
+        default: return false;
+      }
+      sysclk = (sourceClock & 0xffffffff) / d * m;
+      return sysclk > 0 ? sysclk : -1;
     }
     
     /**
@@ -254,12 +357,11 @@ namespace driver
      * The driver initialized falg value.
      */
     static const int32 IS_INITIALIZED = 0x123abc73;
-    
 
     /**
-     * The operating system configuration (no boot).
+     * CPU clock in Hz (no boot).
      */
-    static Configuration config_;
+    static int64 sysclk_;
 
     /**
      * Locked by some object flag of each HW timer (no boot).
@@ -289,9 +391,9 @@ namespace driver
   }; 
   
   /**
-   * The operating system configuration (no boot).
+   * CPU clock in Hz (no boot).
    */
-  ::Configuration TimerController::config_;
+  int64 TimerController::sysclk_;
   
   /**
    * Locked by some object flag of each HW timer (no boot).  
