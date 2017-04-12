@@ -14,6 +14,9 @@
 #include "boos.Allocator.hpp"
 #include "boos.Board.hpp"
 
+int32 tem_sss0 = 5;
+int32 tem_sss1 = 5;
+
 namespace system
 {
   /**
@@ -85,12 +88,12 @@ namespace system
  * 
  * @return error code or zero.
  */   
-#ifdef BOOS_VENDOR_BOOT
-int32 main()
+//#ifdef BOOS_VENDOR_BOOT
+int main()
 {
-  return ::system::Main::main();
+  return ::system::Main::main() & 0x0000ffff;
 }
-#endif // BOOS_VENDOR_BOOT
+//#endif // BOOS_VENDOR_BOOT
 
 /**
  * Pointer to constructed heap memory (no boot).

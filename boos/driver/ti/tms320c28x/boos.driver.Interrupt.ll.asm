@@ -7,6 +7,8 @@
 ; @link      http://baigudin.software
 ; ----------------------------------------------------------------------------
     .c28_amode
+    
+    .ref  _c_int00
 
     .def  _globalDisable__Q2_6driver9InterruptSFv
     .def  _globalEnable__Q2_6driver9InterruptSFb
@@ -16,11 +18,10 @@
     .def  _clearLow__Q2_6driver19InterruptControllerSFUi
     .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
    
-    .ref  bss
     .ref  _handler__Q2_6driver19InterruptControllerSFi
     .ref  _contextLow___Q2_6driver19InterruptController
-    
-    .asg  bss,                                                m_bss
+
+    .asg  _c_int00,                                           m_bootstrap
     .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
     .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
     .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
@@ -32,92 +33,51 @@
     .asg  _contextLow___Q2_6driver19InterruptController,      v_context
     
 ; ----------------------------------------------------------------------------
-; Hardware interrupt vector
+; Hardware interrupt vectors
 ; ----------------------------------------------------------------------------
-vector  .macro          n
-vec_:n: .ulong          han_:n:
+
+reset   .macro 
+        .ulong          m_bootstrap
+        .endm    
+
+vector  .macro          n, g
+        .ulong          han_:n::g:
         .endm    
 
 ; ----------------------------------------------------------------------------
 ; Hardware interrupt handler.
 ; ----------------------------------------------------------------------------
-handler .macro          n
-han_:n: bf              m_isr, unc
+handler .macro          n, g
+han_:n::g:
+        movb            xar0, #g
+        movb            xar1, #g
+        bf              m_isr, unc
         .endm
         
 ; ----------------------------------------------------------------------------
-; Hardware interrupts table.
+; CPU interrupts table.
 ; ----------------------------------------------------------------------------
         .sect           ".hwi"
-        vector          0
-        vector          1
-        vector          2
-        vector          3
-        vector          4
-        vector          5
-        vector          6
-        vector          7
-        vector          8
-        vector          9
-        vector          10
-        vector          11
-        vector          12
-        vector          13
-        vector          14
-        vector          15
-        vector          16
-        vector          17
-        vector          18
-        vector          19
-        vector          20
-        vector          21
-        vector          22
-        vector          23
-        vector          24
-        vector          25
-        vector          26
-        vector          27
-        vector          28
-        vector          29
-        vector          30                                                                                        
-        vector          31
+        reset           
+        ; 31 CPU Vector
+        .eval           1, i
+        .loop           31
+        vector          i, 0
+        .eval           i+1, i
+        .endloop    
+        
+
         
 ; ----------------------------------------------------------------------------
 ; Hardware interrupts table.
 ; ----------------------------------------------------------------------------
         .text
-        handler         0
-        handler         1
-        handler         2
-        handler         3
-        handler         4
-        handler         5
-        handler         6
-        handler         7
-        handler         8
-        handler         9
-        handler         10
-        handler         11
-        handler         12
-        handler         13
-        handler         14
-        handler         15
-        handler         16
-        handler         17
-        handler         18
-        handler         19
-        handler         20
-        handler         21
-        handler         22
-        handler         23
-        handler         24
-        handler         25
-        handler         26
-        handler         27
-        handler         28
-        handler         29
-        handler         30                                                                                        
-        handler         31
+        ; 31 CPU Vector
+        .eval           1, i
+        .loop           31
+        handler         i, 0
+        .eval           i+1, i
+        .endloop          
                 
 ; ----------------------------------------------------------------------------
 ; Nonreset interrupt service routine.

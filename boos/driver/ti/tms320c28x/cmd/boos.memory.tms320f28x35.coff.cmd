@@ -14,7 +14,7 @@ MEMORY
   /** Program Memory */
 PAGE 0:    
 
-  CODE        : origin = 0x008000, length = 0x006000
+  RAM         : origin = 0x008000, length = 0x004000   
   FLASHH      : origin = 0x300000, length = 0x008000
   FLASHG      : origin = 0x308000, length = 0x008000
   FLASHF      : origin = 0x310000, length = 0x008000
@@ -29,31 +29,41 @@ PAGE 0:
 PAGE 1:
 
   M0          : origin = 0x000000, length = 0x000400
-  M1          : origin = 0x000400, length = 0x000400   /** User heap of BOOS */
+  M1          : origin = 0x000400, length = 0x000400
   PIE         : origin = 0x000d00, length = 0x000100     
-  DATA        : origin = 0x00e000, length = 0x002000   
-
+  RAM         : origin = 0x00c000, length = 0x003000
+  HEAP        : origin = 0x00f000, length = 0x001000
 }
 
 SECTIONS
 {
-   /** Hardware interrupts */    
-   .hwi                : > PIE,     PAGE = 1
+  /** Hardware interrupts */    
+  .hwi       : > PIE,     PAGE = 1
 
-   /** Allocate program areas */
-   .cinit              : > CODE,    PAGE = 0
-   .pinit              : > CODE,    PAGE = 0
-   .text               : > FLASHA,  PAGE = 0
+  /** Allocate program areas */
+  .cinit     : > FLASHA,  PAGE = 0
+  .pinit     : > FLASHA,  PAGE = 0
+  .text      : > RAM,  PAGE = 0
+  .special   : 
+               {
+                 ./Debug/boos.Board.obj            (.text)               
+                 ./Debug/boos.Configuration.obj    (.text)
+                 ./Debug/boos.driver.Boot.obj      (.text)
+                 ./Debug/boos.driver.Pll.obj       (.text)
+                 ./Debug/boos.driver.Processor.obj (.text)
+                 ./Debug/boos.driver.Watchdog.obj  (.text)
+                 ./Debug/boos.system.Mutex.obj     (.text)
+                 ./Debug/boos.system.Semaphore.obj (.text)
+               } > FLASHA,  PAGE = 0   
 
-   /** Initalized data sections */
-   .cio                : > DATA,    PAGE = 1
-   .switch             : > DATA,    PAGE = 1
-   .econst             : > DATA,    PAGE = 1
+  /** Initalized data sections */
+  .econst    : > FLASHB,  PAGE = 0
 
-   /** Uninitalized data sections */
-   .ebss               : > DATA,    PAGE = 1, fill = 0xffff
-   .esysmem            : > DATA,    PAGE = 1, fill = 0xffff
-   .stack              : > M0,      PAGE = 1, fill = 0xffff
-   .bss                : > M0,      PAGE = 1, fill = 0xffff
-   
+  /** Uninitalized data sections */
+  .data      : > RAM,     PAGE = 1
+  .stack     : > RAM,     PAGE = 1, fill = 0xffff
+  .bss       : > RAM,     PAGE = 1, fill = 0xffff      
+  .sysmem    : > RAM,     PAGE = 1, fill = 0xffff      
+  .ebss      : > RAM,     PAGE = 1, fill = 0xffff
+  .esysmem   : > RAM,     PAGE = 1, fill = 0xffff
 }

@@ -39,14 +39,14 @@
     
     .endif  
     
-    ; Mode stacks sizes
+    ; The operating system stack definition
     .asg  0008h,  STACK_SIZE_UND
     .asg  0020h,  STACK_SIZE_SVC
     .asg  0008h,  STACK_SIZE_ABT            
     .asg  0020h,  STACK_SIZE_IRQ
     .asg  0008h,  STACK_SIZE_FIQ    
     .asg  0400h,  STACK_SIZE_SYS
-    ; Mode stacks
+
     .bss  v_stack_und, STACK_SIZE_UND, 8
     .bss  v_stack_svc, STACK_SIZE_SVC, 8
     .bss  v_stack_abt, STACK_SIZE_ABT, 8            

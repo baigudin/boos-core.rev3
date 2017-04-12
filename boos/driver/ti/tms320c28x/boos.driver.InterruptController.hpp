@@ -138,8 +138,9 @@ namespace driver
     /** 
      * Constructor.
      */    
-    InterruptController() : Parent()
-    {
+    InterruptController() : Parent(),
+      ctx_ (NULL){
+      setConstruct( true );      
     }
 
     /** 
@@ -148,8 +149,9 @@ namespace driver
      * @param handler user class which implements an interrupt handler interface.
      * @param source  available interrupt source.
      */     
-    InterruptController(::api::Task* handler, int32 source) : Parent()
-    {
+    InterruptController(::api::Task* handler, int32 source) : Parent(),
+      ctx_ (NULL){
+      setConstruct( setHandler(*handler, source) );      
     }
 
     /** 
@@ -187,6 +189,7 @@ namespace driver
      */    
     virtual bool disable()
     {
+      return false;
     }
     
     /**
@@ -207,6 +210,16 @@ namespace driver
      */      
     virtual bool setHandler(::api::Task& handler, int32 source)
     {
+      bool res = false;
+      bool is = Interrupt::globalDisable();
+      do{
+        if( isAllocated() ) break;
+        if( not isSource(source) ) break;
+        Source src = static_cast<Source>(source);
+        
+        res = true;
+      }while(false);
+      return Interrupt::globalEnable(is, res);
     }
 
     /**
@@ -246,7 +259,57 @@ namespace driver
      */
     static void globalEnable(bool status);
     
-  private:    
+  private:
+  
+    /**
+     * Current object has HW interrupt.
+     *
+     * @return true if object has interrupt source.
+     */
+    bool isAllocated()
+    {
+      if( not isConstructed_ ) return false;
+      return ctx_ == NULL ? false : true;
+    }
+    
+    /**
+     * Tests if given source is available.
+     *
+     * @param source interrupt source.
+     * @return true if the source is available.
+     */      
+    static bool isSource(int32 source)
+    {
+      union Src
+      {
+        Src(){}
+        Src(uint32 v){val = v;}          
+       ~Src(){}    
+       
+        uint32 val;
+        struct Val
+        {
+          uint32 grp : 4;
+          uint32 num : 8;
+          uint32     : 4;          
+        } bit;
+      } vec = source;
+      if(vec.bit.grp > 0xc) return false;
+      // CPU interrupt vector 
+      if(vec.bit.grp == 0x0)
+      {
+        // Drop GPIO interrupt sources
+        if(vec.bit.num < 0x20) return false;
+        // TODO
+        return false;
+      }
+      // PIE interrupt vector       
+      else
+      {
+        if(vec.bit.num < 1 || vec.bit.num > 8) return false;      
+      }
+      return true;      
+    }
     
     /**
      * Initialization.
@@ -300,7 +363,44 @@ namespace driver
     /**
      * Driver has been initialized successfully (no boot).
      */
-    static int32 isInitialized_;        
+    static int32 isInitialized_;
+    
+    /**
+     * Hi level interrupt context.
+     */
+    struct Context
+    {
+      /**
+       * Number of interrupt vector.
+       */
+      int32 number;
+    
+      /**
+       * Interrupt source.
+       */
+      Source source;
+
+      /**
+       * This user interrupt handler.
+       */
+      ::api::Task* handler;
+    
+      /**
+       * CPU register state of interrupt source handler.
+       */
+      ::driver::Register* reg;
+      
+      /**
+       * Stack of interrupt source handler.
+       */         
+      ::api::Stack<int64>* stack;
+
+    };
+    
+    /**
+     * The interrupt source contex.
+     */    
+    Context* ctx_;
 
   };
   

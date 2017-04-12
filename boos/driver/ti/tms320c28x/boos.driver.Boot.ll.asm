@@ -18,7 +18,6 @@
         .ref  _main__Q2_6system4MainSFv
         .ref  cinit
         .ref  pinit
-        .ref  bss    
         
         .asg  _main__Q2_6system4MainSFv,       m_main
         .asg  _getCRecord__Q2_6driver4BootSFv, m_get_cinit
@@ -27,12 +26,10 @@
         .asg  _c_int00,                        m_bootstrap
         .asg  cinit,                           v_cinit
         .asg  pinit,                           v_pinit 
-        .asg  bss,                             v_bss
 
-        ; Mode stacks sizes
-        .asg  300h, STACK_SIZE
-        ; Mode stacks
-        .bss  v_stack, STACK_SIZE, 8
+        ; The operating system stack definition
+        .asg  800h, STACK_SIZE
+v_stack .usect ".ebss", STACK_SIZE, 8
       
 
 ; ----------------------------------------------------------------------------

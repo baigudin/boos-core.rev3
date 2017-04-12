@@ -39,9 +39,8 @@
     .asg  b15, sp
     .asg  b14, dp
     .asg  a15, fp
-    ; Mode stacks sizes
+    ; The operating system stack definition
     .asg  2000h, STACK_SIZE
-    ; Mode stacks
     .bss  v_stack, STACK_SIZE, 8
     
 

@@ -30,6 +30,7 @@ Source="..\..\boos\system\boos.system.System.cpp"
 Source="..\..\boos\system\boos.system.Thread.cpp"
 Source="..\..\boos\system\boos.system.Timer.cpp"
 Source="..\..\boos\system\boos.system.TimerInterrupt.cpp"
+Source="Debug\boos.tms320f28x3x.debug.map"
 Source="Source\boos.Board.cpp"
 Source="Source\boos.Configuration.cpp"
 Source="Source\boos.Main.cpp"
@@ -47,6 +48,12 @@ Options=-c -m".\Debug\boos.tms320f28x3x.debug.map" -o".\Debug\boos.tms320f28x3x.
 
 ["Linker" Settings: "Release"]
 Options=-c -m".\Release\boos.tms320f28x3x.map" -o".\Release\boos.tms320f28x3x.out" -w -x
+
+["Debug\boos.tms320f28x3x.debug.map" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["Debug\boos.tms320f28x3x.debug.map" Settings: "Release"]
+ExcludeFromBuild=true
 
 ["..\..\boos\driver\ti\tms320c28x\cmd\boos.memory.tms320f28x35.coff.cmd" Settings: "Debug"]
 LinkOrder=1

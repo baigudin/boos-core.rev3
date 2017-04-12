@@ -226,7 +226,7 @@ namespace driver
      */      
     virtual bool setHandler(::api::Task& handler, int32 source)
     {
-      bool is = Interrupt::globalDisable();      
+      bool is = Interrupt::globalDisable();
       if(isAllocated()) return Interrupt::globalEnable(is, false);
       if(!isSource(source)) return Interrupt::globalEnable(is, false);
       Source src = static_cast<Source>(source);      
