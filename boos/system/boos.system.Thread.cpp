@@ -9,6 +9,7 @@
 #include "boos.system.Thread.hpp"
 #include "boos.system.Scheduler.hpp"
 #include "boos.system.System.hpp"
+#include "boos.driver.Processor.hpp"
 #include "boos.driver.Register.hpp"
 #include "boos.util.Stack.hpp"
 
@@ -213,8 +214,7 @@ namespace system
     register_ = ::driver::Register::create();
     if(register_ == NULL || !register_->isConstructed()) return false;
     // Set this thread stack context 
-//    stack_ = new ::util::Stack<int64>(::util::Stack<int64>::ED, task->stackSize() >> 3);
-    stack_ = new Stack(Stack::ED, task->stackSize() >> 3);    
+    stack_ = new Stack( ::driver::Processor::stackType(), task->stackSize() >> 3 );    
     if(stack_ == NULL || !stack_->isConstructed()) return false;
     task_ = task;
     return true;

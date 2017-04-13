@@ -2,35 +2,37 @@
 ; Interrupt low level module
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2014-2016 Sergey Baigudin
+; @copyright 2017 Sergey Baigudin
 ; @license   http://baigudin.software/license/
 ; @link      http://baigudin.software
 ; ----------------------------------------------------------------------------
-    .c28_amode
-    
-    .ref  _c_int00
+        .c28_amode
+        
+        .ref  _c_int00
 
-    .def  _globalDisable__Q2_6driver9InterruptSFv
-    .def  _globalEnable__Q2_6driver9InterruptSFb
-    .def  _disableLow__Q2_6driver19InterruptControllerSFUi
-    .def  _enableLow__Q2_6driver19InterruptControllerSFUib
-    .def  _setLow__Q2_6driver19InterruptControllerSFUi
-    .def  _clearLow__Q2_6driver19InterruptControllerSFUi
-    .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
-   
-    .ref  _handler__Q2_6driver19InterruptControllerSFi
-    .ref  _contextLow___Q2_6driver19InterruptController
+        .def  _globalDisable__Q2_6driver9InterruptSFv
+        .def  _globalEnable__Q2_6driver9InterruptSFb
+        .def  _disableLow__Q2_6driver19InterruptControllerSFUi
+        .def  _enableLow__Q2_6driver19InterruptControllerSFUib
+        .def  _setLow__Q2_6driver19InterruptControllerSFUi
+        .def  _clearLow__Q2_6driver19InterruptControllerSFUi
+        .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
+        .def  _getPieVectors__Q2_6driver19InterruptControllerSFv
+       
+        .ref  _handler__Q2_6driver19InterruptControllerSFi
+        .ref  _contextLow___Q2_6driver19InterruptController
 
-    .asg  _c_int00,                                           m_bootstrap
-    .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
-    .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
-    .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
-    .asg  _enableLow__Q2_6driver19InterruptControllerSFUib,   m_enable
-    .asg  _setLow__Q2_6driver19InterruptControllerSFUi,       m_set
-    .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,     m_clear
-    .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,      m_jump
-    .asg  _handler__Q2_6driver19InterruptControllerSFi,       m_handler
-    .asg  _contextLow___Q2_6driver19InterruptController,      v_context
+        .asg  _c_int00,                                           m_bootstrap
+        .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
+        .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
+        .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
+        .asg  _enableLow__Q2_6driver19InterruptControllerSFUib,   m_enable
+        .asg  _setLow__Q2_6driver19InterruptControllerSFUi,       m_set
+        .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,     m_clear
+        .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,      m_jump
+        .asg  _getPieVectors__Q2_6driver19InterruptControllerSFv, m_get_table
+        .asg  _handler__Q2_6driver19InterruptControllerSFi,       m_handler
+        .asg  _contextLow___Q2_6driver19InterruptController,      v_context
     
 ; ----------------------------------------------------------------------------
 ; Hardware interrupt vectors
@@ -41,43 +43,76 @@ reset   .macro
         .endm    
 
 vector  .macro          n, g
-        .ulong          han_:n::g:
+v_ih_n:n:_g:g:
+        .ulong          m_ih_n:n:_g:g:
         .endm    
 
 ; ----------------------------------------------------------------------------
 ; Hardware interrupt handler.
 ; ----------------------------------------------------------------------------
 handler .macro          n, g
-han_:n::g:
-        movb            xar0, #g
-        movb            xar1, #g
+m_ih_n:n:_g:g:
+        movb            xar0, #:g:
+        movb            xar1, #:n:
         bf              m_isr, unc
         .endm
         
 ; ----------------------------------------------------------------------------
-; CPU interrupts table.
+; Interrupt vector table section of PIE.
+;
+; This section is being loaded and will be alloced by linker.
+; It is used for user's code initialization of
+; PIE Vectors memory.
 ; ----------------------------------------------------------------------------
-        .sect           ".hwi"
+        .data
+v_ires:
         reset           
-        ; 31 CPU Vector
-        .eval           1, i
+        ; 31 CPU Vectors
+        .eval           0, i
         .loop           31
         vector          i, 0
         .eval           i+1, i
         .endloop    
         
+        ; 12 PIE Groups
+        .eval           1, g
+        .loop           12
 
+        ; 8 PIE Group Vectors
+        .eval           0, n
+        .loop           8
+        vector          n, g
+        .eval           n+1, n
+        .endloop    
+        
+        .eval           g+1, g
+        .endloop
         
 ; ----------------------------------------------------------------------------
-; Hardware interrupts table.
+; Interrupt handlers.
 ; ----------------------------------------------------------------------------
         .text
+        
         ; 31 CPU Vector
-        .eval           1, i
+        .eval           0, i
         .loop           31
         handler         i, 0
         .eval           i+1, i
-        .endloop          
+        .endloop 
+        
+        ; 12 PIE Groups
+        .eval           1, g
+        .loop           12
+
+        ; 8 PIE Group Vectors
+        .eval           0, n
+        .loop           8
+        handler         n, g
+        .eval           n+1, n
+        .endloop    
+        
+        .eval           g+1, g
+        .endloop                    
                 
 ; ----------------------------------------------------------------------------
 ; Nonreset interrupt service routine.
@@ -86,6 +121,15 @@ han_:n::g:
 m_isr:
         nop
         bf              m_isr, unc
+
+; ----------------------------------------------------------------------------
+; Returns address of PIE vectors table copy.
+;
+; @return ACC vectors table address.
+; ----------------------------------------------------------------------------       
+m_get_table:
+       movl           xar4, #v_ires  
+       lretr
 
 ; ----------------------------------------------------------------------------
 ; Disables all maskable interrupts.

@@ -229,7 +229,10 @@ namespace system
       // because the timer might have been worked.
       tim_.setCount(0);      
       int_.clear();
-      global_.enable(true);      
+      global_.enable(true);
+      
+      
+      
       jump();
       global_.disable();    
     }

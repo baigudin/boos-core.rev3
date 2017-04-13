@@ -10,6 +10,7 @@
 #define BOOS_DRIVER_PROCESSOR_HPP_
 
 #include "boos.api.Object.hpp"
+#include "boos.api.Stack.hpp"
 #include "boos.Configuration.hpp"
 
 namespace system { class Main; }
@@ -32,7 +33,14 @@ namespace driver
      *
      * @return target processor hardware interface, or NULL if error has been occurred.
      */
-    static ::driver::Processor* create();    
+    static ::driver::Processor* create(); 
+
+    /**
+     * Returns the processor stack operation type.
+     *
+     * @return the stack operation.     
+     */    
+    static ::api::Stack<int64>::Operation stackType();
     
   private:    
     

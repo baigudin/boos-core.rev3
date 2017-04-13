@@ -166,6 +166,7 @@ namespace driver
      */      
     virtual void jump()
     {
+      asm(" nop");
     }
     
     /**
@@ -173,6 +174,7 @@ namespace driver
      */     
     virtual void clear()
     {
+      asm(" nop");    
     }
     
     /**
@@ -180,6 +182,7 @@ namespace driver
      */    
     virtual void set()
     {
+      asm(" nop");    
     }  
     
     /**
@@ -189,6 +192,7 @@ namespace driver
      */    
     virtual bool disable()
     {
+      asm(" nop");    
       return false;
     }
     
@@ -199,6 +203,7 @@ namespace driver
      */
     virtual void enable(bool status)
     {
+      asm(" nop");    
     }
     
     /**
@@ -300,8 +305,6 @@ namespace driver
       {
         // Drop GPIO interrupt sources
         if(vec.bit.num < 0x20) return false;
-        // TODO
-        return false;
       }
       // PIE interrupt vector       
       else
@@ -321,7 +324,13 @@ namespace driver
     {
       isInitialized_ = 0;   
       if(config.sourceClock == 0) return false;
-      regPie_ = new (reg::Pie::ADDRESS) reg::Pie();            
+      regPie_ = new (reg::Pie::ADDRESS) reg::Pie();
+      // PIE vectors table initialization
+      uint32* dst = reinterpret_cast<uint32*>(PIE_ADDR);
+      const uint32* src = getPieVectors();
+      Register::allow();
+      for(int32 i=0; i<PIE_VETS; i++) dst[i] = src[i];
+      Register::protect();
       // Enable vector fetching from PIE vector table
       regPie_->ctrl.bit.enpie = 1;
       isInitialized_ = IS_INITIALIZED;      
@@ -334,6 +343,13 @@ namespace driver
     static void deinit()
     {
     }
+    
+    /**
+     * Returns address of PIE vectors table copy.
+     *
+     * @return vectors table address.
+     */
+    static const uint32* getPieVectors();    
 
     /**
      * Copy constructor.
@@ -354,6 +370,16 @@ namespace driver
      * The driver initialized falg value.
      */
     static const int32 IS_INITIALIZED = 0x98753af7;
+
+    /**
+     * PIE 32-bit vectors number.
+     */    
+    static const int32 PIE_VETS = 0x0000080;
+
+    /**
+     * PIE vectors address.
+     */
+    static const uint32 PIE_ADDR = 0x00000d00;
     
     /**
      * Peripheral Interrupt Expansion (no boot).

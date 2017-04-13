@@ -21,7 +21,6 @@ PAGE 0:
   FLASHE      : origin = 0x318000, length = 0x008000
   FLASHD      : origin = 0x320000, length = 0x008000
   FLASHC      : origin = 0x328000, length = 0x008000
-  FLASHB      : origin = 0x330000, length = 0x008000
   FLASHA      : origin = 0x338000, length = 0x007F80
   BROM        : origin = 0x3fffc0, length = 0x000040
 
@@ -33,19 +32,17 @@ PAGE 1:
   PIE         : origin = 0x000d00, length = 0x000100     
   RAM         : origin = 0x00c000, length = 0x003000
   HEAP        : origin = 0x00f000, length = 0x001000
+  FLASHB      : origin = 0x330000, length = 0x008000  
 }
 
 SECTIONS
 {
   /** Hardware interrupts */    
-  .hwi       : > PIE,     PAGE = 1
+  .pie       : > PIE,     PAGE = 1, type = NOLOAD
 
   /** Allocate program areas */
-  .cinit     : > FLASHA,  PAGE = 0
-  .pinit     : > FLASHA,  PAGE = 0
-  .text      : > RAM,  PAGE = 0
-  .special   : 
-               {
+  .text      : > RAM,     PAGE = 0
+  .special   : {
                  ./Debug/boos.Board.obj            (.text)               
                  ./Debug/boos.Configuration.obj    (.text)
                  ./Debug/boos.driver.Boot.obj      (.text)
@@ -54,13 +51,17 @@ SECTIONS
                  ./Debug/boos.driver.Watchdog.obj  (.text)
                  ./Debug/boos.system.Mutex.obj     (.text)
                  ./Debug/boos.system.Semaphore.obj (.text)
-               } > FLASHA,  PAGE = 0   
+               } 
+               > FLASHA,  PAGE = 0   
+  .cinit     : > FLASHA,  PAGE = 0
+  .pinit     : > FLASHA,  PAGE = 0
+               
 
   /** Initalized data sections */
-  .econst    : > FLASHB,  PAGE = 0
+  .data      : > FLASHB,  PAGE = 1  
+  .econst    : > FLASHB,  PAGE = 1
 
   /** Uninitalized data sections */
-  .data      : > RAM,     PAGE = 1
   .stack     : > RAM,     PAGE = 1, fill = 0xffff
   .bss       : > RAM,     PAGE = 1, fill = 0xffff      
   .sysmem    : > RAM,     PAGE = 1, fill = 0xffff      

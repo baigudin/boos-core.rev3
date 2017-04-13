@@ -22,50 +22,18 @@ namespace util
   template <typename Type, class Alloc=::Allocator>
   class Stack : public ::Object<Alloc>, public ::api::Stack<Type>
   { 
-    typedef ::Object<Alloc> Parent;  
+    typedef ::Object<Alloc>    Parent;  
+    typedef ::api::Stack<Type> StackIntf;
   
   public:
   
-    /**
-     * Stack operations.
-     *
-     * Stack operations:
-     * - Full stacks have stack pointers that point to the last used location.
-     * - Empty stacks have stack pointers that point to the first unused location.
-     * - Descending stacks grow towards decreasing memory addresses.
-     * - Ascending stacks grow towards increasing memory addresses.
-     */
-    enum Operation
-    {
-      /**
-       * Full Descending.
-       */
-      FD = 0,
-      
-      /**
-       * Empty Descending.
-       */
-      ED = 1,
-      
-      /**
-       * Full Ascending.
-       */
-      FA = 2,
-      
-      /**
-       * Empty Ascending.
-       */
-      EA = 3
-
-    };
-
     /** 
      * Constructor.
      *
      * @param type  type of this stack.
      * @param count count of buffer elements.
      */    
-    Stack(Operation type, int32 count) : Parent(),
+    Stack(typename ::api::Stack<Type>::Operation type, int32 count) : Parent(),
       stack_ (count),
       type_  (type){
       this->setConstruct( construct() );
@@ -78,7 +46,7 @@ namespace util
      * @param count   count of buffer elements.
      * @param illegal illegal value.
      */    
-    Stack(Operation type, int32 count, const Type illegal) : Parent(),
+    Stack(typename ::api::Stack<Type>::Operation type, int32 count, const Type illegal) : Parent(),
       stack_ (count, illegal),
       type_  (type){
       this->setConstruct( construct() );
@@ -112,12 +80,22 @@ namespace util
       Type* stack = &stack_[0];
       switch(type_)
       {
-        case FD: return &stack[stack_.length()];
-        case ED: return &stack[stack_.length() - 1];
-        case FA: return &stack[0] - 1;
-        case EA: return &stack[0];
+        case StackIntf::FD: return &stack[stack_.length()];
+        case StackIntf::ED: return &stack[stack_.length() - 1];
+        case StackIntf::FA: return &stack[0] - 1;
+        case StackIntf::EA: return &stack[0];
         default: return NULL;  
       }
+    }
+    
+    /** 
+     * Returns an type of stack operation.
+     *
+     * @return the stack operation.
+     */    
+    virtual typename ::api::Stack<Type>::Operation type() const
+    {
+      return type_;
     }
     
     /**
@@ -213,7 +191,7 @@ namespace util
     /**
      * Stack type.
      */    
-    Operation type_;
+    const typename ::api::Stack<Type>::Operation type_;
 
   };
 }

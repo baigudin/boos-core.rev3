@@ -6,6 +6,7 @@
  * @license   http://baigudin.software/license/
  * @link      http://baigudin.software
  */
+#include "boos.driver.Processor.hpp" 
 #include "boos.driver.ProcessorController.hpp"
 
 namespace driver
@@ -26,6 +27,16 @@ namespace driver
   }
   
   /**
+   * Returns the processor stack operation type.
+   *
+   * @return the stack operation.     
+   */    
+  ::api::Stack<int64>::Operation Processor::stackType()
+  {
+    return ::api::Stack<int64>::FD;
+  }
+  
+  /**
    * Initializes the driver.
    *
    * @param config a target processor configuration.
@@ -35,7 +46,7 @@ namespace driver
   {
     return ProcessorController::init(config);
   }
-
+  
   /**
    * Deinitializes the driver.
    */
