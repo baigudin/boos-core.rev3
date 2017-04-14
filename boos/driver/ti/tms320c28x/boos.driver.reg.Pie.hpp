@@ -86,7 +86,7 @@ namespace driver
       /**
        * PIE INTx Group.
        */      
-      struct PieGroup
+      struct Group
       {
         /**
          * Enable Register.

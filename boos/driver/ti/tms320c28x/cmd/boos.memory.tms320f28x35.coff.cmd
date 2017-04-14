@@ -51,6 +51,7 @@ SECTIONS
                  ./Debug/boos.driver.Watchdog.obj  (.text)
                  ./Debug/boos.system.Mutex.obj     (.text)
                  ./Debug/boos.system.Semaphore.obj (.text)
+                 ./Debug/boos.system.Thread.obj (.text)                 
                } 
                > FLASHA,  PAGE = 0   
   .cinit     : > FLASHA,  PAGE = 0

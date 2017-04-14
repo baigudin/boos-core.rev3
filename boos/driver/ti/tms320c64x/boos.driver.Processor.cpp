@@ -27,6 +27,16 @@ namespace driver
   }
   
   /**
+   * Returns the processor stack operation type.
+   *
+   * @return the stack operation.     
+   */    
+  ::api::Stack<int64>::Operation Processor::stackType()
+  {
+    return ::api::Stack<int64>::ED;
+  }
+  
+  /**
    * Initializes the driver.
    *
    * @param config a target processor configuration.

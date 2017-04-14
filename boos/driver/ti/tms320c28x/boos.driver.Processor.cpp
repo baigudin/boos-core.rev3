@@ -33,7 +33,7 @@ namespace driver
    */    
   ::api::Stack<int64>::Operation Processor::stackType()
   {
-    return ::api::Stack<int64>::FD;
+    return ::api::Stack<int64>::FA;
   }
   
   /**

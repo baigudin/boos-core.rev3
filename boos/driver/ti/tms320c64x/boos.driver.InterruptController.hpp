@@ -10,6 +10,7 @@
 #define BOOS_DRIVER_INTERRUPT_CONTROLLER_HPP_
 
 #include "boos.driver.InterruptResource.hpp"
+#include "boos.driver.Processor.hpp"
 #include "boos.driver.Register.hpp"
 #include "boos.driver.reg.Intc.hpp"
 #include "boos.util.Stack.hpp"
@@ -185,7 +186,7 @@ namespace driver
       ctx_->handler = &handler;      
       ctx_->reg = ::driver::Register::create();
       if(ctx_->reg == NULL) return Interrupt::globalEnable(is, false);
-      ctx_->stack = new Stack(Stack::ED, handler.stackSize() >> 3);
+      ctx_->stack = new Stack(::driver::Processor::stackType(), handler.stackSize() >> 3);
       if(ctx_->stack == NULL || !ctx_->stack->isConstructed()) return Interrupt::globalEnable(is, false);
       ctx_->low->reg = ctx_->reg->registers();
       ctx_->low->tos = ctx_->stack->tos();      

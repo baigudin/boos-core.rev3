@@ -9,15 +9,15 @@
         .c28_amode
         
         .ref  _c_int00
-
+        
         .def  _globalDisable__Q2_6driver9InterruptSFv
         .def  _globalEnable__Q2_6driver9InterruptSFb
-        .def  _disableLow__Q2_6driver19InterruptControllerSFUi
-        .def  _enableLow__Q2_6driver19InterruptControllerSFUib
-        .def  _setLow__Q2_6driver19InterruptControllerSFUi
-        .def  _clearLow__Q2_6driver19InterruptControllerSFUi
-        .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
-        .def  _getPieVectors__Q2_6driver19InterruptControllerSFv
+        .def  _disableLow__Q2_6driver19InterruptControllerSFUl
+        .def  _enableLow__Q2_6driver19InterruptControllerSFUlb
+        .def  _setLow__Q2_6driver19InterruptControllerSFUl
+        .def  _clearLow__Q2_6driver19InterruptControllerSFUl
+        .def  _jumpLow__Q2_6driver19InterruptControllerSFUl
+        .def  _getVectorsLow__Q2_6driver19InterruptControllerSFv
        
         .ref  _handler__Q2_6driver19InterruptControllerSFi
         .ref  _contextLow___Q2_6driver19InterruptController
@@ -25,12 +25,12 @@
         .asg  _c_int00,                                           m_bootstrap
         .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
         .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
-        .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
-        .asg  _enableLow__Q2_6driver19InterruptControllerSFUib,   m_enable
-        .asg  _setLow__Q2_6driver19InterruptControllerSFUi,       m_set
-        .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,     m_clear
-        .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,      m_jump
-        .asg  _getPieVectors__Q2_6driver19InterruptControllerSFv, m_get_table
+        .asg  _disableLow__Q2_6driver19InterruptControllerSFUl,   m_disable
+        .asg  _enableLow__Q2_6driver19InterruptControllerSFUlb,   m_enable
+        .asg  _setLow__Q2_6driver19InterruptControllerSFUl,       m_set
+        .asg  _clearLow__Q2_6driver19InterruptControllerSFUl,     m_clear
+        .asg  _jumpLow__Q2_6driver19InterruptControllerSFUl,      m_jump
+        .asg  _getVectorsLow__Q2_6driver19InterruptControllerSFv, m_get_table
         .asg  _handler__Q2_6driver19InterruptControllerSFi,       m_handler
         .asg  _contextLow___Q2_6driver19InterruptController,      v_context
     
@@ -68,10 +68,10 @@ m_ih_n:n:_g:g:
 v_ires:
         reset           
         ; 31 CPU Vectors
-        .eval           0, i
+        .eval           0, n
         .loop           31
-        vector          i, 0
-        .eval           i+1, i
+        vector          n, 0
+        .eval           n+1, n
         .endloop    
         
         ; 12 PIE Groups
@@ -94,10 +94,10 @@ v_ires:
         .text
         
         ; 31 CPU Vector
-        .eval           0, i
+        .eval           0, n
         .loop           31
-        handler         i, 0
-        .eval           i+1, i
+        handler         n, 0
+        .eval           n+1, n
         .endloop 
         
         ; 12 PIE Groups
@@ -160,44 +160,67 @@ m_ret0? lretr
 ; ----------------------------------------------------------------------------
 ; Locks maskable interrupt source.
 ;
-; @param AR4 hardware interrupt vector number.
+; @param AL a register bit mask.
 ; @return AL an interrupt enable source bit in low bit before method was called.
 ; ----------------------------------------------------------------------------
         .text
 m_disable:
-        nop
-        bf              m_disable, unc
+        mov             ar0, acc
+        not             acc
+        mov             ar4, ier
+        and             acc, ar4
+        mov             ier, al 
+        mov             acc, ar0
+        and             acc, ar4
+        cmp             al, #0
+        bf              m_ret1?, eq
+        mov             acc, #1
+m_ret1? lretr        
+
 
 ; ----------------------------------------------------------------------------
 ; Unlocks maskable interrupt source.
 ;
-; @param AR4 hardware interrupt vector number.
-; @param AR5 returned status by m_disable procedure.
+; @param ACC a register bit mask.
+; @param AR4 returned status by m_disable procedure.
 ; ----------------------------------------------------------------------------
         .text
 m_enable:
-        nop
-        bf              m_enable, unc
-   
+        banz            m_set0?, ar4--
+        lretr           
+m_set0? mov             ar4, ier
+        or              acc, ar4
+        mov             ier, al        
+        lretr
+
 ; ----------------------------------------------------------------------------
 ; Sets a maskable interrupt status.
 ;
-; @param AR4 hardware interrupt vector number.
+; @param ACC a register bit mask.
 ; ----------------------------------------------------------------------------
         .text
 m_set:
-        nop
-        bf              m_set, unc
+        push            ifr
+        pop             ar4
+        or              acc, ar4
+        push            al
+        pop             ifr
+        lretr
 
 ; ----------------------------------------------------------------------------
 ; Clears a maskable interrupt status.
 ;
-; @param AR4 hardware interrupt vector number.
+; @param ACC a register bit mask.
 ; ----------------------------------------------------------------------------
         .text
 m_clear:
-        nop
-        bf              m_clear, unc
+        not             acc
+        push            ifr
+        pop             ar4
+        and             acc, ar4
+        push            al
+        pop             ifr
+        lretr
           
 ; ----------------------------------------------------------------------------
 ; Jumps to interrupt HW vector.

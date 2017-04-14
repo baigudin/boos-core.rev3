@@ -10,6 +10,7 @@
 #define BOOS_DRIVER_INTERRUPT_CONTROLLER_HPP_
 
 #include "boos.driver.InterruptResource.hpp"
+#include "boos.driver.Processor.hpp"
 #include "boos.driver.Register.hpp"
 #include "boos.driver.reg.Aintc.hpp"
 #include "boos.util.Stack.hpp"
@@ -256,7 +257,7 @@ namespace driver
         // Stage 2 creates stack
         stage++;
         int32 count = handler.stackSize() >> 3;
-        Stack* stack = new Stack(Stack::FD, count);
+        Stack* stack = new Stack(::driver::Processor::stackType(), count);
         ctx_->stack = stack;
         if(stack == NULL || !stack->isConstructed()) break;                    
         // Stage complete

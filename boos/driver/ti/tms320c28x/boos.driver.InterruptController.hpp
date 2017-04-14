@@ -10,6 +10,7 @@
 #define BOOS_DRIVER_INTERRUPT_CONTROLLER_HPP_
 
 #include "boos.driver.InterruptResource.hpp"
+#include "boos.driver.Processor.hpp"
 #include "boos.driver.Register.hpp"
 #include "boos.driver.reg.Pie.hpp"
 #include "boos.util.Stack.hpp"
@@ -159,6 +160,7 @@ namespace driver
      */
     virtual ~InterruptController()
     {
+      if(ctx_ != NULL) delete ctx_;
     }
     
     /**
@@ -166,7 +168,8 @@ namespace driver
      */      
     virtual void jump()
     {
-      asm(" nop");
+      if(!isAllocated()) return;
+      jumpLow(0xffffffff);    
     }
     
     /**
@@ -174,7 +177,13 @@ namespace driver
      */     
     virtual void clear()
     {
-      asm(" nop");    
+      if(!isAllocated()) return;    
+      bool is = Interrupt::globalDisable();      
+      if(ctx_->pie == NULL)
+        clearLow(ctx_->bitCpu);
+      else
+        ctx_->pie->ifr.val &= ~ctx_->bitPie;
+      return Interrupt::globalEnable(is);
     }
     
     /**
@@ -182,7 +191,13 @@ namespace driver
      */    
     virtual void set()
     {
-      asm(" nop");    
+      if(!isAllocated()) return;
+      bool is = Interrupt::globalDisable();      
+      if(ctx_->pie == NULL)
+        setLow(ctx_->bitCpu);
+      else
+        ctx_->pie->ifr.val |= ctx_->bitPie;
+      return Interrupt::globalEnable(is);
     }  
     
     /**
@@ -192,8 +207,17 @@ namespace driver
      */    
     virtual bool disable()
     {
-      asm(" nop");    
-      return false;
+      if(!isAllocated()) return false;
+      bool res;
+      bool is = Interrupt::globalDisable();      
+      if(ctx_->pie == NULL)
+        res = disableLow(ctx_->bitCpu);
+      else
+      {
+        res = ctx_->pie->ier.val & ctx_->bitPie ? true : false;
+        ctx_->pie->ier.val &= ~ctx_->bitPie;      
+      }
+      return Interrupt::globalEnable(is, res);
     }
     
     /**
@@ -203,7 +227,13 @@ namespace driver
      */
     virtual void enable(bool status)
     {
-      asm(" nop");    
+      if(!isAllocated()) return;
+      bool is = Interrupt::globalDisable();
+      if(ctx_->pie == NULL)
+        enableLow(ctx_->bitCpu, status);
+      else if(status)
+        ctx_->pie->ier.val |= ctx_->bitPie;
+      Interrupt::globalEnable(is);      
     }
     
     /**
@@ -221,7 +251,9 @@ namespace driver
         if( isAllocated() ) break;
         if( not isSource(source) ) break;
         Source src = static_cast<Source>(source);
-        
+        Context* ctx = new Context(handler, src);
+        if(ctx == NULL || not ctx->isConstructed()) break;
+        ctx_ = ctx;
         res = true;
       }while(false);
       return Interrupt::globalEnable(is, res);
@@ -327,12 +359,21 @@ namespace driver
       regPie_ = new (reg::Pie::ADDRESS) reg::Pie();
       // PIE vectors table initialization
       uint32* dst = reinterpret_cast<uint32*>(PIE_ADDR);
-      const uint32* src = getPieVectors();
+      const uint32* src = getVectorsLow();
       Register::allow();
       for(int32 i=0; i<PIE_VETS; i++) dst[i] = src[i];
       Register::protect();
       // Enable vector fetching from PIE vector table
       regPie_->ctrl.bit.enpie = 1;
+      // Set base value
+      for(int32 i=0; i<12; i++)
+      {
+        regPie_->pie[i].ier.val = 0x0000;
+        regPie_->pie[i].ifr.val = 0x0000;
+      }
+      for(int32 i=0; i<16; i++) disableLow(0x1 << i);
+      for(int32 i=0; i<16; i++) clearLow(0x1 << i);
+      for(int32 i=0; i<12; i++) enableLow(0x1 << i, true);
       isInitialized_ = IS_INITIALIZED;      
       return true;
     }
@@ -349,7 +390,44 @@ namespace driver
      *
      * @return vectors table address.
      */
-    static const uint32* getPieVectors();    
+    static const uint32* getVectorsLow();
+    
+    /**
+     * Locks maskable interrupt source.
+     *
+     * @param bit a register bit mask.
+     * @return an interrupt enable source bit in low bit before method was called.
+     */
+    static bool disableLow(uint32 bit);
+    
+    /**
+     * Unlocks maskable interrupt source.
+     *
+     * @param bit a register bit mask.
+     * @param is the returned status by disable method.
+     */
+    static void enableLow(uint32 bit, bool is);
+    
+    /**
+     * Sets a maskable interrupt status.
+     *
+     * @param bit a register bit mask.
+     */    
+    static void setLow(uint32 bit);
+    
+    /**
+     * Clears a maskable interrupt status.
+     *
+     * @param bit a register bit mask.
+     */    
+    static void clearLow(uint32 bit);
+    
+    /**
+     * Jumps to interrupt HW vector.
+     *
+     * @param vn hardware interrupt vector number.
+     */    
+    static void jumpLow(uint32 vn);    
 
     /**
      * Copy constructor.
@@ -394,12 +472,97 @@ namespace driver
     /**
      * Hi level interrupt context.
      */
-    struct Context
+    struct Context : public ::Object<>
     {
-      /**
-       * Number of interrupt vector.
+      typedef ::Object<> Parent;
+      
+    public:
+    
+      /** 
+       * Constructor.
+       *
+       * @param handler pointer to user class which implements an interrupt handler interface.
+       * @param source  available interrupt source.
+       */    
+      Context(::api::Task& hndl, Source src) : Parent(),
+        grpIndex  (((static_cast<int32>(src) & 0x0000000f) >> 0) - 1),
+        numIndex  (((static_cast<int32>(src) & 0x0000fff0) >> 4) - 1),
+        source    (src),
+        handler   (hndl),
+        bitCpu    (0x00000000),
+        bitPie    (0x00000000),
+        pie       (NULL),
+        reg       (NULL),
+        stack     (NULL){
+        setConstruct( construct() );      
+      }
+      
+      /** 
+       * Destructor.
        */
-      int32 number;
+      virtual ~Context()
+      {
+        if(stack != NULL) delete stack;              
+        if(reg != NULL) delete reg;
+      }
+      
+    private:
+      
+      /** 
+       * Constructor.
+       *
+       * @return boolean result.
+       */
+      bool construct()
+      {
+        if( not isConstructed() ) return false;
+        // Set pointer to group
+        ::driver::reg::Pie* regPie = new (reg::Pie::ADDRESS) reg::Pie();
+        // The source is CPU source
+        if(grpIndex < 0)
+        {
+          switch(source)
+          {
+            case CPU_TIMER1_TINT1:
+            {
+              bitCpu = 0x1 << 12;
+            }
+            break;
+            case CPU_TIMER2_TINT2:
+            {
+              bitCpu = 0x1 << 13;
+            }
+            break;
+          }
+        
+        }
+        // The source is PIE source
+        else
+        {
+          pie = &regPie->pie[grpIndex];
+          bitPie = 0x1 << numIndex;
+          bitCpu = 0x1 << grpIndex;
+        }
+        // Create context CPU registers
+        reg = ::driver::Register::create();
+        if(reg == NULL) return false;
+        // Create context stack
+        stack = new Stack(::driver::Processor::stackType(), handler.stackSize() >> 2);
+        if(stack == NULL || not stack->isConstructed()) return false;
+        return true;
+      }
+      
+      /**
+       * Number of PIE group
+       */
+      int32 grpIndex;
+
+      /**
+       * Number of vector in PIE group
+       */
+      int32 numIndex;
+      
+    public:        
     
       /**
        * Interrupt source.
@@ -409,7 +572,22 @@ namespace driver
       /**
        * This user interrupt handler.
        */
-      ::api::Task* handler;
+      ::api::Task& handler;
+      
+      /**
+       * Mask for IER or IFR bit mask.
+       */
+      uint16 bitCpu;
+      
+      /**
+       * Mask for IER or IFR bit mask.
+       */
+      uint16 bitPie;
+
+      /**
+       * Mask for IER or IFR bit mask.
+       */      
+      ::driver::reg::Pie::Group* pie;
     
       /**
        * CPU register state of interrupt source handler.
