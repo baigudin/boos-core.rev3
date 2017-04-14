@@ -230,9 +230,6 @@ namespace system
       tim_.setCount(0);      
       int_.clear();
       global_.enable(true);
-      
-      
-      
       jump();
       global_.disable();    
     }

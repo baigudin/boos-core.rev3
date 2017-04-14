@@ -14,11 +14,8 @@
 
 namespace driver
 {
-  class ProcessorController;
-
   class Timer : public ::api::Timer
   {
-    friend class ::driver::ProcessorController;
   
   public:
   
@@ -74,8 +71,6 @@ namespace driver
      * @return target processor timer interface, or NULL if error has been occurred.
      */
     static ::driver::Timer* create(const ::driver::Timer::Resource res);    
-    
-  private:    
     
     /**
      * Initializes the driver.

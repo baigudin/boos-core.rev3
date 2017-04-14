@@ -383,6 +383,7 @@ namespace driver
      */
     static void deinit()
     {
+      isInitialized_ = 0;
     }
     
     /**

@@ -18,54 +18,8 @@ namespace driver
 {
   class Boot
   {
-    friend class Main;
 
-  private:
-  
-    struct CRecord;
-    struct PRecord;
-    
-    /**
-     * Initialization.
-     *
-     * @return true if no errors.
-     */
-    static bool init();
-
-    /**
-     * Deinitialization.
-     */
-    static void deinit();    
-  
-    /**
-     * Returns the first record adderess.
-     * 
-     * @return memory address of .cinit section or NULL.
-     */
-    static CRecord* getCRecord();
-    
-    /**
-     * Returns the next record adderess.
-     * 
-     * @param record the record address for getting next record after this.
-     * @return memory address of the next record or NULL.
-     */
-    static CRecord* getCRecord(CRecord* record);
-
-    /**
-     * Returns the first record adderess.
-     * 
-     * @return memory address of .pinit section or NULL.
-     */
-    static PRecord* getPRecord();
-    
-    /**
-     * Returns the next record adderess.
-     * 
-     * @param record the record address for getting next record after this.
-     * @return memory address of the next record or NULL.
-     */
-    static PRecord* getPRecord(PRecord* record);
+  public:
   
     /**
      * Initialization record in .cinit section.
@@ -100,6 +54,50 @@ namespace driver
       void (*constructor)();
       
     };
+    
+    /**
+     * Initialization.
+     *
+     * @return true if no errors.
+     */
+    static bool init();
+
+    /**
+     * Deinitialization.
+     */
+    static void deinit(); 
+
+  private:       
+  
+    /**
+     * Returns the first record adderess.
+     * 
+     * @return memory address of .cinit section or NULL.
+     */
+    static CRecord* getCRecord();
+    
+    /**
+     * Returns the next record adderess.
+     * 
+     * @param record the record address for getting next record after this.
+     * @return memory address of the next record or NULL.
+     */
+    static CRecord* getCRecord(CRecord* record);
+
+    /**
+     * Returns the first record adderess.
+     * 
+     * @return memory address of .pinit section or NULL.
+     */
+    static PRecord* getPRecord();
+    
+    /**
+     * Returns the next record adderess.
+     * 
+     * @param record the record address for getting next record after this.
+     * @return memory address of the next record or NULL.
+     */
+    static PRecord* getPRecord(PRecord* record);
 
   };
 }

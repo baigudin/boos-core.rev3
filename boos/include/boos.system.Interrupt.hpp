@@ -21,7 +21,7 @@ namespace system
 
   class Interrupt : public ::Object<>, public ::api::Interrupt
   {
-    friend class Main;
+    friend class ::system::Main;
       
     typedef ::Object<> Parent;
 

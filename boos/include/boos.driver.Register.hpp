@@ -16,11 +16,8 @@
 
 namespace driver
 {
-  class ProcessorController;
-
   class Register : public ::api::Object
   {
-    friend class ::driver::ProcessorController;
     
   public:
     
@@ -65,8 +62,6 @@ namespace driver
      * Protects an access to protected memory mapped CPU registers.
      */    
     static void protect();    
-    
-  private:
     
     /**
      * Initializes the driver.

@@ -101,7 +101,7 @@ namespace driver
        ~Tbctl(){}    
        
         uint16 val;
-        struct Val
+        struct Val 
         {
           // CLKDIV bits
           static const uint16 CLKDIV_1   = 0x0000;  // default on reset 
@@ -160,7 +160,7 @@ namespace driver
        ~Tbsts(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 ctrdir : 1;
           uint16 synci  : 1; 
@@ -179,7 +179,7 @@ namespace driver
        ~Tbphshr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16        : 8;    
           uint16 tbphsh : 8;
@@ -196,7 +196,7 @@ namespace driver
        ~Tbphs(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 tbphs : 16;
         } bit;
@@ -212,7 +212,7 @@ namespace driver
        ~Tbctr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 tbctr : 16;
         } bit;
@@ -228,7 +228,7 @@ namespace driver
        ~Tbprd(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 tbprd: 16;
         } bit;
@@ -250,7 +250,7 @@ namespace driver
        ~Cmpctl(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           // LOADAMODE and LOADBMODE bits
           static const uint16 LOAD_CTR_EQ_ZERO         = 0x0000;
@@ -283,7 +283,7 @@ namespace driver
        ~Cmpahr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16        : 8;
           uint16 cmpahr : 8;      
@@ -300,7 +300,7 @@ namespace driver
        ~Cmp(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 cmp : 16;
         } bit;
@@ -316,7 +316,7 @@ namespace driver
        ~Aqctl(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           // ZRO, PRD, CAU, CAD, CBU, and CBD bits
           static const uint16 DISABLE = 0x0;
@@ -344,7 +344,7 @@ namespace driver
        ~Aqsfrc(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 actsfa : 2;  
           uint16 otsfa  : 1;
@@ -365,7 +365,7 @@ namespace driver
        ~Aqcsfrc(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 csfa : 2;
           uint16 csfb : 2;
@@ -383,7 +383,7 @@ namespace driver
        ~Dbctl(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           // OUT MODE bits
           static const uint16 DISABLE     = 0x0;
@@ -418,7 +418,7 @@ namespace driver
        ~Dbred(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 del : 10;    
           uint16     : 6;
@@ -435,7 +435,7 @@ namespace driver
        ~Dbfed(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 del : 10;    
           uint16     : 6;
@@ -454,7 +454,7 @@ namespace driver
        ~Tzsel(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 cbc1  : 1;
           uint16 cbc2  : 1;
@@ -490,7 +490,7 @@ namespace driver
        ~Tzctl(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 tza : 2;
           uint16 tzb : 2;      
@@ -508,7 +508,7 @@ namespace driver
        ~Tzeint(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16     : 1;
           uint16 cbc : 1;
@@ -529,7 +529,7 @@ namespace driver
        ~Tzflg(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 intb : 1;
           uint16 cbc  : 1;
@@ -550,7 +550,7 @@ namespace driver
        ~Tzclr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 intb : 1;
           uint16 cbc  : 1;
@@ -569,7 +569,7 @@ namespace driver
        ~Tzfrc(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16     : 1;
           uint16 cbc : 1;
@@ -590,7 +590,7 @@ namespace driver
        ~Etsel(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           // OUT MODE bits
           static const uint16 CTR_ZERO  = 0x1;
@@ -620,7 +620,7 @@ namespace driver
        ~Etps(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 intprd  : 2;
           uint16 intcnt  : 2;
@@ -642,7 +642,7 @@ namespace driver
        ~Etflg(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 intb : 1;
           uint16      : 1;
@@ -662,7 +662,7 @@ namespace driver
        ~Etclr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 intb : 1;
           uint16      : 1;
@@ -682,7 +682,7 @@ namespace driver
        ~Etfrc(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 intb : 1;
           uint16      : 1;
@@ -702,7 +702,7 @@ namespace driver
        ~Pcctl(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 chpen   : 1;
           uint16 oshtwth : 4;
@@ -730,7 +730,7 @@ namespace driver
        ~Hrcnfg(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 edgmode : 2;
           uint16 ctlmode : 1;

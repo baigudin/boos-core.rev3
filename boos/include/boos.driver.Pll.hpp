@@ -14,11 +14,8 @@
 
 namespace driver
 {
-  class ProcessorController;
-  
   class Pll : public ::api::Object
   {
-    friend class ::driver::ProcessorController;
   
   public:
   
@@ -33,8 +30,6 @@ namespace driver
      * @return target processor hardware interface, or NULL if error has been occurred.
      */
     static ::driver::Pll* create();    
-    
-  private:    
     
     /**
      * Initializes the driver.

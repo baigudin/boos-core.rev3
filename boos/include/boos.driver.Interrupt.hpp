@@ -16,11 +16,8 @@
 
 namespace driver
 {
-  class ProcessorController;
-
   class Interrupt : public ::api::Interrupt
   {
-    friend class ::driver::ProcessorController;
 
   public:
   
@@ -118,8 +115,6 @@ namespace driver
       globalEnable(status);
       return ret;   
     }    
-    
-  private:    
     
     /**
      * Initializes the driver.

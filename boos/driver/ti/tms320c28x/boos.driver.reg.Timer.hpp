@@ -60,11 +60,11 @@ namespace driver
       union Tim
       {
         Tim(){}
-        Tim(uint16 v){value = v;}          
+        Tim(uint16 v){val = v;}          
        ~Tim(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16 tim: 16;
         } bit;
@@ -76,11 +76,11 @@ namespace driver
       union Timh
       {
         Timh(){}
-        Timh(uint16 v){value = v;}          
+        Timh(uint16 v){val = v;}          
        ~Timh(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16 timh: 16;
         } bit;
@@ -92,11 +92,11 @@ namespace driver
       union Prd
       {
         Prd(){}
-        Prd(uint16 v){value = v;}          
+        Prd(uint16 v){val = v;}          
        ~Prd(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16 prd: 16;
         } bit;
@@ -108,11 +108,11 @@ namespace driver
       union Prdh
       {
         Prdh(){}
-        Prdh(uint16 v){value = v;}          
+        Prdh(uint16 v){val = v;}          
        ~Prdh(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16 prdh: 16;
         } bit;
@@ -124,11 +124,11 @@ namespace driver
       union Tcr
       {
         Tcr(){}
-        Tcr(uint16 v){value = v;}          
+        Tcr(uint16 v){val = v;}          
        ~Tcr(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16      : 4;
           uint16 tss  : 1;
@@ -154,11 +154,11 @@ namespace driver
       union Tpr
       {
         Tpr(){}
-        Tpr(uint16 v){value = v;}          
+        Tpr(uint16 v){val = v;}          
        ~Tpr(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16 tddr : 8;
           uint16 psc  : 8;
@@ -171,11 +171,11 @@ namespace driver
       union Tprh
       {
         Tprh(){}
-        Tprh(uint16 v){value = v;}          
+        Tprh(uint16 v){val = v;}          
        ~Tprh(){}    
 
-        uint16 value;
-        struct 
+        uint16 val;
+        struct Val 
         {
           uint16 tddrh : 8;
           uint16 psch  : 8;

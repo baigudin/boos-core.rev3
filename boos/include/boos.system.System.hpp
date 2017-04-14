@@ -20,7 +20,7 @@ namespace system
   
   class System
   {
-    friend class Main;
+    friend class ::system::Main;
     
   public:
     

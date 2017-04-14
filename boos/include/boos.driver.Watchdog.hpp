@@ -14,11 +14,8 @@
 
 namespace driver
 {
-  class ProcessorController;
-  
   class Watchdog : public ::api::Object
   {
-    friend class ::driver::ProcessorController;
   
   public:
   
@@ -33,8 +30,6 @@ namespace driver
      * @return target processor hardware interface, or NULL if error has been occurred.
      */
     static ::driver::Watchdog* create();    
-    
-  private:    
     
     /**
      * Initializes the driver.

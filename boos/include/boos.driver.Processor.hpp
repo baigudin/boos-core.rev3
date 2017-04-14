@@ -19,7 +19,6 @@ namespace driver
 {
   class Processor : public ::api::Object
   {
-    friend class ::system::Main;    
   
   public:
   
@@ -41,8 +40,6 @@ namespace driver
      * @return the stack operation.     
      */    
     static ::api::Stack<int64>::Operation stackType();
-    
-  private:    
     
     /**
      * Initializes the driver.

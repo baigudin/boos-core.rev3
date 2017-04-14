@@ -36,18 +36,18 @@ namespace system
       // Stage 2 
       stage++;
       if( not ::driver::Processor::init(config) ) break;    
-      // Stage 3 
+      // Stage 3
+      stage++;
+      if( not ::Board::init(config) ) break;
+      // Stage 4 
       stage++;
       if( not ::system::Interrupt::init() ) break;      
-      // Stage 4
-      stage++;
-      if( not ::system::Thread::init() ) break;      
       // Stage 5
       stage++;
-      if( not ::system::System::init() ) break;      
+      if( not ::system::Thread::init() ) break;      
       // Stage 6
       stage++;
-      if( not ::Board::init(config) ) break;      
+      if( not ::system::System::init() ) break;      
       // Stage complete
       stage = -1;
       {
@@ -63,10 +63,10 @@ namespace system
     switch(stage)
     {
       default:
-      case  6: ::Board::deinit();
-      case  5: ::system::System::deinit();
-      case  4: ::system::Thread::deinit();
-      case  3: ::system::Interrupt::deinit();
+      case  6: ::system::System::deinit();
+      case  5: ::system::Thread::deinit();
+      case  4: ::system::Interrupt::deinit();
+      case  3: ::Board::deinit();      
       case  2: ::driver::Processor::deinit();
       case  1: ::Allocator::deinit();      
       case  0: break;
@@ -88,12 +88,12 @@ namespace system
  * 
  * @return error code or zero.
  */   
-//#ifdef BOOS_VENDOR_BOOT
+#ifdef BOOS_VENDOR_BOOT
 int main()
 {
   return ::system::Main::main() & 0x0000ffff;
 }
-//#endif // BOOS_VENDOR_BOOT
+#endif // BOOS_VENDOR_BOOT
 
 /**
  * Pointer to constructed heap memory (no boot).

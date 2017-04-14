@@ -81,18 +81,18 @@ namespace driver
         Pllsts(uint16 v){val = v;}          
        ~Pllsts(){}    
     
-        volatile uint16 val;
+        uint16 val;
         struct Val
         {
-          volatile uint16 plllocks : 1;
-          volatile uint16          : 1;
-          volatile uint16 plloff   : 1;
-          volatile uint16 mclksts  : 1;
-          volatile uint16 mclkclr  : 1;
-          volatile uint16 oscoff   : 1;
-          volatile uint16 mclkoff  : 1;
-          volatile uint16 divsel   : 2;
-          volatile uint16          : 7;
+          uint16 plllocks : 1;
+          uint16          : 1;
+          uint16 plloff   : 1;
+          uint16 mclksts  : 1;
+          uint16 mclkclr  : 1;
+          uint16 oscoff   : 1;
+          uint16 mclkoff  : 1;
+          uint16 divsel   : 2;
+          uint16          : 7;
         } bit;
       } pllsts; 
     
@@ -112,7 +112,7 @@ namespace driver
        ~Hispcp(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 hspclk : 2;
           uint16        : 14;
@@ -129,7 +129,7 @@ namespace driver
        ~Lospcp(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 lspclk : 2;
           uint16        : 14;
@@ -146,7 +146,7 @@ namespace driver
        ~Pclkcr0(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16             : 2;
           uint16 tbclksync   : 1;
@@ -175,7 +175,7 @@ namespace driver
        ~Pclkcr1(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 epwm1enclk : 1;
           uint16 epwm2enclk : 1; 
@@ -205,7 +205,7 @@ namespace driver
        ~Lpmcr0(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 lpm       : 2;
           uint16 qualstdby : 6;
@@ -230,7 +230,7 @@ namespace driver
        ~Pclkcr3(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16                : 8;
           uint16 cputimer0enclk : 1;
@@ -253,7 +253,7 @@ namespace driver
        ~Pllcr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 div : 4;
           uint16     : 12;      
@@ -270,7 +270,7 @@ namespace driver
        ~Scsr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 wdoverride : 1;
           uint16 wdenint    : 1;
@@ -289,7 +289,7 @@ namespace driver
        ~Wdcntr(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 wdcntr : 8;
           uint16        : 8;  
@@ -312,7 +312,7 @@ namespace driver
        ~Wdkey(){}    
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 wdkey : 8;
           uint16       : 8;  
@@ -341,7 +341,7 @@ namespace driver
        
     
         uint16 val;
-        struct Val 
+        struct Val  
         {
           uint16 wdps     : 3;
           uint16 wdchk    : 3;
@@ -367,7 +367,7 @@ namespace driver
        ~Mapcnf(){}    
     
         uint32 val;
-        struct Val 
+        struct Val  
         {
           uint32 mapepwm : 1;
           uint32         : 31;

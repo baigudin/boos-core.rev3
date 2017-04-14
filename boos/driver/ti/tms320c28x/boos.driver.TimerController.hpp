@@ -79,9 +79,9 @@ namespace driver
     {
       if( not isConstructed_ ) return 0;
       uint64 cnt;
-      cnt = regTim_->timh.value;
+      cnt = regTim_->timh.val;
       cnt = cnt << 16;
-      cnt = cnt | regTim_->tim.value;
+      cnt = cnt | regTim_->tim.val;
       return cnt;
     }
     
@@ -94,9 +94,9 @@ namespace driver
     {
       if( not isConstructed_ ) return 0;
       uint64 prd;
-      prd = regTim_->prdh.value;
+      prd = regTim_->prdh.val;
       prd = prd << 16;      
-      prd = prd | regTim_->prd.value;
+      prd = prd | regTim_->prd.val;
       return prd;
     }  
     
@@ -113,9 +113,9 @@ namespace driver
       if(cnt > prd) return;
       bool is = isStarted();
       if(is) stop();
-      regTim_->tim.value = cnt & 0xffff;
+      regTim_->tim.val = cnt & 0xffff;
       cnt = cnt >> 16;       
-      regTim_->timh.value = cnt & 0xffff;
+      regTim_->timh.val = cnt & 0xffff;
       if(is) start();    
     }      
     
@@ -132,9 +132,9 @@ namespace driver
       uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffff;
       bool is = isStarted();
       if(is) stop();
-      regTim_->prd.value = prd & 0xffff;
+      regTim_->prd.val = prd & 0xffff;
       prd = prd >> 16;       
-      regTim_->prdh.value = prd & 0xffff;
+      regTim_->prdh.val = prd & 0xffff;
       if(is) start();
     }
     
