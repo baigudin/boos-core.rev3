@@ -31,110 +31,110 @@ namespace driver
      */
     enum Source 
     {
-      // NOT PIE Vectors
-      GPIO0_INT            = 0x0000,
-      GPIO1_INT            = 0x0010,
-      GPIO2_INT            = 0x0020,
-      GPIO3_INT            = 0x0030,
-      GPIO4_INT            = 0x0040,
-      GPIO5_INT            = 0x0050,
-      GPIO6_INT            = 0x0060,
-      GPIO7_INT            = 0x0070,
-      GPIO8_INT            = 0x0080,
-      GPIO9_INT            = 0x0090,
-      GPIO10_INT           = 0x00a0,
-      GPIO11_INT           = 0x00b0,
-      GPIO12_INT           = 0x00c0,
-      GPIO13_INT           = 0x00d0,
-      GPIO14_INT           = 0x00e0,
-      GPIO15_INT           = 0x00f0,
-      GPIO16_INT           = 0x0100,
-      GPIO17_INT           = 0x0110,
-      GPIO18_INT           = 0x0120,
-      GPIO19_INT           = 0x0130,
-      GPIO20_INT           = 0x0140,
-      GPIO21_INT           = 0x0150,
-      GPIO22_INT           = 0x0160,
-      GPIO23_INT           = 0x0170,
-      GPIO24_INT           = 0x0180,
-      GPIO25_INT           = 0x0190,
-      GPIO26_INT           = 0x01a0,
-      GPIO27_INT           = 0x01b0,
-      GPIO28_INT           = 0x01c0,
-      GPIO29_INT           = 0x01d0,
-      GPIO30_INT           = 0x01e0,
-      GPIO31_INT           = 0x01f0,
-      CPU_TIMER1_TINT1     = 0x0200,
-      CPU_TIMER2_TINT2     = 0x0210,
       // PIE Group 1 Vectors - MUXed into CPU INT1
-      ADC_SEQ1INT          = 0x0011,
-      ADC_SEQ2INT          = 0x0021,
-      XINT1                = 0x0041,
-      XINT2                = 0x0051,
-      ADC_ADCINT           = 0x0061,
-      CPU_TIMER0_TINT0     = 0x0071,
-      LPM_WD_WAKEINT       = 0x0081,
+      ADC_SEQ1INT          = 0x0000,
+      ADC_SEQ2INT          = 0x0010,
+      XINT1                = 0x0030,
+      XINT2                = 0x0040,
+      ADC_ADCINT           = 0x0050,
+      CPU_TIMER0_TINT0     = 0x0060,
+      LPM_WD_WAKEINT       = 0x0070,
       // PIE Group 2 Vectors - MUXed into CPU INT2
-      EPWM1_TZINT          = 0x0012,
-      EPWM2_TZINT          = 0x0022,
-      EPWM3_TZINT          = 0x0032,
-      EPWM4_TZINT          = 0x0042,
-      EPWM5_TZINT          = 0x0052,
-      EPWM6_TZINT          = 0x0062,
+      EPWM1_TZINT          = 0x0001,
+      EPWM2_TZINT          = 0x0011,
+      EPWM3_TZINT          = 0x0021,
+      EPWM4_TZINT          = 0x0031,
+      EPWM5_TZINT          = 0x0041,
+      EPWM6_TZINT          = 0x0051,
       // PIE Group 3 Vectors - MUXed into CPU INT3
-      EPWM1_INT            = 0x0013,
-      EPWM2_INT            = 0x0023,
-      EPWM3_INT            = 0x0033,
-      EPWM4_INT            = 0x0043,
-      EPWM5_INT            = 0x0053,
-      EPWM6_INT            = 0x0063,     
+      EPWM1_INT            = 0x0002,
+      EPWM2_INT            = 0x0012,
+      EPWM3_INT            = 0x0022,
+      EPWM4_INT            = 0x0032,
+      EPWM5_INT            = 0x0042,
+      EPWM6_INT            = 0x0052,     
       // PIE Group 4 Vectors - MUXed into CPU INT4
-      ECAP1_INT            = 0x0014,
-      ECAP2_INT            = 0x0024,
-      ECAP3_INT            = 0x0034,
-      ECAP4_INT            = 0x0044,
-      ECAP5_INT            = 0x0054,
-      ECAP6_INT            = 0x0064,
+      ECAP1_INT            = 0x0003,
+      ECAP2_INT            = 0x0013,
+      ECAP3_INT            = 0x0023,
+      ECAP4_INT            = 0x0033,
+      ECAP5_INT            = 0x0043,
+      ECAP6_INT            = 0x0053,
       // PIE Group 5 Vectors - MUXed into CPU INT5
-      EQEP1_INT            = 0x0015,
-      EQEP2_INT            = 0x0025,
+      EQEP1_INT            = 0x0004,
+      EQEP2_INT            = 0x0014,
       // PIE Group 6 Vectors - MUXed into CPU INT6
-      SPI_A_SPIRXINTA      = 0x0016,
-      SPI_A_SPITXINTA      = 0x0026,
-      McBSP_B_MRINTB       = 0x0036,
-      McBSP_B_SPI_B_MXINTB = 0x0046,
-      McBSP_A_MRINTA       = 0x0056,
-      McBSP_A_MXINTA       = 0x0066,
+      SPI_A_SPIRXINTA      = 0x0005,
+      SPI_A_SPITXINTA      = 0x0015,
+      McBSP_B_MRINTB       = 0x0025,
+      McBSP_B_SPI_B_MXINTB = 0x0035,
+      McBSP_A_MRINTA       = 0x0045,
+      McBSP_A_MXINTA       = 0x0055,
       // PIE Group 7 Vectors - MUXed into CPU INT7
-      DMA_CHANNEL1_DINTCH1 = 0x0017, 
-      DMA_CHANNEL2_DINTCH2 = 0x0027, 
-      DMA_CHANNEL3_DINTCH3 = 0x0037, 
-      DMA_CHANNEL4_DINTCH4 = 0x0047, 
-      DMA_CHANNEL5_DINTCH5 = 0x0057, 
-      DMA_CHANNEL6_DINTCH6 = 0x0067,
+      DMA_CHANNEL1_DINTCH1 = 0x0006, 
+      DMA_CHANNEL2_DINTCH2 = 0x0016, 
+      DMA_CHANNEL3_DINTCH3 = 0x0026, 
+      DMA_CHANNEL4_DINTCH4 = 0x0036, 
+      DMA_CHANNEL5_DINTCH5 = 0x0046, 
+      DMA_CHANNEL6_DINTCH6 = 0x0056,
       // PIE Group 8 Vectors - MUXed into CPU INT8
-      I2C_A_I2CINT1A       = 0x0018,  
-      I2C_A_I2CINT2A       = 0x0028,
-      SCI_C_SCIRXINTC      = 0x0058,
-      SCI_C_SCITXINTC      = 0x0068,
+      I2C_A_I2CINT1A       = 0x0007,  
+      I2C_A_I2CINT2A       = 0x0017,
+      SCI_C_SCIRXINTC      = 0x0047,
+      SCI_C_SCITXINTC      = 0x0057,
       // PIE Group 9 Vectors - MUXed into CPU INT9
-      SCI_A_SCIRXINTA      = 0x0019,
-      SCI_A_SCITXINTA      = 0x0029,
-      SCI_B_SCIRXINTB      = 0x0039,
-      SCI_B_SCITXINTB      = 0x0049,
-      ECAN_A_ECAN0INTA     = 0x0059,
-      ECAN_A_ECAN1INTA     = 0x0069,
-      ECAN_B_ECAN0INTB     = 0x0079,
-      ECAN_B_ECAN1INTB     = 0x0089,
+      SCI_A_SCIRXINTA      = 0x0008,
+      SCI_A_SCITXINTA      = 0x0018,
+      SCI_B_SCIRXINTB      = 0x0028,
+      SCI_B_SCITXINTB      = 0x0038,
+      ECAN_A_ECAN0INTA     = 0x0048,
+      ECAN_A_ECAN1INTA     = 0x0058,
+      ECAN_B_ECAN0INTB     = 0x0068,
+      ECAN_B_ECAN1INTB     = 0x0078,
       // PIE Group 12 Vectors - Muxed into CPU INT12
-      XINT3                = 0x001c,
-      XINT4                = 0x002c,
-      XINT5                = 0x003c,
-      XINT6                = 0x004c,
-      XINT7                = 0x005c,
-      FPU_LVF              = 0x007c,
-      FPU_LUF              = 0x008c
-    };    
+      XINT3                = 0x000b,
+      XINT4                = 0x001b,
+      XINT5                = 0x002b,
+      XINT6                = 0x003b,
+      XINT7                = 0x004b,
+      FPU_LVF              = 0x006b,
+      FPU_LUF              = 0x007b,
+      // CPU Sources
+      GPIO0_INT            = 0x000c,
+      GPIO1_INT            = 0x001c,
+      GPIO2_INT            = 0x002c,
+      GPIO3_INT            = 0x003c,
+      GPIO4_INT            = 0x004c,
+      GPIO5_INT            = 0x005c,
+      GPIO6_INT            = 0x006c,
+      GPIO7_INT            = 0x007c,
+      GPIO8_INT            = 0x008c,
+      GPIO9_INT            = 0x009c,
+      GPIO10_INT           = 0x00ac,
+      GPIO11_INT           = 0x00bc,
+      GPIO12_INT           = 0x00cc,
+      GPIO13_INT           = 0x00dc,
+      GPIO14_INT           = 0x00ec,
+      GPIO15_INT           = 0x00fc,
+      GPIO16_INT           = 0x010c,
+      GPIO17_INT           = 0x011c,
+      GPIO18_INT           = 0x012c,
+      GPIO19_INT           = 0x013c,
+      GPIO20_INT           = 0x014c,
+      GPIO21_INT           = 0x015c,
+      GPIO22_INT           = 0x016c,
+      GPIO23_INT           = 0x017c,
+      GPIO24_INT           = 0x018c,
+      GPIO25_INT           = 0x019c,
+      GPIO26_INT           = 0x01ac,
+      GPIO27_INT           = 0x01bc,
+      GPIO28_INT           = 0x01cc,
+      GPIO29_INT           = 0x01dc,
+      GPIO30_INT           = 0x01ec,
+      GPIO31_INT           = 0x01fc,
+      CPU_TIMER1_TINT1     = 0x020c,
+      CPU_TIMER2_TINT2     = 0x021c
+    };
   
     /** 
      * Constructor.
@@ -254,6 +254,7 @@ namespace driver
         Context* ctx = new Context(handler, src);
         if(ctx == NULL || not ctx->isConstructed()) break;
         ctx_ = ctx;
+        table_.ctx[ctx_->grp][ctx_->num] = ctx_;
         res = true;
       }while(false);
       return Interrupt::globalEnable(is, res);
@@ -333,7 +334,7 @@ namespace driver
       } vec = source;
       if(vec.bit.grp > 0xc) return false;
       // CPU interrupt vector 
-      if(vec.bit.grp == 0x0)
+      if(vec.bit.grp > 0xb)
       {
         // Drop GPIO interrupt sources
         if(vec.bit.num < 0x20) return false;
@@ -341,7 +342,7 @@ namespace driver
       // PIE interrupt vector       
       else
       {
-        if(vec.bit.num < 1 || vec.bit.num > 8) return false;      
+        if(vec.bit.num > 7) return false;      
       }
       return true;      
     }
@@ -357,11 +358,17 @@ namespace driver
       isInitialized_ = 0;   
       if(config.sourceClock == 0) return false;
       regPie_ = new (reg::Pie::ADDRESS) reg::Pie();
-      // PIE vectors table initialization
-      uint32* dst = reinterpret_cast<uint32*>(PIE_ADDR);
+      // Init context table
+      for(int32 g=0; g<12; g++)
+         for(int32 n=0; n<8; n++)
+           table_.ctx[g][n] = NULL;
+      for(int32 n=0; n<32; n++)           
+         table_.ctx[12][n] = NULL;           
+      // CPU and PIE vectors table initialization
+      uint32* dst = reinterpret_cast<uint32*>(CPU_PIE_ADDR);
       const uint32* src = getVectorsLow();
       Register::allow();
-      for(int32 i=0; i<PIE_VETS; i++) dst[i] = src[i];
+      for(int32 i=0; i<CPU_PIE_VETS; i++) dst[i] = src[i];
       Register::protect();
       // Enable vector fetching from PIE vector table
       regPie_->ctrl.bit.enpie = 1;
@@ -374,7 +381,7 @@ namespace driver
       for(int32 i=0; i<16; i++) disableLow(0x1 << i);
       for(int32 i=0; i<16; i++) clearLow(0x1 << i);
       for(int32 i=0; i<12; i++) enableLow(0x1 << i, true);
-      isInitialized_ = IS_INITIALIZED;      
+      isInitialized_ = IS_INITIALIZED;
       return true;
     }
     
@@ -385,6 +392,14 @@ namespace driver
     {
       isInitialized_ = 0;
     }
+    
+    /**
+     * HW interrupt handle routing.
+     *
+     * @param num index of HW interrupt vector
+     * @param grp index of HW interrupt vectors group
+     */  
+    static void handler(register int16 num, register int16 grp);
     
     /**
      * Returns address of PIE vectors table copy.
@@ -446,31 +461,6 @@ namespace driver
     InterruptController& operator =(const InterruptController& obj);
     
     /**
-     * The driver initialized falg value.
-     */
-    static const int32 IS_INITIALIZED = 0x98753af7;
-
-    /**
-     * PIE 32-bit vectors number.
-     */    
-    static const int32 PIE_VETS = 0x0000080;
-
-    /**
-     * PIE vectors address.
-     */
-    static const uint32 PIE_ADDR = 0x00000d00;
-    
-    /**
-     * Peripheral Interrupt Expansion (no boot).
-     */  
-    static reg::Pie* regPie_;
-    
-    /**
-     * Driver has been initialized successfully (no boot).
-     */
-    static int32 isInitialized_;
-    
-    /**
      * Hi level interrupt context.
      */
     struct Context : public ::Object<>
@@ -486,8 +476,8 @@ namespace driver
        * @param source  available interrupt source.
        */    
       Context(::api::Task& hndl, Source src) : Parent(),
-        grpIndex  (((static_cast<int32>(src) & 0x0000000f) >> 0) - 1),
-        numIndex  (((static_cast<int32>(src) & 0x0000fff0) >> 4) - 1),
+        grp       ((static_cast<int32>(src) & 0x0000000f) >> 0),
+        num       ((static_cast<int32>(src) & 0x00000ff0) >> 4),
         source    (src),
         handler   (hndl),
         bitCpu    (0x00000000),
@@ -520,29 +510,22 @@ namespace driver
         // Set pointer to group
         ::driver::reg::Pie* regPie = new (reg::Pie::ADDRESS) reg::Pie();
         // The source is CPU source
-        if(grpIndex < 0)
+        if(grp == 12)
         {
           switch(source)
           {
-            case CPU_TIMER1_TINT1:
-            {
-              bitCpu = 0x1 << 12;
-            }
-            break;
-            case CPU_TIMER2_TINT2:
-            {
-              bitCpu = 0x1 << 13;
-            }
-            break;
+            case CPU_TIMER1_TINT1: num = 12; break;
+            case CPU_TIMER2_TINT2: num = 13; break;
+            default: return false;
           }
-        
+          bitCpu = 0x1 << num;          
         }
         // The source is PIE source
         else
         {
-          pie = &regPie->pie[grpIndex];
-          bitPie = 0x1 << numIndex;
-          bitCpu = 0x1 << grpIndex;
+          pie = &regPie->pie[grp];
+          bitPie = 0x1 << num;
+          bitCpu = 0x1 << grp;
         }
         // Create context CPU registers
         reg = ::driver::Register::create();
@@ -552,19 +535,19 @@ namespace driver
         if(stack == NULL || not stack->isConstructed()) return false;
         return true;
       }
-      
+
+    public:  
+          
       /**
-       * Number of PIE group
+       * Index of CPU or PIE group
        */
-      int32 grpIndex;
+      int32 grp;
 
       /**
-       * Number of vector in PIE group
+       * Index of vector in CPU or PIE group
        */
-      int32 numIndex;
+      int32 num;
       
-    public:        
-    
       /**
        * Interrupt source.
        */
@@ -602,12 +585,74 @@ namespace driver
 
     };
     
+    struct Contexts
+    {
+    
+    public:
+    
+      /**
+       * 11 x 8 PIE contexts and 8 CPU contexts.
+       */         
+      Context* ctx[13][8];
+      
+    private:
+    
+      /**
+       *  24 CPU contexts added.
+       */
+      Context* ctx_[24];
+            
+    };
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x98753af7;
+
+    /**
+     * PIE 32-bit vectors number.
+     */    
+    static const int32 CPU_PIE_VETS = 0x0000080;
+
+    /**
+     * PIE vectors address.
+     */
+    static const uint32 CPU_PIE_ADDR = 0x00000d00;
+    
+    /**
+     * Peripheral Interrupt Expansion (no boot).
+     */  
+    static reg::Pie* regPie_;
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;
+    
+    /**
+     * The interrupt source contexs table (no boot).
+     */    
+    static Contexts table_;
+    
     /**
      * The interrupt source contex.
      */    
     Context* ctx_;
-
+    
   };
+  
+  /**
+   * HW interrupt handle routing.
+   *
+   * @param num index of HW interrupt vector
+   * @param grp index of HW interrupt vectors group
+   */  
+  void InterruptController::handler(int16 num, int16 grp)
+  {
+    Context* ctx = table_.ctx[grp][num];
+    if(ctx == NULL) return;
+    ctx->handler.main();
+  }    
   
   /**
    * System Control Registers (no boot).
@@ -618,6 +663,11 @@ namespace driver
    * Driver has been initialized successfully (no boot).
    */
   int32 InterruptController::isInitialized_;
+  
+  /**
+   * The interrupt source contexs table (no boot).
+   */
+  InterruptController::Contexts InterruptController::table_;  
   
 }
 #endif // BOOS_DRIVER_INTERRUPT_CONTROLLER_HPP_

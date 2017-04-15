@@ -30,9 +30,9 @@ namespace driver
      */
     enum InterruptSource
     {
-      CPU_TIMER0_TINT0     = 0x0071,    
-      CPU_TIMER1_TINT1     = 0x0200,
-      CPU_TIMER2_TINT2     = 0x0210
+      CPU_TIMER0_TINT0     = 0x0060,    
+      CPU_TIMER1_TINT1     = 0x020c,
+      CPU_TIMER2_TINT2     = 0x021c
     }; 
     
     /** 

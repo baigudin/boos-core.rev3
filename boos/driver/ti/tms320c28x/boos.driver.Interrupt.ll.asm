@@ -19,7 +19,7 @@
         .def  _jumpLow__Q2_6driver19InterruptControllerSFUl
         .def  _getVectorsLow__Q2_6driver19InterruptControllerSFv
        
-        .ref  _handler__Q2_6driver19InterruptControllerSFi
+        .ref  _handler__Q2_6driver19InterruptControllerSFiT1
         .ref  _contextLow___Q2_6driver19InterruptController
 
         .asg  _c_int00,                                           m_bootstrap
@@ -31,7 +31,7 @@
         .asg  _clearLow__Q2_6driver19InterruptControllerSFUl,     m_clear
         .asg  _jumpLow__Q2_6driver19InterruptControllerSFUl,      m_jump
         .asg  _getVectorsLow__Q2_6driver19InterruptControllerSFv, m_get_table
-        .asg  _handler__Q2_6driver19InterruptControllerSFi,       m_handler
+        .asg  _handler__Q2_6driver19InterruptControllerSFiT1,     m_handler
         .asg  _contextLow___Q2_6driver19InterruptController,      v_context
     
 ; ----------------------------------------------------------------------------
@@ -52,8 +52,8 @@ v_ih_n:n:_g:g:
 ; ----------------------------------------------------------------------------
 handler .macro          n, g
 m_ih_n:n:_g:g:
-        movb            xar0, #:g:
-        movb            xar1, #:n:
+        movb            al,   #:g:
+        movb            xar4, #:n:
         bf              m_isr, unc
         .endm
         
@@ -68,14 +68,14 @@ m_ih_n:n:_g:g:
 v_ires:
         reset           
         ; 31 CPU Vectors
-        .eval           0, n
+        .eval           1, n
         .loop           31
-        vector          n, 0
+        vector          n, 12
         .eval           n+1, n
         .endloop    
         
         ; 12 PIE Groups
-        .eval           1, g
+        .eval           0, g
         .loop           12
 
         ; 8 PIE Group Vectors
@@ -94,14 +94,14 @@ v_ires:
         .text
         
         ; 31 CPU Vector
-        .eval           0, n
+        .eval           1, n
         .loop           31
-        handler         n, 0
+        handler         n, 12
         .eval           n+1, n
         .endloop 
         
         ; 12 PIE Groups
-        .eval           1, g
+        .eval           0, g
         .loop           12
 
         ; 8 PIE Group Vectors
@@ -119,8 +119,27 @@ v_ires:
 ; ----------------------------------------------------------------------------
         .text
 m_isr:
-        nop
-        bf              m_isr, unc
+        ; Full context save
+        push            ar1h:ar0h ; 32-bit
+        push            xar2      ; 32-bit
+        push            xar3      ; 32-bit
+        push            xar4      ; 32-bit
+        push            xar5      ; 32-bit
+        push            xar6      ; 32-bit
+        push            xar7      ; 32-bit
+        push            xt        ; 32-bit
+        ; Call C++ routine
+        lcr            m_handler
+        ; Full context restore
+        pop            xt         ; 32-bit
+        pop            xar7       ; 32-bit
+        pop            xar6       ; 32-bit
+        pop            xar5       ; 32-bit
+        pop            xar4       ; 32-bit
+        pop            xar3       ; 32-bit
+        pop            xar2       ; 32-bit
+        pop            ar1h:ar0h  ; 32-bit
+        iret
 
 ; ----------------------------------------------------------------------------
 ; Returns address of PIE vectors table copy.
@@ -128,8 +147,8 @@ m_isr:
 ; @return ACC vectors table address.
 ; ----------------------------------------------------------------------------       
 m_get_table:
-       movl           xar4, #v_ires  
-       lretr
+        movl            xar4, #v_ires  
+        lretr
 
 ; ----------------------------------------------------------------------------
 ; Disables all maskable interrupts.
