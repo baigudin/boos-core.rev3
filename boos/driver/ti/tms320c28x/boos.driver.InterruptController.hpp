@@ -180,9 +180,9 @@ namespace driver
       if(!isAllocated()) return;    
       bool is = Interrupt::globalDisable();      
       if(ctx_->pie == NULL)
-        clearLow(ctx_->bitCpu);
+        clearLow(ctx_->maskCpuIer);
       else
-        ctx_->pie->ifr.val &= ~ctx_->bitPie;
+        ctx_->pie->ifr.val &= ~ctx_->maskPieIer;
       return Interrupt::globalEnable(is);
     }
     
@@ -194,9 +194,9 @@ namespace driver
       if(!isAllocated()) return;
       bool is = Interrupt::globalDisable();      
       if(ctx_->pie == NULL)
-        setLow(ctx_->bitCpu);
+        setLow(ctx_->maskCpuIer);
       else
-        ctx_->pie->ifr.val |= ctx_->bitPie;
+        ctx_->pie->ifr.val |= ctx_->maskPieIer;
       return Interrupt::globalEnable(is);
     }  
     
@@ -211,11 +211,11 @@ namespace driver
       bool res;
       bool is = Interrupt::globalDisable();      
       if(ctx_->pie == NULL)
-        res = disableLow(ctx_->bitCpu);
+        res = disableLow(ctx_->maskCpuIer);
       else
       {
-        res = ctx_->pie->ier.val & ctx_->bitPie ? true : false;
-        ctx_->pie->ier.val &= ~ctx_->bitPie;      
+        res = ctx_->pie->ier.val & ctx_->maskPieIer ? true : false;
+        ctx_->pie->ier.val &= ~ctx_->maskPieIer;      
       }
       return Interrupt::globalEnable(is, res);
     }
@@ -230,9 +230,9 @@ namespace driver
       if(!isAllocated()) return;
       bool is = Interrupt::globalDisable();
       if(ctx_->pie == NULL)
-        enableLow(ctx_->bitCpu, status);
+        enableLow(ctx_->maskCpuIer, status);
       else if(status)
-        ctx_->pie->ier.val |= ctx_->bitPie;
+        ctx_->pie->ier.val |= ctx_->maskPieIer;
       Interrupt::globalEnable(is);      
     }
     
@@ -476,15 +476,16 @@ namespace driver
        * @param source  available interrupt source.
        */    
       Context(::api::Task& hndl, Source src) : Parent(),
-        grp       ((static_cast<int32>(src) & 0x0000000f) >> 0),
-        num       ((static_cast<int32>(src) & 0x00000ff0) >> 4),
-        source    (src),
-        handler   (hndl),
-        bitCpu    (0x00000000),
-        bitPie    (0x00000000),
-        pie       (NULL),
-        reg       (NULL),
-        stack     (NULL){
+        grp        ((static_cast<int32>(src) & 0x0000000f) >> 0),
+        num        ((static_cast<int32>(src) & 0x00000ff0) >> 4),
+        source     (src),
+        handler    (hndl),
+        maskPieAck (0x00000000),
+        maskPieIer (0x00000000),
+        maskCpuIer (0x00000000),
+        pie        (NULL),
+        reg        (NULL),
+        stack      (NULL){
         setConstruct( construct() );      
       }
       
@@ -518,14 +519,17 @@ namespace driver
             case CPU_TIMER2_TINT2: num = 13; break;
             default: return false;
           }
-          bitCpu = 0x1 << num;          
+          maskPieAck = 0x0;
+          maskPieIer = 0x0;
+          maskCpuIer = 0x1 << num;
         }
         // The source is PIE source
         else
         {
           pie = &regPie->pie[grp];
-          bitPie = 0x1 << num;
-          bitCpu = 0x1 << grp;
+          maskPieAck = 0x1 << grp;
+          maskPieIer = 0x1 << num;
+          maskCpuIer = 0x1 << grp;
         }
         // Create context CPU registers
         reg = ::driver::Register::create();
@@ -559,14 +563,19 @@ namespace driver
       ::api::Task& handler;
       
       /**
-       * Mask for IER or IFR bit mask.
+       * ACK bit mask of PIE.
        */
-      uint16 bitCpu;
+      uint16 maskPieAck;            
       
       /**
-       * Mask for IER or IFR bit mask.
+       * IER or IFR bit mask of PIE.
        */
-      uint16 bitPie;
+      uint16 maskPieIer;
+      
+      /**
+       * IER or IFR bit mask of CPU.
+       */
+      uint16 maskCpuIer;
 
       /**
        * Mask for IER or IFR bit mask.
@@ -652,6 +661,7 @@ namespace driver
     Context* ctx = table_.ctx[g][n];
     if(ctx == NULL) return;
     ctx->handler.main();
+    regPie_->ack.val |= ctx->maskPieAck;
   }    
   
   /**
