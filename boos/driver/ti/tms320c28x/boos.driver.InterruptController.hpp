@@ -396,10 +396,10 @@ namespace driver
     /**
      * HW interrupt handle routing.
      *
-     * @param num index of HW interrupt vector
-     * @param grp index of HW interrupt vectors group
+     * @param n index of HW interrupt vector
+     * @param g index of HW interrupt vectors group
      */  
-    static void handler(register int16 num, register int16 grp);
+    static void handler(register int16 n, register int16 g);
     
     /**
      * Returns address of PIE vectors table copy.
@@ -644,12 +644,12 @@ namespace driver
   /**
    * HW interrupt handle routing.
    *
-   * @param num index of HW interrupt vector
-   * @param grp index of HW interrupt vectors group
+   * @param n index of HW interrupt vector
+   * @param g index of HW interrupt vectors group
    */  
-  void InterruptController::handler(int16 num, int16 grp)
+  void InterruptController::handler(int16 n, int16 g)
   {
-    Context* ctx = table_.ctx[grp][num];
+    Context* ctx = table_.ctx[g][n];
     if(ctx == NULL) return;
     ctx->handler.main();
   }    

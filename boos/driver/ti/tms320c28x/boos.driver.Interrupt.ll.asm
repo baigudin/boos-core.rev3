@@ -21,7 +21,7 @@
        
         .ref  _handler__Q2_6driver19InterruptControllerSFiT1
         .ref  _contextLow___Q2_6driver19InterruptController
-
+        
         .asg  _c_int00,                                           m_bootstrap
         .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
         .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
@@ -52,8 +52,8 @@ v_ih_n:n:_g:g:
 ; ----------------------------------------------------------------------------
 handler .macro          n, g
 m_ih_n:n:_g:g:
-        movb            al,   #:g:
-        movb            xar4, #:n:
+        movb            al, #:n:
+        movb            ah, #:g:
         bf              m_isr, unc
         .endm
         
@@ -120,25 +120,39 @@ v_ires:
         .text
 m_isr:
         ; Full context save
-        push            ar1h:ar0h ; 32-bit
-        push            xar2      ; 32-bit
-        push            xar3      ; 32-bit
-        push            xar4      ; 32-bit
-        push            xar5      ; 32-bit
-        push            xar6      ; 32-bit
-        push            xar7      ; 32-bit
-        push            xt        ; 32-bit
+        asp
+        push            rb
+        push            ar1h:ar0h
+        movl            *sp++, xar4
+        movl            *sp++, xar5
+        movl            *sp++, xar6
+        movl            *sp++, xar7
+        movl            *sp++, xt
+        mov32           *sp++, stf
+        mov32           *sp++, r0h
+        mov32           *sp++, r1h
+        mov32           *sp++, r2h
+        mov32           *sp++, r3h
+        setflg          rndf32=1, rndf64=1
+        spm             0
+        clrc            ovm, page0
+        clrc            amode
         ; Call C++ routine
         lcr            m_handler
-        ; Full context restore
-        pop            xt         ; 32-bit
-        pop            xar7       ; 32-bit
-        pop            xar6       ; 32-bit
-        pop            xar5       ; 32-bit
-        pop            xar4       ; 32-bit
-        pop            xar3       ; 32-bit
-        pop            xar2       ; 32-bit
-        pop            ar1h:ar0h  ; 32-bit
+        ; Full context restore        
+        mov32           r3h,   *--sp,  uncf
+        mov32           r2h,   *--sp,  uncf
+        mov32           r1h,   *--sp,  uncf
+        mov32           r0h,   *--sp,  uncf
+        mov32           stf,   *--sp
+        movl            xt,    *--sp
+        movl            xar7,  *--sp        
+        movl            xar6,  *--sp
+        movl            xar5,  *--sp
+        movl            xar4,  *--sp
+        pop             ar1h:ar0h
+        pop             rb
+        nasp
         iret
 
 ; ----------------------------------------------------------------------------
@@ -248,6 +262,14 @@ m_clear:
 ; ----------------------------------------------------------------------------
         .text
 m_jump:
+        mov             acc, #0AAAAh << #15
+        lsl             acc, #1
+        mov             al,  #0BBBBh
+        push            acc
+        mov             acc, #0CCCCh << #15
+        lsl             acc, #1   
+        mov             al,  #0DDDDh
+m_wait_jump:
         nop
-        bf              m_jump, unc
+        bf              m_wait_jump, unc
         
