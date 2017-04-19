@@ -165,6 +165,7 @@ namespace driver
         default         : return false;
       }
       bool is = Interrupt::globalDisable();
+      if(!isConstructed()) return Interrupt::globalEnable(is, false);      
       if(isAllocated()) return Interrupt::globalEnable(is, false);
       // Test if interrupt source is alloced
       for(int32 i=0; i<NUMBER_VECTORS; i++)

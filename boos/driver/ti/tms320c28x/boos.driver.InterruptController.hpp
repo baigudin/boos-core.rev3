@@ -168,7 +168,7 @@ namespace driver
      */      
     virtual void jump()
     {
-      if(!isAllocated()) return;
+      if( not isAllocated() ) return;
       jumpLow(0xffffffff);    
     }
     
@@ -177,7 +177,7 @@ namespace driver
      */     
     virtual void clear()
     {
-      if(!isAllocated()) return;    
+      if( not isAllocated() ) return;    
       bool is = Interrupt::globalDisable();      
       if(ctx_->pie == NULL)
         clearLow(ctx_->maskCpuIer);
@@ -191,7 +191,7 @@ namespace driver
      */    
     virtual void set()
     {
-      if(!isAllocated()) return;
+      if( not isAllocated() ) return;
       bool is = Interrupt::globalDisable();      
       if(ctx_->pie == NULL)
         setLow(ctx_->maskCpuIer);
@@ -207,7 +207,7 @@ namespace driver
      */    
     virtual bool disable()
     {
-      if(!isAllocated()) return false;
+      if( not isAllocated() ) return false;
       bool res;
       bool is = Interrupt::globalDisable();      
       if(ctx_->pie == NULL)
@@ -227,7 +227,7 @@ namespace driver
      */
     virtual void enable(bool status)
     {
-      if(!isAllocated()) return;
+      if( not isAllocated() ) return;
       bool is = Interrupt::globalDisable();
       if(ctx_->pie == NULL)
         enableLow(ctx_->maskCpuIer, status);
@@ -248,8 +248,9 @@ namespace driver
       bool res = false;
       bool is = Interrupt::globalDisable();
       do{
-        if( isAllocated() ) break;
+        if( not isConstructed_ ) break;
         if( not isSource(source) ) break;
+        if( isAllocated() ) break;        
         Source src = static_cast<Source>(source);
         Context* ctx = new Context(handler, src);
         if(ctx == NULL || not ctx->isConstructed()) break;
