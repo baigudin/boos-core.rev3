@@ -81,7 +81,7 @@ namespace system
  * 2. CPU registers have been set.
  * 3. Run-time initialization has been completed.
  * 4. Global variables have been set.
- * 5. Global constructors have been ñalled.
+ * 5. Global constructors have been called.
  * 
  * @return error code or zero.
  */   
