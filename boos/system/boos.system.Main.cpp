@@ -14,9 +14,6 @@
 #include "boos.Allocator.hpp"
 #include "boos.Board.hpp"
 
-int32 tem_sss0 = 5;
-int32 tem_sss1 = 5;
-
 namespace system
 {
   /**
@@ -99,4 +96,3 @@ int main()
  * Pointer to constructed heap memory (no boot).
  */
 ::api::Heap* ::Allocator::heap_;
-
