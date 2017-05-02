@@ -1,5 +1,5 @@
 ; ----------------------------------------------------------------------------
-; Interrupt low level module
+; Interrupt low level module.
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
 ; @copyright 2017 Sergey Baigudin

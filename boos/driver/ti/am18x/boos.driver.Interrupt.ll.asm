@@ -1,4 +1,6 @@
 ; ----------------------------------------------------------------------------
+; Interrupt low level module.
+;
 ; @author    Sergey Baigudin, sergey@baigudin.software
 ; @copyright 2016-2017 Sergey Baigudin
 ; @license   http://baigudin.software/license/
