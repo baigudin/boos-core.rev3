@@ -1,0 +1,43 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="D:\baigudin\github\baigudin\eoos\projects\eoos.lib.ti.tms320f2833x.coff.ccstudio33\"
+ProjectType=Library
+CPUFamily=TMS320C28XX
+Tool="Archiver"
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\..\source\driver\ti\tms320c28x\driver.Interrupt.cpp"
+Source="..\..\source\driver\ti\tms320c28x\driver.Interrupt.ll.asm"
+Source="..\..\source\driver\ti\tms320c28x\driver.Pll.cpp"
+Source="..\..\source\driver\ti\tms320c28x\driver.Processor.cpp"
+Source="..\..\source\driver\ti\tms320c28x\driver.Register.cpp"
+Source="..\..\source\driver\ti\tms320c28x\driver.Register.ll.asm"
+Source="..\..\source\driver\ti\tms320c28x\driver.Timer.cpp"
+Source="..\..\source\driver\ti\tms320c28x\driver.Watchdog.cpp"
+Source="..\..\source\system\system.Interrupt.cpp"
+Source="..\..\source\system\system.Main.cpp"
+Source="..\..\source\system\system.Mutex.cpp"
+Source="..\..\source\system\system.Semaphore.cpp"
+Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
+Source="..\..\source\system\system.Timer.cpp"
+Source="..\..\source\system\system.TimerInterrupt.cpp"
+
+["Archiver" Settings: "Debug"]
+Options=-r -o"..\..\libraries\eoos.ti.tms320f2833x.coff.debug.lib"
+
+["Archiver" Settings: "Release"]
+Options=-r -o"..\..\libraries\eoos.ti.tms320f2833x.coff.lib"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -d"EOOS_VENDOR_BOOT" -ml -v28 --float_support=fpu32
+
+["Compiler" Settings: "Release"]
+Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
+

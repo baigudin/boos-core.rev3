@@ -1,5 +1,5 @@
-BOOS RT Core - Object-Oriented Real-Time Operating System by Baigudin Software
-------------------------------------------------------------------------------
+EOOS RT Evolution One - Embedded Object Operating System
+--------------------------------------------------------
 The folder content:
  - LIBRARIES directory contains compiled libraries of the kernel and target processor kernels.
  - PROJECTS directory contains projects for easily starting development.

@@ -1,0 +1,53 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="D:\baigudin\github\baigudin\eoos\projects\eoos.exe.ti.am18x.coff.ccstudio33\"
+ProjectType=Executable
+CPUFamily=TMS470R2X
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="Linker"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\..\source\driver\ti\am18x\driver.Boot.cpp"
+Source="..\..\source\driver\ti\am18x\driver.Boot.ll.asm"
+Source="..\..\source\driver\ti\am18x\driver.Interrupt.cpp"
+Source="..\..\source\driver\ti\am18x\driver.Interrupt.ll.asm"
+Source="..\..\source\driver\ti\am18x\driver.Pll.cpp"
+Source="..\..\source\driver\ti\am18x\driver.Processor.cpp"
+Source="..\..\source\driver\ti\am18x\driver.Register.cpp"
+Source="..\..\source\driver\ti\am18x\driver.Timer.cpp"
+Source="..\..\source\system\system.Interrupt.cpp"
+Source="..\..\source\system\system.Main.cpp"
+Source="..\..\source\system\system.Mutex.cpp"
+Source="..\..\source\system\system.Semaphore.cpp"
+Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
+Source="..\..\source\system\system.Timer.cpp"
+Source="..\..\source\system\system.TimerInterrupt.cpp"
+Source="source\Board.cpp"
+Source="source\Configuration.cpp"
+Source="source\Main.cpp"
+Source="source\libraries\rts32e.lib"
+Source="..\..\source\driver\ti\am18x\memory\memory.am18x.coff.cmd"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -me -mv5e --abi=ti_arm9_abi --code_state=32 --coff
+
+["Compiler" Settings: "Release"]
+Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -me -mv5e --abi=ti_arm9_abi --code_state=32 --coff
+
+["Linker" Settings: "Debug"]
+Options=--abi=ti_arm9_abi -c -m".\Debug\eoos.am18x.debug.map" -o".\Debug\eoos.am18x.debug.out" -w -x
+
+["Linker" Settings: "Release"]
+Options=--abi=ti_arm9_abi -c -m".\Release\eoos.am18x.map" -o".\Release\eoos.am18x.out" -w -x
+
+["..\..\source\driver\ti\am18x\memory\memory.am18x.coff.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["..\..\source\driver\ti\am18x\memory\memory.am18x.coff.cmd" Settings: "Release"]
+LinkOrder=1
+
