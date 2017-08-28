@@ -1,5 +1,5 @@
-BOOS RT C++ and ASM source code files by Baigudin Software
-----------------------------------------------------------
+EOOS RT C++ and ASM source code files
+-------------------------------------
 The folder content:
  - INCLUDE directory contains header files of the system.
  - SYSTEM directory contains source files of the operating system.
