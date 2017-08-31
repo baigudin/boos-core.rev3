@@ -1,6 +1,9 @@
 /**
  * System memory configuration for TI TMS320C64x+ DSPs.
  *
+ * This is an example of command linker file which represents 
+ * 1024K internal L2 RAM memory map for TI TMS320C64x+ DSPs.
+ *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
@@ -11,13 +14,13 @@
 MEMORY
 {
   /** Hardware interrupts */
-  HWI        : origin = 0x00900000, len = 0x00000200
+  HWI        : origin = 0x00800000, len = 0x00000200
   /** Programme memory */
-  CODE       : origin = 0x00900200, len = 0x0002fe00
+  CODE       : origin = 0x00800200, len = 0x0007fe00
   /** Heap of TI RTS Library */
-  HEAP       : origin = 0x00930000, len = 0x00001000    
+  HEAP       : origin = 0x00880000, len = 0x00001000    
   /** User heap of OS */
-  MEMORY     : origin = 0x00031000, len = 0x0000f000
+  MEMORY     : origin = 0x00881000, len = 0x0007f000
 }
 
 SECTIONS

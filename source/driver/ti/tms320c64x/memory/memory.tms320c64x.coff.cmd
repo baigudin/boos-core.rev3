@@ -2,7 +2,7 @@
  * System memory configuration for TI TMS320C64x DSPs.
  * 
  * This is an example of command linker file which represents 
- * 256K internal RAM memory map for TI TMS320C64x DSPs.
+ * 256K internal L2 RAM memory map for TI TMS320C64x DSPs.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
