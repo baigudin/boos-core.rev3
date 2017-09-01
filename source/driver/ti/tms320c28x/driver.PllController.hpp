@@ -50,6 +50,7 @@ namespace driver
       sourceClock_ = config.sourceClock;      
       reg::System* regSys = new (reg::System::ADDRESS) reg::System();
       int32 sel = 0x2;
+      // Multiply desired CPU clock by 2, as PLLSTS[DIVSEL] is 2
       int32 mul = ( cpuClock_ * 2 / sourceClock_ ) & 0xffffffff;
       // Output frequency of the PLL (VCOCLK) does not exceed 300 MHz
       if(sourceClock_ * mul > 300000000) return false;

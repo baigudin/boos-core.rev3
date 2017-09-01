@@ -48,6 +48,13 @@ namespace driver
       volatile uint32 count;
       cpuClock_ = config.cpuClock;
       sourceClock_ = config.sourceClock;
+      // SYSREFCLK must be in 400 MHz to 1200 MHz range 
+      if(cpuClock_ < 400000000 || cpuClock_ > 1200000000) return false;
+      uint64 pllm = cpuClock_ / sourceClock_ - 1;
+      if(pllm & ~0x000000000000003f) return false;      
+      // CLKIN cycle time in ns
+      int64 c = 1000000000 / sourceClock_;
+      // Create PLL registers map
       reg::Pllc* regPll = new (reg::Pllc::ADDRESS1) reg::Pllc();
       // Wait 100 us for PLL stabilization 
       count = 100000;
@@ -60,11 +67,25 @@ namespace driver
       while(count) count--;
       // Reset PLL
       regPll->pllctl.bit.pllrst = 1;
-      // Program PLLOUT
+      // Program PREDIV and PLLM
       regPll->prediv.bit.ratio = 0;
-      regPll->prediv.bit.preden  = 1;      
-      regPll->pllm.bit.pllm = 20;
-     
+      regPll->prediv.bit.preden  = 1;
+      regPll->pllm.bit.pllm = pllm & 0x000000000000003f;
+      
+      // Program PLLDIV1n
+      // TODO: SUPPLEMENT SOME SETS WHEN THOSE ARE NEEDED
+      
+      // Wait 128 * C ns for TMS320C645x or min 1000 ns for TMS320C6457 for PLL reset
+      count = 128 * c;
+      if(count < 1000) count = 1000;
+      while(count) count--;
+      // Bring PLL out of reset
+      regPll->pllctl.bit.pllrst = 0;
+      // Wait 2000 * C ms for PLL lock
+      count = 2000 * c;
+      while(count) count--;      
+      // Enable PLL mode
+      regPll->pllctl.bit.pllen = 1;
       return true;
     }
 
