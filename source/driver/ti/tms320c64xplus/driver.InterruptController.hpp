@@ -21,7 +21,7 @@ namespace driver
   {
     friend class ::driver::Interrupt;
   
-    typedef ::driver::InterruptResource     Parent;
+    typedef ::driver::InterruptResource        Parent;
     typedef ::utility::Stack<int64,Allocator>  Stack;
 
   public:
@@ -152,8 +152,6 @@ namespace driver
      */      
     virtual void jump()
     {
-      if(!isAllocated()) return;
-      jumpLow(ctx_->number);    
     }
     
     /**
@@ -161,8 +159,6 @@ namespace driver
      */     
     virtual void clear()
     {
-      if(!isAllocated()) return;    
-      clearLow(ctx_->number);    
     }
     
     /**
@@ -170,8 +166,6 @@ namespace driver
      */    
     virtual void set()
     {
-      if(!isAllocated()) return;
-      setLow(ctx_->number);    
     }  
     
     /**
@@ -181,8 +175,6 @@ namespace driver
      */    
     virtual bool disable()
     {
-      if(!isAllocated()) return false;
-      return disableLow(ctx_->number);
     }
     
     /**
@@ -191,9 +183,7 @@ namespace driver
      * @param status returned status by lock method.
      */
     virtual void enable(bool status)
-    {
-      if(!isAllocated()) return;    
-      enableLow(ctx_->number, status);    
+    { 
     }
     
     /**
@@ -205,61 +195,6 @@ namespace driver
      */      
     virtual bool setHandler(::api::Task& handler, int32 source)
     {
-      Source src;
-      switch(source)
-      {
-        case DSPINT     : src = DSPINT;     break;
-        case TINT0      : src = TINT0;      break;
-        case TINT1      : src = TINT1;      break;
-        case SD_INTA    : src = SD_INTA;    break;
-        case GPINT4     : src = GPINT4;     break;
-        case GPINT5     : src = GPINT5;     break;
-        case GPINT6     : src = GPINT6;     break;
-        case GPINT7     : src = GPINT7;     break;
-        case EDMA_INT   : src = EDMA_INT;   break;
-        case XINT0      : src = XINT0;      break;
-        case RINT0      : src = RINT0;      break;
-        case XINT1      : src = XINT1;      break;
-        case RINT1      : src = RINT1;      break;
-        case GPINT0     : src = GPINT0;     break;
-        case XINT2      : src = XINT2;      break;
-        case RINT2      : src = RINT2;      break;
-        case TINT2      : src = TINT2;      break;
-        case SD_INTB    : src = SD_INTB;    break;
-        case PCI_WAKEUP : src = PCI_WAKEUP; break;
-        case UINT       : src = UINT;       break;
-        default         : return false;
-      }
-      bool is = Interrupt::globalDisable();
-      if(!isConstructed()) return Interrupt::globalEnable(is, false);      
-      if(isAllocated()) return Interrupt::globalEnable(is, false);
-      // Test if interrupt source is alloced
-      for(int32 i=0; i<NUMBER_VECTORS; i++)
-        if(context_[i].source == src) 
-          return Interrupt::globalEnable(is, false); 
-      // Looking for free vector and alloc that if it is found          
-      int32 index = -1;
-      for(int32 i=0; i<NUMBER_VECTORS; i++)
-      {
-        if(context_[i].handler != NULL) continue;
-        index = i;
-        break;
-      }
-      if(index < 0) return Interrupt::globalEnable(is, false);      
-      ctx_ = &context_[index];
-      ctx_->low = &contextLow_[index];
-      ctx_->number = index + 4;      
-      ctx_->source = src;
-      ctx_->handler = &handler;      
-      ctx_->reg = ::driver::Register::create();
-      if(ctx_->reg == NULL) return Interrupt::globalEnable(is, false);
-      ctx_->stack = new Stack(::driver::Processor::stackType(), handler.stackSize() >> 3);
-      if(ctx_->stack == NULL || !ctx_->stack->isConstructed()) return Interrupt::globalEnable(is, false);
-      ctx_->low->reg = ctx_->reg->registers();
-      ctx_->low->tos = ctx_->stack->tos();      
-      if(setMux(src, ctx_->number) == false) return Interrupt::globalEnable(is, false);        
-      risingPolarization();
-      return Interrupt::globalEnable(is, true);
     }
 
     /**
@@ -267,23 +202,6 @@ namespace driver
      */        
     virtual void removeHandler()
     {
-      if(!isAllocated()) return;  
-      bool is = Interrupt::globalDisable();
-      disable();
-      clear();
-      setMux(DSPINT, ctx_->number);
-      ctx_->low->reg = NULL;
-      ctx_->low->tos = NULL;
-      delete ctx_->stack;      
-      ctx_->stack = NULL;
-      delete ctx_->reg;
-      ctx_->reg = NULL;      
-      ctx_->handler = NULL;
-      ctx_->source = DSPINT;      
-      ctx_->number = 0;      
-      ctx_->low = NULL;
-      ctx_ = NULL;
-      Interrupt::globalEnable(is);      
     }
     
     /**
@@ -291,8 +209,6 @@ namespace driver
      */
     virtual void resetRegister()
     {
-      if(!isAllocated()) return;
-      ctx_->low->reg = ctx_->reg->registers();
     }
     
     /**
@@ -302,61 +218,9 @@ namespace driver
      */
     virtual void setRegister(::driver::Register& reg)
     {
-      if(!isAllocated()) return;
-      ctx_->low->reg = reg.registers();
     }
 
   private:
-  
-    /**
-     * Tests if this interrupt source can be polarized.
-     *
-     * @return true if this source is polarizing.
-     */  
-    bool isPolarizing()
-    {
-      if(!isAllocated()) return false;
-      switch(ctx_->source)
-      {
-        default    : return false;
-        case GPINT4:
-        case GPINT5:
-        case GPINT6:
-        case GPINT7: return true;
-      }
-    }
-    
-    /**
-     * Sets a low-to-high transition on an interrupt source.
-     */
-    void risingPolarization()
-    {
-      if(!isAllocated()) return;
-      switch(ctx_->source)
-      {
-        case GPINT4: intc_->extpol.bit.xip4 = 0; break;
-        case GPINT5: intc_->extpol.bit.xip5 = 0; break;
-        case GPINT6: intc_->extpol.bit.xip6 = 0; break;
-        case GPINT7: intc_->extpol.bit.xip7 = 0; break;
-        default: break;
-      }    
-    }
-    
-    /**
-     * Sets a high-to-low transition on an interrupt source.
-     */
-    void fallingPolarization()
-    {
-      if(!isAllocated()) return;
-      switch(ctx_->source)
-      {
-        case GPINT4: intc_->extpol.bit.xip4 = 1; break;
-        case GPINT5: intc_->extpol.bit.xip5 = 1; break;
-        case GPINT6: intc_->extpol.bit.xip6 = 1; break;
-        case GPINT7: intc_->extpol.bit.xip7 = 1; break;
-        default: break;
-      }    
-    }      
     
     /**
      * Initialization.
@@ -366,10 +230,11 @@ namespace driver
      */
     static bool init(const ::Configuration& config)
     {
+      isInitialized_ = 0;    
       config_ = config;
-      intc_ = new (reg::Intc::ADDRESS) reg::Intc();      
-      utility::Memory::memset(context_, 0x0, sizeof(context_));
-      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));    
+      regInt_ = new (reg::Intc::ADDRESS) reg::Intc();
+      
+      isInitialized_ = IS_INITIALIZED; 
       return true;
     }
     
@@ -378,9 +243,7 @@ namespace driver
      */
     static void deinit()
     {
-      intc_ = NULL;
-      utility::Memory::memset(context_, 0x0, sizeof(context_));
-      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));         
+      isInitialized_ = 0;    
     }
     
     /**
@@ -393,36 +256,6 @@ namespace driver
       if(!isConstructed_) return false;
       return ctx_ == NULL ? false : true;
     }      
-    
-    /**
-     * Set MUX register.
-     *
-     * @param source available interrupt source.
-     * @param vn hardware interrupt vector number.
-     * @return true if no error.
-     */    
-    static bool setMux(Source source, int32 vn)
-    {
-      reg::Intc intc = *intc_;
-      switch(vn)
-      {
-        case  4: intc.muxl.bit.intsel4  = source & 0x1f; break;
-        case  5: intc.muxl.bit.intsel5  = source & 0x1f; break;
-        case  6: intc.muxl.bit.intsel6  = source & 0x1f; break;
-        case  7: intc.muxl.bit.intsel7  = source & 0x1f; break;
-        case  8: intc.muxl.bit.intsel8  = source & 0x1f; break;
-        case  9: intc.muxl.bit.intsel9  = source & 0x1f; break;
-        case 10: intc.muxh.bit.intsel10 = source & 0x1f; break;
-        case 11: intc.muxh.bit.intsel11 = source & 0x1f; break;
-        case 12: intc.muxh.bit.intsel12 = source & 0x1f; break;
-        case 13: intc.muxh.bit.intsel13 = source & 0x1f; break;
-        case 14: intc.muxh.bit.intsel14 = source & 0x1f; break;
-        case 15: intc.muxh.bit.intsel15 = source & 0x1f; break;
-        default: return false;
-      }
-      *intc_ = intc;
-      return true;
-    }    
     
     /**
      * HW interrupt handle routing.
@@ -540,6 +373,11 @@ namespace driver
       ContextLow* low;        
 
     };
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x98753af7;    
 
     /**
      * Number of HW interrupt vectors.
@@ -549,7 +387,12 @@ namespace driver
     /**
      * HW interrupt registers (no boot).
      */
-    static reg::Intc* intc_;
+    static reg::Intc* regInt_;
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;
     
     /**
      * Hi level interrupts context table (no boot).
@@ -595,7 +438,12 @@ namespace driver
   /**
    * HW interrupt registers (no boot).
    */
-  reg::Intc* InterruptController::intc_;
+  reg::Intc* InterruptController::regInt_;
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 InterruptController::isInitialized_;  
 
   /**
    * Hi level interrupts context table (no boot).

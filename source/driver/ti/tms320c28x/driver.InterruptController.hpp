@@ -20,7 +20,7 @@ namespace driver
   {
     friend class ::driver::Interrupt;
       
-    typedef ::driver::InterruptResource     Parent;
+    typedef ::driver::InterruptResource        Parent;
     typedef ::utility::Stack<int64,Allocator>  Stack;
 
   public:

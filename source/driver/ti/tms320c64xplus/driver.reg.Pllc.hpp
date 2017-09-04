@@ -19,7 +19,14 @@ namespace driver
 
     public:
     
+      /**
+       * PLL1 Controller (including Reset Controller) Registers .
+       */    
       static const uint32 ADDRESS1 = 0x029A0000;
+      
+      /**
+       * PLL2 Controller Registers.
+       */      
       static const uint32 ADDRESS2 = 0x029C0000;      
       
       /** 
