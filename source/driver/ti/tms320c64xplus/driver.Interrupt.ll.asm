@@ -19,7 +19,7 @@
     
     ; COFF ABI
     .else
-    
+
     .def  _globalDisable__Q2_6driver9InterruptSFv
     .def  _globalEnable__Q2_6driver9InterruptSFb
     .def  _disableLow__Q2_6driver19InterruptControllerSFUi
@@ -27,6 +27,7 @@
     .def  _setLow__Q2_6driver19InterruptControllerSFUi
     .def  _clearLow__Q2_6driver19InterruptControllerSFUi
     .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
+    .def  _initLow__Q2_6driver19InterruptControllerSFv
    
     .ref  ___bss__
     .ref  _handler__Q2_6driver19InterruptControllerSFi
@@ -40,6 +41,7 @@
     .asg  _setLow__Q2_6driver19InterruptControllerSFUi,     m_set
     .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,   m_clear
     .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,    m_jump
+    .asg  _initLow__Q2_6driver19InterruptControllerSFv,     m_init
     .asg  _handler__Q2_6driver19InterruptControllerSFi,     m_handler
     .asg  _contextLow___Q2_6driver19InterruptController,    v_context
 
@@ -101,9 +103,9 @@ handler .macro          num
 ; Hardware interrupts table.
 ; ----------------------------------------------------------------------------
         .sect           ".hwi"
-m_reset:
+m_vectors:
         ; Reset interrupt vector
-        b               m_reset+24
+        b               m_vectors+24
         mvc             csr, b0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
         mvc             b0, csr
@@ -371,10 +373,10 @@ m_jump:
         b               m_jmp?
      || mvc             csr, b0
         and             C_REG_CSR_GIE, b0, a0
-     || mvkl            m_reset, b4
+     || mvkl            m_vectors, b4
         shl             a0, 1, a0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
-     || mvkh            m_reset, b4
+     || mvkh            m_vectors, b4
         or              b0, a0, b0
      || shl             a4, 5, a4
         mvc             b0, csr
@@ -388,3 +390,17 @@ m_jmp?  b               a4
         ; Return point
 m_ret?  b               b3
         nop             5
+        
+        
+; ----------------------------------------------------------------------------
+; Clears a maskable interrupt status.
+;
+; @param A4 hardware interrupt vector number.
+; ----------------------------------------------------------------------------
+m_init:
+        b               b3        
+        mvkl            m_vectors, a0
+        mvkh            m_vectors, a0        
+        mvc             a0, istp        
+        nop             2
+        

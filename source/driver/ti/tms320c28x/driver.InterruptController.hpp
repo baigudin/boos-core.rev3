@@ -629,7 +629,7 @@ namespace driver
     private:
     
       /**
-       *  24 CPU contexts added.
+       * 24 CPU contexts added.
        */
       Context* ctx_[24];
             

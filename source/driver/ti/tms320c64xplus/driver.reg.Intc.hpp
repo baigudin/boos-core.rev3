@@ -23,6 +23,11 @@ namespace driver
        * Memory mapped address.
        */
       static const uint32 ADDRESS = 0x01800000;     
+      
+      /**
+       * Number of interrupt controller event groups.
+       */
+      static const int32 EVENT_GROUPS = 4;
     
       /** 
        * Constructor.
@@ -424,7 +429,7 @@ namespace driver
       /**
        * Event Flag Registers 0-3.
        */
-      Evtflag evtflag[4];
+      Evtflag evtflag[EVENT_GROUPS];
       
     private:
     
@@ -435,7 +440,7 @@ namespace driver
       /**
        * Event Set Registers 0-3.
        */
-      Evtset evtset[4];
+      Evtset evtset[EVENT_GROUPS];
       
     private:
     
@@ -446,7 +451,7 @@ namespace driver
       /**
        * Event Clear Registers 0-3.
        */
-      Evtclr evtclr[4];
+      Evtclr evtclr[EVENT_GROUPS];
       
     private:
     
@@ -457,7 +462,7 @@ namespace driver
       /**
        * Event Mask Registers 0-3.
        */
-      Evtmask evtmask[4];
+      Evtmask evtmask[EVENT_GROUPS];
       
     private:
     
@@ -468,7 +473,7 @@ namespace driver
       /**
        * Masked Event Flag Registers 0-3.
        */
-      Mevtflag mevtflag[4];
+      Mevtflag mevtflag[EVENT_GROUPS];
       
     private:
     
@@ -479,7 +484,7 @@ namespace driver
       /**
        * CPU Exception Combiner Mask Registers 0-3.
        */
-      Expmask expmask[4];
+      Expmask expmask[EVENT_GROUPS];
       
     private:
     
@@ -490,7 +495,7 @@ namespace driver
       /**
        * Masked Exception Flag Registers 0-3.
        */
-      Mexpflag mexpflag[4];
+      Mexpflag mexpflag[EVENT_GROUPS];
       
     private:
     

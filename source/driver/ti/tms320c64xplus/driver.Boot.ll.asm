@@ -49,8 +49,7 @@
         .text
 m_bootstrap:
         ; Set CPU register
-        mvk             0, a0
-        mvc             a0, istp
+        mvk             0, a0        
         mvc             a0, amr
         mvc             a0, irp
         mvc             a0, nrp

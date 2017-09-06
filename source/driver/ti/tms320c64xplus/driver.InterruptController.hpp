@@ -150,6 +150,8 @@ namespace driver
      */      
     virtual void jump()
     {
+      if( not isAllocated() ) return;
+      jumpLow(ctx_->number);    
     }
     
     /**
@@ -157,6 +159,8 @@ namespace driver
      */     
     virtual void clear()
     {
+      if( not isAllocated() ) return;    
+      clearLow(ctx_->number);    
     }
     
     /**
@@ -164,6 +168,8 @@ namespace driver
      */    
     virtual void set()
     {
+      if( not isAllocated() ) return;
+      setLow(ctx_->number);    
     }  
     
     /**
@@ -173,6 +179,8 @@ namespace driver
      */    
     virtual bool disable()
     {
+      if( not isAllocated() ) return false;
+      return disableLow(ctx_->number);
     }
     
     /**
@@ -181,9 +189,11 @@ namespace driver
      * @param status returned status by lock method.
      */
     virtual void enable(bool status)
-    { 
+    {
+      if( not isAllocated() ) return;    
+      enableLow(ctx_->number, status);    
     }
-    
+   
     /**
      * Sets interrupt source handler.
      *
@@ -193,6 +203,7 @@ namespace driver
      */      
     virtual bool setHandler(::api::Task& handler, int32 source)
     {
+      return false;
     }
 
     /**
@@ -207,6 +218,8 @@ namespace driver
      */
     virtual void resetRegister()
     {
+      if( not isAllocated() ) return;
+      ctx_->low->reg = ctx_->reg->registers();    
     }
     
     /**
@@ -216,6 +229,8 @@ namespace driver
      */
     virtual void setRegister(::driver::Register& reg)
     {
+      if( not isAllocated() ) return;
+      ctx_->low->reg = reg.registers();
     }
 
     /**
@@ -229,7 +244,17 @@ namespace driver
       isInitialized_ = 0;    
       config_ = config;
       regInt_ = new (reg::Intc::ADDRESS) reg::Intc();
-      
+      // Init context table      
+      utility::Memory::memset(context_, 0x0, sizeof(context_));
+      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_)); 
+      // Init low-level
+      initLow();
+      // Set base value of registers
+      for(int32 i=0; i<reg::Intc::EVENT_GROUPS; i++)
+      {
+        // Clear all event flag registers
+        regInt_->evtclr[i].value = 0xffffffff;        
+      }
       isInitialized_ = IS_INITIALIZED; 
       return true;
     }
@@ -275,7 +300,7 @@ namespace driver
      */
     bool isAllocated()
     {
-      if(!isConstructed_) return false;
+      if( not isConstructed_ ) return false;
       return ctx_ == NULL ? false : true;
     }      
     
@@ -322,6 +347,11 @@ namespace driver
      * @param vn hardware interrupt vector number.
      */    
     static void jumpLow(uint32 vn);
+    
+    /**
+     * Initializes a low-level.
+     */
+    static void initLow();
 
     /**
      * Copy constructor.
@@ -348,7 +378,7 @@ namespace driver
     struct ContextLow
     {
       /**
-       * DSP A0 for storing and restoring intrrupted program.
+       * DSP A0 for storing and restoring an intrrupted program.
        */
       void* reg;
       
