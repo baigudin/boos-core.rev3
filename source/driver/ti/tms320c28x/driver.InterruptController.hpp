@@ -18,8 +18,6 @@ namespace driver
 {
   class InterruptController : public ::driver::InterruptResource
   {
-    friend class ::driver::Interrupt;
-      
     typedef ::driver::InterruptResource        Parent;
     typedef ::utility::Stack<int64,Allocator>  Stack;
 
@@ -140,7 +138,7 @@ namespace driver
      */    
     InterruptController() : Parent(),
       ctx_ (NULL){
-      setConstruct( true );      
+      setConstruct( construct() );
     }
 
     /** 
@@ -151,7 +149,7 @@ namespace driver
      */     
     InterruptController(::api::Task* handler, int32 source) : Parent(),
       ctx_ (NULL){
-      setConstruct( setHandler(*handler, source) );      
+      setConstruct( construct(*handler, source) );
     }
 
     /** 
@@ -297,7 +295,77 @@ namespace driver
      */
     static void globalEnable(bool status);
     
+    /**
+     * Initialization.
+     *
+     * @param config the operating system configuration.
+     * @return true if no errors.
+     */
+    static bool init(const Configuration& config)
+    {
+      isInitialized_ = 0;   
+      if(config.sourceClock == 0) return false;
+      regPie_ = new (reg::Pie::ADDRESS) reg::Pie();
+      // Init context table
+      for(int32 g=0; g<12; g++)
+         for(int32 n=0; n<8; n++)
+           table_.ctx[g][n] = NULL;
+      for(int32 n=0; n<32; n++)           
+         table_.ctx[12][n] = NULL;           
+      // CPU and PIE vectors table initialization
+      uint32* dst = reinterpret_cast<uint32*>(CPU_PIE_ADDR);
+      const uint32* src = getVectorsLow();
+      Register::allow();
+      for(int32 i=0; i<CPU_PIE_VETS; i++) dst[i] = src[i];
+      Register::protect();
+      // Enable vector fetching from PIE vector table
+      regPie_->ctrl.bit.enpie = 1;
+      // Set base value
+      for(int32 i=0; i<12; i++)
+      {
+        regPie_->pie[i].ier.val = 0x0000;
+        regPie_->pie[i].ifr.val = 0x0000;
+      }
+      for(int32 i=0; i<16; i++) disableLow(0x1 << i);
+      for(int32 i=0; i<16; i++) clearLow(0x1 << i);
+      for(int32 i=0; i<12; i++) enableLow(0x1 << i, true);
+      isInitialized_ = IS_INITIALIZED;
+      return true;
+    }
+    
+    /**
+     * Deinitialization.
+     */
+    static void deinit()
+    {
+      isInitialized_ = 0;
+    }    
+    
   private:
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
+    }
+    
+    /** 
+     * Constructs the object.
+     *
+     * @param handler user class which implements an interrupt handler interface.
+     * @param source  available interrupt source.     
+     * @return true if object has been constructed successfully.
+     */
+    bool construct(::api::Task& handler, int32 source)
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return setHandler(handler, source);
+    }  
   
     /**
      * Current object has HW interrupt.
@@ -345,52 +413,6 @@ namespace driver
         if(vec.bit.num > 7) return false;      
       }
       return true;      
-    }
-    
-    /**
-     * Initialization.
-     *
-     * @param config the operating system configuration.
-     * @return true if no errors.
-     */
-    static bool init(const Configuration& config)
-    {
-      isInitialized_ = 0;   
-      if(config.sourceClock == 0) return false;
-      regPie_ = new (reg::Pie::ADDRESS) reg::Pie();
-      // Init context table
-      for(int32 g=0; g<12; g++)
-         for(int32 n=0; n<8; n++)
-           table_.ctx[g][n] = NULL;
-      for(int32 n=0; n<32; n++)           
-         table_.ctx[12][n] = NULL;           
-      // CPU and PIE vectors table initialization
-      uint32* dst = reinterpret_cast<uint32*>(CPU_PIE_ADDR);
-      const uint32* src = getVectorsLow();
-      Register::allow();
-      for(int32 i=0; i<CPU_PIE_VETS; i++) dst[i] = src[i];
-      Register::protect();
-      // Enable vector fetching from PIE vector table
-      regPie_->ctrl.bit.enpie = 1;
-      // Set base value
-      for(int32 i=0; i<12; i++)
-      {
-        regPie_->pie[i].ier.val = 0x0000;
-        regPie_->pie[i].ifr.val = 0x0000;
-      }
-      for(int32 i=0; i<16; i++) disableLow(0x1 << i);
-      for(int32 i=0; i<16; i++) clearLow(0x1 << i);
-      for(int32 i=0; i<12; i++) enableLow(0x1 << i, true);
-      isInitialized_ = IS_INITIALIZED;
-      return true;
-    }
-    
-    /**
-     * Deinitialization.
-     */
-    static void deinit()
-    {
-      isInitialized_ = 0;
     }
     
     /**

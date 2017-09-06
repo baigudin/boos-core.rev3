@@ -18,8 +18,6 @@ namespace driver
 {
   class InterruptController : public ::driver::InterruptResource
   {
-    friend class ::driver::Interrupt;
-      
     typedef ::driver::InterruptResource     Parent;
     typedef ::utility::Stack<int64,Allocator>  Stack;
 
@@ -140,7 +138,7 @@ namespace driver
      */    
     InterruptController() : Parent(),
       ctx_ (NULL){
-      setConstruct( true );      
+      setConstruct( construct() );   
     }
 
     /** 
@@ -151,7 +149,7 @@ namespace driver
      */     
     InterruptController(::api::Task* handler, int32 source) : Parent(),
       ctx_ (NULL){
-      setConstruct( setHandler(*handler, source) );
+      setConstruct( construct(*handler, source) );
     }  
     
     /** 
@@ -339,8 +337,6 @@ namespace driver
      */
     static void globalEnable(bool status);    
     
-  private:    
-
     /**
      * Initialization.
      *
@@ -349,6 +345,7 @@ namespace driver
      */
     static bool init(const Configuration& config)
     {
+      isInitialized_ = 0;        
       config_ = config;
       int32 stage = 0;
       aintc_ = new (reg::Aintc::ADDRESS) reg::Aintc();
@@ -362,10 +359,12 @@ namespace driver
       }while(false);
       switch(stage)
       {
-        case 1: deinitAintc();
+        case  1: deinitAintc();
         default: return false;
-        case 0: return true;
+        case  0: break;
       }
+      isInitialized_ = IS_INITIALIZED;      
+      return true;      
     }
     
     /**
@@ -375,7 +374,34 @@ namespace driver
     {
       deinitAintc();      
       aintc_ = NULL;      
+      isInitialized_ = 0;      
     }
+    
+  private:    
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
+    }
+    
+    /** 
+     * Constructs the object.
+     *
+     * @param handler user class which implements an interrupt handler interface.
+     * @param source  available interrupt source.     
+     * @return true if object has been constructed successfully.
+     */
+    bool construct(::api::Task& handler, int32 source)
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return setHandler(handler, source);
+    }  
     
     /**
      * Current object has HW interrupt.
@@ -384,7 +410,7 @@ namespace driver
      */    
     bool isAllocated()
     {
-      if(!isConstructed_) return false;
+      if(!isConstructed_) return false;     
       return ctx_ == NULL ? false : true;
     }
     
@@ -686,7 +712,12 @@ namespace driver
        */
       Context& operator=(const Context& obj);
 
-    };      
+    };   
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x13545486;           
 
     /**
      * Number of interrupt channals.
@@ -697,6 +728,11 @@ namespace driver
      * Number of interrupt sources.
      */
     static const int32 NUMBER_SOURCES = 101;
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;        
     
     /**
      * ARM Interrupt Controller (no boot).
@@ -755,6 +791,11 @@ namespace driver
     ctx->enable(is);
     #endif     
   } 
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 InterruptController::isInitialized_;  
    
   /**
    * ARM Interrupt Controller (no boot).

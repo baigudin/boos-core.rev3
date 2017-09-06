@@ -18,8 +18,6 @@ namespace driver
 {
   class ProcessorController : public ::driver::ProcessorResource
   {
-    friend class ::driver::Processor;
-      
     typedef ::driver::ProcessorResource  Parent;
     
   public:
@@ -29,6 +27,7 @@ namespace driver
      */     
     ProcessorController() : Parent()
     {
+      setConstruct( construct() );    
     }
     
     /** 
@@ -37,8 +36,6 @@ namespace driver
     virtual ~ProcessorController()
     {
     }  
-  
-  private:  
 
     /**
      * Initialization.
@@ -48,6 +45,7 @@ namespace driver
      */
     static bool init(const ::Configuration& config)
     {
+      isInitialized_ = 0;        
       stage_ = 0;
       // Stage 1 
       stage_++;
@@ -63,6 +61,7 @@ namespace driver
       if( not ::driver::Timer::init(config) ) return false;
       // Stage complete
       stage_ = -1;
+      isInitialized_ = IS_INITIALIZED;            
       return true;
     }
 
@@ -80,7 +79,21 @@ namespace driver
         case  1: ::driver::Pll::deinit();
         case  0: break;
       }
+      isInitialized_ = 0;      
     }
+    
+  private:  
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
+    }    
     
     /**
      * Copy constructor.
@@ -98,11 +111,26 @@ namespace driver
     ProcessorController& operator =(const ProcessorController& obj);
     
     /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x56364763;    
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;        
+    
+    /**
      * The processor internal module initialization stage (no boot).
      */
     static int32 stage_;
     
   };
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 ProcessorController::isInitialized_;    
   
   /**
    * The processor internal module initialization stage (no boot).

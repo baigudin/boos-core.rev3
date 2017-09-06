@@ -24,8 +24,6 @@ namespace driver
 {
   class PllController : public ::driver::PllResource
   {
-    friend class ::driver::Pll;
-      
     typedef ::driver::PllResource Parent;      
     typedef reg::Syscfg0          Syscfg0;
     typedef reg::Syscfg1          Syscfg1;
@@ -37,8 +35,9 @@ namespace driver
     /** 
      * Constructor.
      */     
-    PllController()
+    PllController() : Parent()
     {
+      setConstruct( construct() );    
     }
     
     /** 
@@ -48,8 +47,6 @@ namespace driver
     {
     }  
   
-  private:  
-
     /**
      * Initialization.
      *
@@ -58,13 +55,16 @@ namespace driver
      */
     static bool init(const ::Configuration& config)
     {
+      isInitialized_ = 0;        
       cpuClock_ = config.cpuClock;
       oscin_    = config.sourceClock;      
       syscfg0_  = NULL;
       syscfg1_  = NULL;
       pllc0_    = NULL;
       pllc1_    = NULL;
-      return configure();
+      if( not configure() ) return false;
+      isInitialized_ = IS_INITIALIZED;                  
+      return true;
     }
 
     /**
@@ -72,6 +72,19 @@ namespace driver
      */
     static void deinit()
     {
+    }
+    
+  private:
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
     }
   
     /** 
@@ -237,6 +250,16 @@ namespace driver
     PllController& operator =(const PllController& obj);
     
     /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x23164135;
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;    
+    
+    /**
      * System Configuration Module 0 registers (no boot).
      */ 
     static Syscfg0* syscfg0_;
@@ -267,6 +290,11 @@ namespace driver
     static int64 cpuClock_;
     
   };
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 PllController::isInitialized_;    
   
   /**
    * System Configuration Module 0 registers (no boot).

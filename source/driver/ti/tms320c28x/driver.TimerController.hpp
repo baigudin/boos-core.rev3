@@ -18,8 +18,6 @@ namespace driver
 {
   class TimerController : public ::driver::TimerResource
   {
-    friend class ::driver::Timer;
-    
     typedef ::driver::TimerResource  Parent;
 
   public:
@@ -214,6 +212,43 @@ namespace driver
       return -1;     
     }
     
+    /**
+     * Initialization.
+     *
+     * @param config the operating system configuration.
+     * @return true if no errors.
+     */
+    static bool init(const Configuration& config)
+    {
+      isInitialized_ = 0;      
+      regSys_ = new (reg::System::ADDRESS) reg::System();            
+      sysclk_ = getCpuClock(config.sourceClock);
+      if(sysclk_ <= 0) return false;
+      Register::allow();
+      // Set CPU Timers are not clocked
+      regSys_->pclkcr3.bit.cputimer0enclk = 0;
+      regSys_->pclkcr3.bit.cputimer1enclk = 0;
+      regSys_->pclkcr3.bit.cputimer2enclk = 0;                
+      Register::protect();      
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
+      {
+        uint32 addr = address(i);
+        if(addr == 0) return false;
+        reg::Timer* timer = new (addr) reg::Timer();;
+        lock_[i] = false;      
+      } 
+      isInitialized_ = IS_INITIALIZED;      
+      return true;
+    }
+    
+    /**
+     * Deinitialization.
+     */
+    static void deinit()
+    {
+      isInitialized_ = 0;    
+    }    
+    
   private:
   
     /** 
@@ -264,43 +299,6 @@ namespace driver
     bool isStarted()
     {
       return regTim_->tcr.bit.tss == 1 ? false : true;
-    }
-    
-    /**
-     * Initialization.
-     *
-     * @param config the operating system configuration.
-     * @return true if no errors.
-     */
-    static bool init(const Configuration& config)
-    {
-      isInitialized_ = 0;      
-      regSys_ = new (reg::System::ADDRESS) reg::System();            
-      sysclk_ = getCpuClock(config.sourceClock);
-      if(sysclk_ <= 0) return false;
-      Register::allow();
-      // Set CPU Timers are not clocked
-      regSys_->pclkcr3.bit.cputimer0enclk = 0;
-      regSys_->pclkcr3.bit.cputimer1enclk = 0;
-      regSys_->pclkcr3.bit.cputimer2enclk = 0;                
-      Register::protect();      
-      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
-      {
-        uint32 addr = address(i);
-        if(addr == 0) return false;
-        reg::Timer* timer = new (addr) reg::Timer();;
-        lock_[i] = false;      
-      } 
-      isInitialized_ = IS_INITIALIZED;      
-      return true;
-    }
-    
-    /**
-     * Deinitialization.
-     */
-    static void deinit()
-    {
-      isInitialized_ = 0;    
     }
     
     /** 

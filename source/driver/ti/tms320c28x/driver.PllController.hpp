@@ -16,8 +16,6 @@ namespace driver
 {
   class PllController : public ::driver::PllResource
   {
-    friend class ::driver::Pll;
-      
     typedef ::driver::PllResource Parent;      
     
   public:
@@ -25,8 +23,9 @@ namespace driver
     /** 
      * Constructor.
      */     
-    PllController()
+    PllController() : Parent()
     {
+      setConstruct( construct() );
     }
     
     /** 
@@ -36,8 +35,6 @@ namespace driver
     {
     }  
   
-  private:  
-
     /**
      * Initialization.
      *
@@ -46,6 +43,7 @@ namespace driver
      */
     static bool init(const ::Configuration& config)
     {
+      isInitialized_ = 0;    
       cpuClock_ = config.cpuClock;
       sourceClock_ = config.sourceClock;      
       reg::System* regSys = new (reg::System::ADDRESS) reg::System();
@@ -76,6 +74,7 @@ namespace driver
       // Set divider
       regSys->pllsts.bit.divsel = sel;
       Register::protect();
+      isInitialized_ = IS_INITIALIZED;      
       return true;      
     }
 
@@ -84,6 +83,20 @@ namespace driver
      */
     static void deinit()
     {
+      isInitialized_ = 0;
+    }
+    
+  private:  
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
     }
     
     /**
@@ -102,6 +115,16 @@ namespace driver
     PllController& operator =(const PllController& obj);
     
     /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x95633217;    
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;    
+    
+    /**
      * Reference clock rate in Hz (no boot).
      */      
     static int64 sourceClock_;
@@ -112,6 +135,11 @@ namespace driver
     static int64 cpuClock_;
     
   };
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 PllController::isInitialized_;  
   
   /**
    * Reference clock rate in Hz (no boot).

@@ -19,8 +19,6 @@ namespace driver
 {
   class InterruptController : public ::driver::InterruptResource
   {
-    friend class ::driver::Interrupt;
-  
     typedef ::driver::InterruptResource        Parent;
     typedef ::utility::Stack<int64,Allocator>  Stack;
 
@@ -125,7 +123,7 @@ namespace driver
      */    
     InterruptController() : Parent(),
       ctx_ (NULL){
-      setConstruct( true );
+      setConstruct( construct() );
     } 
 
     /** 
@@ -136,7 +134,7 @@ namespace driver
      */     
     InterruptController(::api::Task* handler, int32 source) : Parent(),
       ctx_ (NULL){
-      setConstruct( setHandler(*handler, source) );
+      setConstruct( construct(*handler, source) );
     }
     
     /** 
@@ -220,8 +218,6 @@ namespace driver
     {
     }
 
-  private:
-    
     /**
      * Initialization.
      *
@@ -245,6 +241,32 @@ namespace driver
     {
       isInitialized_ = 0;    
     }
+    
+  private:   
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
+    }
+    
+    /** 
+     * Constructs the object.
+     *
+     * @param handler user class which implements an interrupt handler interface.
+     * @param source  available interrupt source.     
+     * @return true if object has been constructed successfully.
+     */
+    bool construct(::api::Task& handler, int32 source)
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return setHandler(handler, source);
+    }   
     
     /**
      * Current object has HW interrupt.

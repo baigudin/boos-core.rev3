@@ -19,8 +19,6 @@ namespace driver
 {
   class TimerController : public ::driver::TimerResource
   {
-    friend class ::driver::Timer;
-    
     typedef ::driver::TimerResource  Parent;
 
   public:
@@ -288,8 +286,6 @@ namespace driver
       return -1;
     }
     
-  private:
-    
     /**
      * Initialization.
      *
@@ -298,6 +294,7 @@ namespace driver
      */
     static bool init(const Configuration& config)
     {
+      isInitialized_ = 0;        
       config_ = config;    
       reg::Timer* timer;    
       reg::Syscfg0* syscfg0 = new (reg::Syscfg0::ADDRESS) reg::Syscfg0();
@@ -320,6 +317,7 @@ namespace driver
       // Lock the SYSCFG module
       syscfg0->kick0r.bit.kick0 = 0x00000000;
       syscfg0->kick1r.bit.kick1 = 0x00000000;        
+      isInitialized_ = IS_INITIALIZED;            
       return true;
     }
 
@@ -335,7 +333,10 @@ namespace driver
         reg::Timer* reg = new (addr) reg::Timer(); 
         reg->tcr.bit.enamode12 = 0;        
       }
+      isInitialized_ = 0;          
     }
+    
+  private:    
   
     /** 
      * Constructor.
@@ -346,6 +347,7 @@ namespace driver
     bool construct(int32 index)
     {
       if(!isConstructed_) return false;
+      if(isInitialized_ != IS_INITIALIZED) return false;      
       uint32 addr = address(index);
       if(addr == 0) return false;
       bool is = Interrupt::globalDisable();
@@ -421,11 +423,21 @@ namespace driver
      * @return reference to this object.     
      */
     TimerController& operator =(const TimerController& obj);
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x19835472;        
 
     /**
-     * Number of timers .
+     * Number of timers.
      */
     static const int32 RESOURCES_NUMBER = 4;
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;
     
     /**
      * The operating system configuration (no boot).
@@ -448,6 +460,11 @@ namespace driver
     reg::Timer* regTim_;      
     
   };
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 TimerController::isInitialized_;    
   
   /**
    * The operating system configuration (no boot).
