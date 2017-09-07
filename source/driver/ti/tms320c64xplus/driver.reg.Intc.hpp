@@ -1,5 +1,5 @@
 /**
- * TI TMS320c64x+ Interrupt selector registers.
+ * TI TMS320C64x+ Interrupt selector registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017, Embedded Team, Sergey Baigudin

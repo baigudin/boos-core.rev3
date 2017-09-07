@@ -1,11 +1,8 @@
 /**
- * TI TMS320c64x 32-Bit Timer registers.
- *
- * TMS320C6000 DSP 32-Bit Timer Reference Guide
- * Literature Number: SPRU582A
+ * TI TMS320C64x+ 64-Bit Timer registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
+ * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
 #ifndef DRIVER_REG_TIMER_HPP_
@@ -23,50 +20,33 @@ namespace driver
     public:
     
       /**
-       * Memory mapped addresses.
+       * Timer 0 memory mapped address.
        */    
-      static const uint32 ADDRESS0 = 0x01940000;
-      static const uint32 ADDRESS1 = 0x01980000;
-      static const uint32 ADDRESS2 = 0x01ac0000;            
+      static const uint32 ADDRESS0 = 0x02940000;
+      
+      /**
+       * Timer 1 memory mapped address.
+       */          
+      static const uint32 ADDRESS1 = 0x02980000;
     
       /** 
        * Constructor.
        */  
       Timer() :
-        ctl (0),
-        prd (0),
-        cnt (0){
-      }
-      
-      /** 
-       * Copy constructor.
-       *
-       * @param obj reference to source object.
-       */  
-      Timer(const Timer& obj) :
-        ctl (obj.ctl),
-        prd (obj.prd),
-        cnt (obj.cnt){
+        emumgtclkspd (),
+        cntlo        (),
+        cnthi        (),
+        prdlo        (),
+        prdhi        (),
+        tcr          (),
+        tgcr         (),
+        wdtcr        (){
       }
       
       /** 
        * Destructor.
        */    
      ~Timer(){}
-     
-      /**
-       * Assignment operator.
-       *
-       * @param obj reference to source object.
-       * @return reference to this object.       
-       */    
-      Timer& operator =(const Timer& obj)
-      {
-        ctl = obj.ctl;
-        prd = obj.prd;
-        cnt = obj.cnt;
-        return *this;        
-      }
       
       /**
        * Operator new.
@@ -78,130 +58,177 @@ namespace driver
       void* operator new(uint32, uint32 ptr)
       {
         return reinterpret_cast<void*>(ptr);
-      }      
+      } 
+
+    private:
     
+      uint32 space0_[0x1];
+      
+    public:
+      
       /**
-       * Timer Control Register (CTL).
+       * Emulation management and clock speed register.
        */
-      union CTL{
-      
-        CTL() : 
-          value (0){
-        }
-        
-        CTL(uint32 def) : 
-          value (def){
-        }
-    
-        CTL(const CTL& reg) : 
-          value (reg.value){
-        }        
-        
-       ~CTL()
-        {
-          value = 0;
-        }
-        
-        CTL& operator =(const CTL& reg)
-        {
-          value = reg.value;
-          return *this;
-        }
-    
+      union EmumgtClkspd
+      {
+        EmumgtClkspd(){}
+        EmumgtClkspd(uint32 v){value = v;}
+       ~EmumgtClkspd(){}    
+
         uint32 value;
-        // Read only structure for overlaying the memory mapped register
         struct 
         {
-          uint32 func   : 1;
-          uint32 invout : 1;
-          uint32 datout : 1;
-          uint32 datin  : 1;
-          uint32 pwid   : 1;
-          uint32        : 1;
-          uint32 go     : 1;
-          uint32 hld    : 1;
-          uint32 cp     : 1;
-          uint32 clksrc : 1;
-          uint32 invinp : 1;
-          uint32 tstat  : 1;
-          uint32        : 3;
-          uint32 spnd   : 1;
-          uint32        : 16;
+          uint32 free   : 1;
+          uint32 soft   : 1;
+          uint32        : 14;          
+          uint32 clkdiv : 4;
+          uint32        : 12;          
         } bit;
-      } ctl;
+      } emumgtclkspd;
       
-      /**
-       * Timer Period Register (PRD).
-       */      
-      union PRD{
-      
-        PRD() : 
-          value (0){
-        }
-        
-        PRD(uint32 def) : 
-          value (def){
-        }
-        
-        PRD(const PRD& reg) : 
-          value (reg.value){
-        }        
-        
-       ~PRD()
-        {
-          value = 0;
-        }
-        
-        PRD& operator =(const PRD& reg)
-        {
-          value = reg.value;
-          return *this;
-        }         
+    private:
     
-        uint32 value;
-        // Read only structure for overlaying the memory mapped register
-        struct 
-        {
-          uint32 prd   : 32;
-        } bit;
-      } prd;
+      uint32 space1_[0x2];
       
+    public:      
+
       /**
-       * Timer Count Register (CNT).
+       * Counter register low.
        */
-      union CNT{
-      
-        CNT() : 
-          value (0){
-        }
-        
-        CNT(uint32 def) : 
-          value (def){
-        }
-        
-        CNT(const CNT& reg) : 
-          value (reg.value){
-        }        
-        
-       ~CNT()
-        {
-          value = 0;
-        }
-        
-        CNT& operator =(const CNT& reg)
-        {
-          value = reg.value;
-          return *this;
-        }         
-    
-        uint32 value;
-        // Read only structure for overlaying the memory mapped register
+      union Cntlo
+      {
+        Cntlo(){}
+        Cntlo(uint32 v){value = v;}
+       ~Cntlo(){}    
+
+        uint64 value;
         struct 
         {
-          uint32 cnt   : 32;
+          uint32 cnt : 32;
         } bit;
-      } cnt;
-    
+      } cntlo;
+
+      /**
+       * Counter register high.
+       */
+      union Cnthi
+      {
+        Cnthi(){}
+        Cnthi(uint32 v){value = v;}
+       ~Cnthi(){}    
+
+        uint64 value;
+        struct 
+        {
+          uint32 cnt : 32;
+        } bit;
+      } cnthi;
+
+      /**
+       * Period register low.
+       */
+      union Prdlo
+      {
+        Prdlo(){}
+        Prdlo(uint32 v){value = v;}
+       ~Prdlo(){}    
+
+        uint32 value;
+        struct 
+        {
+          uint32 prd : 32;
+        } bit;
+      } prdlo;
+
+      /**
+       * Period register high.
+       */
+      union Prdhi
+      {
+        Prdhi(){}
+        Prdhi(uint32 v){value = v;}
+       ~Prdhi(){}    
+
+        uint32 value;
+        struct 
+        {
+          uint32 prd : 32;
+        } bit;
+      } prdhi;
+
+      /**
+       * Timer control register.
+       */
+      union Tcr
+      {
+        Tcr(){}
+        Tcr(uint32 v){value = v;}
+       ~Tcr(){}    
+
+        uint32 value;
+        struct 
+        {
+          uint32 tstatLo   : 1;
+          uint32 invoutpLo : 1;
+          uint32 invinpLo  : 1;
+          uint32 cpLo      : 1;
+          uint32 pwidLo    : 2;
+          uint32 enamodeLo : 2;
+          uint32 clksrcLo  : 1;
+          uint32 tienLo    : 1;
+          uint32           : 6;
+          uint32 tstatHi   : 1;
+          uint32 invoutpHi : 1;
+          uint32           : 1;
+          uint32 cpHi      : 1;
+          uint32 pwidHi    : 2;
+          uint32 enamodeHi : 2;
+          uint32           : 8;
+        } bit;
+      } tcr;
+
+      /**
+       * Timer global control register.
+       */
+      union Tgcr
+      {
+        Tgcr(){}
+        Tgcr(uint32 v){value = v;}
+       ~Tgcr(){}    
+
+        uint32 value;
+        struct 
+        {
+          uint32 timlors : 1;
+          uint32 timhirs : 1; 
+          uint32 timmode : 2; 
+          uint32         : 4;
+          uint32 pschi   : 4;
+          uint32 tddrhi  : 4;
+          uint32         : 8;
+        } bit;
+      } tgcr;
+
+      /**
+       * Watchdog timer control register.
+       */
+      union Wdtcr
+      {
+        Wdtcr(){}
+        Wdtcr(uint32 v){value = v;}
+       ~Wdtcr(){}    
+
+        uint32 value;
+        struct 
+        {
+          uint32         : 12;
+          uint32 wdiekey : 2;
+          uint32 wden    : 1;
+          uint32 wdflag  : 1;
+          uint32 wdkey   : 16;
+        } bit;
+      } wdtcr;
+
     };    
   }
 }

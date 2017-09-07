@@ -63,13 +63,6 @@ namespace driver
      */    
     virtual ~TimerController()
     {
-      if(!isConstructed_) return;
-      bool is = Interrupt::globalDisable();
-      lock_[index_] = false;
-      stop();
-      regTim_ = NULL;
-      index_ = -1;      
-      Interrupt::globalEnable(is);    
     }
     
     /**
@@ -79,7 +72,7 @@ namespace driver
      */      
     virtual int64 getCount() const
     {
-      return isConstructed_ ? regTim_->cnt.value : 0;
+      return 0;
     }
     
     /**
@@ -89,7 +82,7 @@ namespace driver
      */      
     virtual int64 getPeriod() const
     {
-      return isConstructed_ ? regTim_->prd.value : 0;
+      return 0;
     }  
     
     /**
@@ -99,11 +92,7 @@ namespace driver
      */      
     virtual void setCount(int64 count)
     {
-      if(!isConstructed_) return;
-      uint64 cnt = count;
-      uint64 prd = getPeriod();
-      if(cnt > prd) return;
-      regTim_->cnt.value = cnt bitand 0x00000000ffffffff;
+      if( not isConstructed_ ) return;
     }      
     
     /**
@@ -113,19 +102,7 @@ namespace driver
      */      
     virtual void setPeriod(int64 us=0)
     {
-      if(!isConstructed_) return;
-      if(us == 0) 
-      {
-        regTim_->prd.value = 0xffffffff;
-      }
-      else
-      {
-        int64 clock = internalClock();
-        if(clock == 0) return;      
-        uint64 prd = (us * clock) / 1000000;
-        if( (prd & 0xffffffff00000000) == 0) regTim_->prd.value = prd & 0x00000000ffffffff;
-        else return setPeriod();
-      }    
+      if( not isConstructed_ ) return;
     }
     
     /**
@@ -133,13 +110,7 @@ namespace driver
      */      
     virtual void start()
     {
-      if(!isConstructed_) return;
-      reg::Timer::CTL ctl = 0;
-      ctl.bit.hld = 1;      
-      ctl.bit.clksrc = 1;
-      ctl.bit.spnd = 1;     
-      ctl.bit.go = 1;
-      regTim_->ctl = ctl;    
+      if( not isConstructed_ ) return;  
     }
     
     /**
@@ -147,8 +118,7 @@ namespace driver
      */      
     virtual void stop()
     {
-      if(!isConstructed_) return;
-      regTim_->ctl.value = 0;     
+      if( not isConstructed_ ) return;   
     }
 
     /**
@@ -168,7 +138,7 @@ namespace driver
      */  
     virtual int32 digits() const
     {
-      return 32;
+      return 64;
     }
     
     /**
@@ -178,7 +148,8 @@ namespace driver
      */  
     virtual int64 internalClock() const
     {
-      return config_.cpuClock >> 3;    
+      if( not isConstructed_ ) return 0; 
+      return 0;
     }    
     
     /**
@@ -198,12 +169,6 @@ namespace driver
      */  
     virtual int32 interrupSource() const
     {
-      switch(index_)
-      {
-        case 0: return TINT0;
-        case 1: return TINT1;
-        case 2: return TINT2;
-      }
       return -1;
     }
     
@@ -219,13 +184,6 @@ namespace driver
       config_ = config;
       for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
-        switch(i)
-        {
-          case  0: new (reg::Timer::ADDRESS0) reg::Timer(); break;
-          case  1: new (reg::Timer::ADDRESS1) reg::Timer(); break;
-          case  2: new (reg::Timer::ADDRESS2) reg::Timer(); break;
-          default: return false;
-        }
         lock_[i] = false;      
       } 
       isInitialized_ = IS_INITIALIZED;            
@@ -257,7 +215,6 @@ namespace driver
       {
         case  0: addr = reg::Timer::ADDRESS0; break;
         case  1: addr = reg::Timer::ADDRESS1; break;
-        case  2: addr = reg::Timer::ADDRESS2; break;
         default: return Interrupt::globalEnable(is, false);
       }    
       if(lock_[index] == true) return Interrupt::globalEnable(is, false); 
@@ -290,7 +247,7 @@ namespace driver
     /**
      * Number of HW timers.
      */
-    static const int32 RESOURCES_NUMBER = 3;
+    static const int32 RESOURCES_NUMBER = 2;
     
     /**
      * Driver has been initialized successfully (no boot).
