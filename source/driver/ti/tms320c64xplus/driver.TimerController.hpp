@@ -2,7 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
+ * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
 #ifndef DRIVER_TIMER_CONTROLLER_HPP_
@@ -25,9 +25,10 @@ namespace driver
      */
     enum InterruptSource
     {
-      TINT0 = 0x01, //Timer 0 interrupt
-      TINT1 = 0x02, //Timer 1 interrupt
-      TINT2 = 0x13  //Timer 2 interrupt
+      TINTLO0 = 67, // Timer 0 lower counter interrupt
+      TINTHI0 = 68, // Timer 0 higher counter interrupt
+      TINTLO1 = 69, // Timer 1 lower counter interrupt
+      TINTHI1 = 70  // Timer 1 higher counter interrupt
     };
 
     /** 
@@ -169,6 +170,11 @@ namespace driver
      */  
     virtual int32 interrupSource() const
     {
+      switch(index_)
+      {
+        case 0: return TINTLO0;
+        case 1: return TINTLO1;
+      }
       return -1;
     }
     
