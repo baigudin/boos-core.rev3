@@ -33,7 +33,7 @@ namespace driver
        * Constructor.
        */  
       Timer() :
-        emumgtclkspd (),
+        emumgtClkspd (),
         cntlo        (),
         cnthi        (),
         prdlo        (),
@@ -84,7 +84,7 @@ namespace driver
           uint32 clkdiv : 4;
           uint32        : 12;          
         } bit;
-      } emumgtclkspd;
+      } emumgtClkspd;
       
     private:
     
@@ -101,7 +101,7 @@ namespace driver
         Cntlo(uint32 v){value = v;}
        ~Cntlo(){}    
 
-        uint64 value;
+        uint32 value;
         struct 
         {
           uint32 cnt : 32;
@@ -117,7 +117,7 @@ namespace driver
         Cnthi(uint32 v){value = v;}
        ~Cnthi(){}    
 
-        uint64 value;
+        uint32 value;
         struct 
         {
           uint32 cnt : 32;

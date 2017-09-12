@@ -35,8 +35,9 @@ namespace driver
      * Constructor.
      */      
     TimerController() : Parent(),
-      index_  (-1),
-      regTim_ (NULL){
+      timerClock_ (0),
+      index_      (-1),
+      regTim_     (NULL){
       for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         if( construct(i) == true )
@@ -54,8 +55,9 @@ namespace driver
      * @param index available timer index.
      */
     TimerController(int32 index) : Parent(),
-      index_  (-1),
-      regTim_ (NULL){
+      timerClock_ (0),
+      index_      (-1),
+      regTim_     (NULL){
       setConstruct( construct(index) );
     }
 
@@ -73,7 +75,12 @@ namespace driver
      */      
     virtual int64 getCount() const
     {
-      return 0;
+      if( not isConstructed_ ) return 0;
+      uint64 cnt;
+      cnt = regTim_->cnthi.value;
+      cnt = cnt << 32;
+      cnt = cnt | regTim_->cntlo.value;
+      return cnt;
     }
     
     /**
@@ -83,7 +90,12 @@ namespace driver
      */      
     virtual int64 getPeriod() const
     {
-      return 0;
+      if( not isConstructed_ ) return 0;
+      uint64 prd;
+      prd = regTim_->prdhi.value;
+      prd = prd << 32;      
+      prd = prd | regTim_->prdlo.value;
+      return prd;
     }  
     
     /**
@@ -94,6 +106,15 @@ namespace driver
     virtual void setCount(int64 count)
     {
       if( not isConstructed_ ) return;
+      uint64 cnt = count;
+      uint64 prd = getPeriod();
+      if(cnt > prd) return;
+      bool is = isStarted();
+      if(is) stop();
+      regTim_->cntlo.value = cnt & 0xffffffff;
+      cnt = cnt >> 32;       
+      regTim_->cnthi.value = cnt & 0xffffffff;
+      if(is) start();   
     }      
     
     /**
@@ -104,6 +125,15 @@ namespace driver
     virtual void setPeriod(int64 us=0)
     {
       if( not isConstructed_ ) return;
+      int64 clock = internalClock();
+      if(clock == 0) return;       
+      uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffffffffffff;
+      bool is = isStarted();
+      if(is) stop();
+      regTim_->prdlo.value = prd & 0xffffffff;
+      prd = prd >> 32;       
+      regTim_->prdhi.value = prd & 0xffffffff;
+      if(is) start();
     }
     
     /**
@@ -111,7 +141,8 @@ namespace driver
      */      
     virtual void start()
     {
-      if( not isConstructed_ ) return;  
+      if( not isConstructed_ ) return; 
+      regTim_->tcr.bit.enamodeLo = 2;
     }
     
     /**
@@ -120,6 +151,7 @@ namespace driver
     virtual void stop()
     {
       if( not isConstructed_ ) return;   
+      regTim_->tcr.bit.enamodeLo = 0;      
     }
 
     /**
@@ -150,7 +182,7 @@ namespace driver
     virtual int64 internalClock() const
     {
       if( not isConstructed_ ) return 0; 
-      return 0;
+      return timerClock_;
     }    
     
     /**
@@ -215,21 +247,76 @@ namespace driver
     bool construct(int32 index)
     {
       if(isInitialized_ != IS_INITIALIZED) return false;    
-      uint32 addr;
+      if( not isConstructed_ ) return false;
+      if( not isIndex(index) ) return false; 
       bool is = Interrupt::globalDisable();
-      switch(index)
+      do
       {
-        case  0: addr = reg::Timer::ADDRESS0; break;
-        case  1: addr = reg::Timer::ADDRESS1; break;
-        default: return Interrupt::globalEnable(is, false);
-      }    
-      if(lock_[index] == true) return Interrupt::globalEnable(is, false); 
-      regTim_ = new (addr) reg::Timer();
-      lock_[index] = true;
-      index_ = index;
-      return Interrupt::globalEnable(is, true);    
+        uint32 addr;
+        switch(index)
+        {
+          case  0: addr = reg::Timer::ADDRESS0; break;
+          case  1: addr = reg::Timer::ADDRESS1; break;
+          default: addr = 0; break;
+        }    
+        if(addr == 0) 
+        {
+          break;
+        }
+        if(lock_[index] == true)
+        {
+          break;
+        }
+        regTim_ = new (addr) reg::Timer();
+        // Set the timer emulation mode
+        regTim_->emumgtClkspd.bit.free = 0;
+        regTim_->emumgtClkspd.bit.soft = 0;
+        // Disable watchdog
+        regTim_->wdtcr.bit.wden = 0;
+        // Set the timer clock
+        if(regTim_->emumgtClkspd.bit.clkdiv == 0)
+        {
+          break;
+        }
+        timerClock_ = config_.cpuClock / static_cast<int64>(regTim_->emumgtClkspd.bit.clkdiv);
+        // Set Timer Control Register
+        regTim_->tcr.value = 0;
+        regTim_->tcr.bit.clksrcLo = 0;
+        regTim_->tcr.bit.tienLo = 0; 
+        regTim_->tcr.bit.enamodeLo = 0;
+        // Set Timer Global Control Register
+        regTim_->tgcr.value = 0;
+        regTim_->tgcr.bit.timmode = 0;
+        regTim_->tgcr.bit.timhirs = 1;
+        regTim_->tgcr.bit.timlors = 1;
+        index_ = index;
+        lock_[index_] = true;
+      }
+      while(false);
+      return Interrupt::globalEnable(is, index_ >= 0 ? true : false);    
     }
     
+    /** 
+     * Tests .
+     *
+     * @param index a timer index.
+     * @return boolean result.
+     */  
+    bool isIndex(int32 index)
+    {
+      return 0 <= index && index < RESOURCES_NUMBER ? true : false;
+    }
+    
+    /**
+     * Tests if this timer is counting.
+     *
+     * @return true if this timer is counting.
+     */        
+    bool isStarted()
+    {
+      return regTim_->tcr.bit.enamodeLo == 2 ? false : true;
+    }    
+
     /**
      * Copy constructor.
      *
@@ -263,13 +350,18 @@ namespace driver
     /**
      * The operating system configuration (no boot).
      */
-    static ::Configuration config_;     
+    static ::Configuration config_;
     
     /**
      * Locked by some object flag of each HW timer (no boot).
      */    
     static bool lock_[RESOURCES_NUMBER];
     
+    /**
+     * The timer internal clock in Hz.
+     */  
+    int64 timerClock_;
+
     /**
      * Number of hardware timer
      */

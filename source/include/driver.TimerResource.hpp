@@ -26,7 +26,7 @@ namespace driver
      * Constructor.
      */     
     TimerResource() : Parent(),
-      isConstructed_ (getConstruct()){
+      isConstructed_ ( getConstruct() ){
     }    
   
     /** 

@@ -62,7 +62,7 @@ mc_ri?  b               mc_ri?
         nop             1
         nop             1
         nop             1
-        nop             1
+        nop             1        
         .endm
 
 ; ----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ nmi     .macro
         nop             1
         nop             1
         nop             1
-        nop             1
+        nop             1    
         .endm
 
 ; ----------------------------------------------------------------------------
@@ -103,9 +103,9 @@ handler .macro          num
 ; Hardware interrupts table.
 ; ----------------------------------------------------------------------------
         .sect           ".hwi"
-m_vectors:
+m_reset:
         ; Reset interrupt vector
-        b               m_vectors+24
+        b               m_reset+24
         mvc             csr, b0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
         mvc             b0, csr
@@ -373,10 +373,10 @@ m_jump:
         b               m_jmp?
      || mvc             csr, b0
         and             C_REG_CSR_GIE, b0, a0
-     || mvkl            m_vectors, b4
+     || mvkl            m_reset, b4
         shl             a0, 1, a0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
-     || mvkh            m_vectors, b4
+     || mvkh            m_reset, b4
         or              b0, a0, b0
      || shl             a4, 5, a4
         mvc             b0, csr
@@ -399,8 +399,8 @@ m_ret?  b               b3
 ; ----------------------------------------------------------------------------
 m_init:
         b               b3        
-        mvkl            m_vectors, a0
-        mvkh            m_vectors, a0        
+        mvkl            m_reset, a0
+        mvkh            m_reset, a0        
         mvc             a0, istp        
         nop             2
         

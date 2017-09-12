@@ -203,7 +203,49 @@ namespace driver
      */      
     virtual bool setHandler(::api::Task& handler, int32 source)
     {
-      return false;
+      bool res = false;
+      bool is = Interrupt::globalDisable();
+      do
+      {
+        if( not isConstructed_ ) break;
+        if( not isSource(source) ) break;
+        if( isAllocated() ) break;
+        Source src = static_cast<Source>(source);
+        // Test if interrupt source is alloced
+        bool isAllocated = false;
+        for(int32 i=0; i<NUMBER_VECTORS; i++)
+        {
+          if(context_[i].source != src) continue;
+          isAllocated = true;
+          break;
+        }
+        if( isAllocated ) break;
+        // Looking for free vector and alloc that if it is found          
+        int32 index = -1;
+        for(int32 i=0; i<NUMBER_VECTORS; i++)
+        {
+          if(context_[i].handler != NULL) continue;
+          index = i;
+          break;
+        }
+        if(index < 0) break;
+        // Set new context
+        ctx_ = &context_[index];
+        ctx_->low = &contextLow_[index];
+        ctx_->number = index + 4;      
+        ctx_->source = src;
+        ctx_->handler = &handler;      
+        ctx_->reg = ::driver::Register::create();
+        if(ctx_->reg == NULL) break;
+        ctx_->stack = new Stack(::driver::Processor::stackType(), handler.stackSize() >> 3);
+        if(ctx_->stack == NULL || not ctx_->stack->isConstructed()) break;
+        ctx_->low->reg = ctx_->reg->registers();
+        ctx_->low->tos = ctx_->stack->tos();      
+        if(setMux(src, ctx_->number) == false) break;        
+        res = true;
+      }
+      while(false);
+      return Interrupt::globalEnable(is, res);  
     }
 
     /**
@@ -211,6 +253,23 @@ namespace driver
      */        
     virtual void removeHandler()
     {
+      if( not isAllocated() ) return;  
+      bool is = Interrupt::globalDisable();
+      disable();
+      clear();
+      resetMux(ctx_->number);
+      ctx_->low->reg = NULL;
+      ctx_->low->tos = NULL;
+      delete ctx_->stack;
+      ctx_->stack = NULL;
+      delete ctx_->reg;
+      ctx_->reg = NULL;      
+      ctx_->handler = NULL;
+      ctx_->source = DSPINT;      
+      ctx_->number = 0;      
+      ctx_->low = NULL;
+      ctx_ = NULL;
+      Interrupt::globalEnable(is);     
     }
     
     /**
@@ -302,7 +361,51 @@ namespace driver
     {
       if( not isConstructed_ ) return false;
       return ctx_ == NULL ? false : true;
-    }      
+    }
+    
+    /**
+     * Tests if given source is available.
+     *
+     * @param source interrupt source.
+     * @return true if the source is available.
+     */      
+    static bool isSource(int32 source)
+    {
+      return 0 <= source && source < 128 ? true : false;
+    }
+    
+    /**
+     * Resets MUX register.
+     *
+     * @param vn hardware interrupt vector number.
+     */    
+    static void resetMux(int32 vn)
+    {
+      setMux(EVT0, vn);
+    }    
+    
+    /**
+     * Sets MUX register.
+     *
+     * @param source available interrupt source.
+     * @param vn     hardware interrupt vector number.
+     * @return true if no error.
+     */    
+    static bool setMux(Source source, int32 vn)
+    {
+      if(vn < 4 || vn > 16) return false;
+      int32 i = vn >> 2;
+      int32 p = vn & 0x3;
+      switch(p)
+      {
+        case  0: regInt_->intmux[i].bit.intsel0 = source & 0x3f; break;
+        case  1: regInt_->intmux[i].bit.intsel1 = source & 0x3f; break;
+        case  2: regInt_->intmux[i].bit.intsel2 = source & 0x3f; break;
+        case  3: regInt_->intmux[i].bit.intsel3 = source & 0x3f; break;
+        default: return false;
+      }
+      return true;
+    }
     
     /**
      * HW interrupt handle routing.

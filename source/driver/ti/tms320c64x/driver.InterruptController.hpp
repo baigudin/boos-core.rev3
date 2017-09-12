@@ -353,7 +353,7 @@ namespace driver
     }      
     
     /**
-     * Set MUX register.
+     * Sets MUX register.
      *
      * @param source available interrupt source.
      * @param vn hardware interrupt vector number.
