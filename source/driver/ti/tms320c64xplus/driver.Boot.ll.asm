@@ -51,13 +51,6 @@ m_bootstrap:
         ; Set CPU register
         mvk             0, a0        
         mvc             a0, amr
-        mvc             a0, irp
-        mvc             a0, nrp
-        mvk             -1, a0
-        mvc             a0, icr
-        mvk             3,  a0
-        mvc             a0, ier ; set NMIE to enable
-        nop
         ; Set CPU registers to zero
         .eval           0, i
         .loop           32

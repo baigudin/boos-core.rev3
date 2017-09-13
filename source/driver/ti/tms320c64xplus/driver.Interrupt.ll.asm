@@ -55,14 +55,9 @@
 ; It has fixed size that equals eight.
 ; ----------------------------------------------------------------------------
 reserve .macro
+        .align          20h
 mc_ri?  b               mc_ri?
-        nop             1
-        nop             1
-        nop             1
-        nop             1
-        nop             1
-        nop             1
-        nop             1        
+        nop             5
         .endm
 
 ; ----------------------------------------------------------------------------
@@ -72,14 +67,9 @@ mc_ri?  b               mc_ri?
 ; It has fixed size that equals eight.
 ; ----------------------------------------------------------------------------
 nmi     .macro
+        .align          20h
         b               nrp
-        nop             5
-        nop             1
-        nop             1
-        nop             1
-        nop             1
-        nop             1
-        nop             1    
+        nop             5    
         .endm
 
 ; ----------------------------------------------------------------------------
@@ -89,6 +79,7 @@ nmi     .macro
 ; It has fixed size that equals eight.
 ; ----------------------------------------------------------------------------
 handler .macro          num
+        .align          20h
         stdw            b1:b0, *-sp[3]
      || mvkl            v_context, b1
         stdw            a1:a0, *-sp[2]
@@ -105,6 +96,7 @@ handler .macro          num
         .sect           ".hwi"
 m_reset:
         ; Reset interrupt vector
+        .align          20h
         b               m_reset+24
         mvc             csr, b0
         and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
@@ -393,11 +385,16 @@ m_ret?  b               b3
         
         
 ; ----------------------------------------------------------------------------
-; Clears a maskable interrupt status.
-;
-; @param A4 hardware interrupt vector number.
+; Initializes the interrupt controller.
 ; ----------------------------------------------------------------------------
 m_init:
+        mvk             0, a0
+        mvc             a0, irp
+        mvc             a0, nrp
+        mvk             -1, a0
+        mvc             a0, icr
+        mvk             3,  a0
+        mvc             a0, ier ; enable NMI
         b               b3        
         mvkl            m_reset, a0
         mvkh            m_reset, a0        

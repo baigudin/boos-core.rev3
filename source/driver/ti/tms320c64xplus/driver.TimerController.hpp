@@ -291,6 +291,8 @@ namespace driver
         regTim_->tgcr.bit.timlors = 1;
         index_ = index;
         lock_[index_] = true;
+        setPeriod();
+        setCount(0);        
       }
       while(false);
       return Interrupt::globalEnable(is, index_ >= 0 ? true : false);    
@@ -314,7 +316,7 @@ namespace driver
      */        
     bool isStarted()
     {
-      return regTim_->tcr.bit.enamodeLo == 2 ? false : true;
+      return regTim_->tcr.bit.enamodeLo == 0 ? false : true;
     }    
 
     /**
