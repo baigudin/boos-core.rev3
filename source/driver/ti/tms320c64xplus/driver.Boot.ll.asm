@@ -7,10 +7,16 @@
 ; @copyright 2016-2017, Embedded Team, Sergey Baigudin
 ; @license   http://embedded.team/license/
 ; ----------------------------------------------------------------------------
+
+    ; Set a using ABI which might be EABI if EABI is set to 1, or COFF ABI if EABI is set to 0
+    ; Having version 7.0 or greater C6000 compilers might generate object files compatible with EABI 
+    ; and have __TI_EABI__ predefined symbol is set to 1 if compiling for EABI and is unset to 0 otherwise. 
+    .asg  0, EABI
+
     .def  _c_int00
 
     ; EABI 
-    .if   __TI_EABI__
+    .if   EABI
 
     ; COFF ABI
     .else
@@ -33,7 +39,7 @@
     .asg  ___pinit__,                      v_pinit
     .asg  ___bss__,                        v_bss
     
-    .endif ; __TI_EABI__
+    .endif ; EABI
     
     .asg  b15, sp
     .asg  b14, dp
@@ -91,7 +97,7 @@ m_termination:
 ; ----------------------------------------------------------------------------
         .text
 m_get_cinit:
-        .if             __TI_EABI__
+        .if             EABI
         b               b3
         mvk             0, a4
         nop             4        
@@ -113,7 +119,7 @@ m_get_cinit:
 ; ----------------------------------------------------------------------------
         .text
 m_get_pinit:
-        .if             __TI_EABI__
+        .if             EABI
         b               b3
         mvk             0, a4
         nop             4        

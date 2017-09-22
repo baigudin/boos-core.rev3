@@ -18,9 +18,9 @@ MEMORY
   /** Programme memory */
   CODE       : origin = 0x00000200, len = 0x0002fe00
   /** Heap of TI RTS Library */
-  HEAP       : origin = 0x00030000, len = 0x00001000    
-  /** User heap of OS */
-  MEMORY     : origin = 0x00031000, len = 0x0000f000
+  TI_HEAP    : origin = 0x00030000, len = 0x00001000    
+  /** Heap of OS */
+  OS_HEAP    : origin = 0x00031000, len = 0x0000f000
 }
 
 SECTIONS
@@ -36,6 +36,6 @@ SECTIONS
   .cio       : load = CODE
   .switch    : load = CODE
   .stack     : load = CODE
-/*.template  : load = CODE IS ILLEGAL FOR 7.2 CCS COMPILER.*/
-  .sysmem    : load = HEAP
+  .template  : load = CODE /* IS ILLEGAL FOR 7.2 CCS COMPILER */
+  .sysmem    : load = TI_HEAP
 }
