@@ -31,12 +31,12 @@ Source="..\..\source\system\system.Timer.cpp"
 Source="..\..\source\system\system.TimerInterrupt.cpp"
 Source="source\Board.cpp"
 Source="source\Configuration.cpp"
+Source="source\libraries\rts6400.v6.0.11.lib"
 Source="source\Main.cpp"
-Source="source\libraries\rts6400.lib"
 Source="..\..\source\driver\ti\tms320c64x\memory\memory.tms320c64x.coff.cmd"
 
 ["Compiler" Settings: "Debug"]
-Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far --abi=coffabi
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far
 
 ["Compiler" Settings: "Release"]
 Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far --abi=coffabi
