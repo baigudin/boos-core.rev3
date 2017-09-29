@@ -65,10 +65,12 @@ namespace driver
       while(count) count--;
       // Reset PLL
       regPll->pllctl.bit.pllrst = 1;
-      // Program PREDIV and PLLM
+      // Program PREDIV, PLLM and POSTDIV
       regPll->prediv.bit.ratio = 0;
       regPll->prediv.bit.preden  = 1;
       regPll->pllm.bit.pllm = pllm & 0x000000000000003f;
+      regPll->postdiv.bit.ratio = 0;
+      regPll->postdiv.bit.preden  = 1;
       
       // Program PLLDIV1n
       // TODO: SUPPLEMENT SOME SETS WHEN THOSE ARE NEEDED

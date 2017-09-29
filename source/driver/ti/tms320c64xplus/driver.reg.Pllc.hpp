@@ -39,6 +39,7 @@ namespace driver
         plldiv1  (),
         plldiv2  (),
         plldiv3  (),
+        postdiv  (),
         pllcmd   (),
         pllstat  (),
         alnctl   (),
@@ -184,7 +185,32 @@ namespace driver
       
     private:
     
-      uint32 space2_[5];
+      uint32 space2_[1];
+      
+    public:
+    
+      /**
+       * PLL post-divider control register.
+       */
+      union Postdiv
+      {
+        Postdiv(){}
+        Postdiv(uint32 v){value = v;}
+       ~Postdiv(){}    
+
+        uint32 value;
+        struct 
+        {
+          uint32 ratio  : 5;
+          uint32        : 10;          
+          uint32 preden : 1;
+          uint32        : 16;
+        } bit;
+      } postdiv;          
+      
+    private:
+    
+      uint32 space3_[3];
       
     public:
       
@@ -355,7 +381,7 @@ namespace driver
       
     private:
     
-      uint32 space3_[3];
+      uint32 space4_[3];
       
     public:
       
