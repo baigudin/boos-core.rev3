@@ -13,14 +13,14 @@
 #include "driver.Register.hpp"
 #include "driver.reg.Intc.hpp"
 #include "utility.Stack.hpp"
-#include "utility.Memory.hpp"
+#include "utility.Buffer.hpp"
 
 namespace driver
 {
   class InterruptController : public ::driver::InterruptResource
   {
-    typedef ::driver::InterruptResource        Parent;
-    typedef ::utility::Stack<int64,Allocator>  Stack;
+    typedef ::driver::InterruptResource                   Parent;
+    typedef ::utility::Stack<int64, Allocator>            Stack;
 
   public:
   
@@ -122,7 +122,7 @@ namespace driver
      * Constructor.
      */    
     InterruptController() : Parent(),
-      ctx_ (NULL){
+      ctx_ (){
       setConstruct( construct() );
     } 
 
@@ -133,7 +133,7 @@ namespace driver
      * @param source  available interrupt source.
      */     
     InterruptController(::api::Task* handler, int32 source) : Parent(),
-      ctx_ (NULL){
+      ctx_ (){
       setConstruct( construct(*handler, source) );
     }
     
@@ -151,7 +151,7 @@ namespace driver
     virtual void jump()
     {
       if( not isAllocated() ) return;
-      jumpLow(ctx_->number);    
+      jumpLow(ctx_.hi->number);    
     }
     
     /**
@@ -160,7 +160,7 @@ namespace driver
     virtual void clear()
     {
       if( not isAllocated() ) return;    
-      clearLow(ctx_->number);    
+      clearLow(ctx_.hi->number);    
     }
     
     /**
@@ -169,7 +169,7 @@ namespace driver
     virtual void set()
     {
       if( not isAllocated() ) return;
-      setLow(ctx_->number);    
+      setLow(ctx_.hi->number);    
     }  
     
     /**
@@ -180,7 +180,7 @@ namespace driver
     virtual bool disable()
     {
       if( not isAllocated() ) return false;
-      return disableLow(ctx_->number);
+      return disableLow(ctx_.hi->number);
     }
     
     /**
@@ -191,7 +191,7 @@ namespace driver
     virtual void enable(bool status)
     {
       if( not isAllocated() ) return;    
-      enableLow(ctx_->number, status);    
+      enableLow(ctx_.hi->number, status);    
     }
    
     /**
@@ -201,7 +201,7 @@ namespace driver
      * @param source  available interrupt source.
      * @return true if handler is set successfully.
      */      
-    virtual bool setHandler(::api::Task& handler, int32 source)
+    virtual bool setHandler(::api::Task& task, int32 source)
     {
       bool res = false;
       bool is = Interrupt::globalDisable();
@@ -213,35 +213,35 @@ namespace driver
         Source src = static_cast<Source>(source);
         // Test if interrupt source is alloced
         bool isAllocated = false;
-        for(int32 i=0; i<NUMBER_VECTORS; i++)
+        for(int32 i=0; i<Contexts::NUMBER_VECTORS; i++)
         {
-          if(context_[i].source != src) continue;
+          if(contexts_->hi[i].source != src) continue;
           isAllocated = true;
           break;
         }
         if( isAllocated ) break;
         // Looking for free vector and alloc that if it is found          
         int32 index = -1;
-        for(int32 i=0; i<NUMBER_VECTORS; i++)
+        for(int32 i=0; i<Contexts::NUMBER_VECTORS; i++)
         {
-          if(context_[i].handler != NULL) continue;
+          if(contexts_->hi[i].handler != NULL) continue;
           index = i;
           break;
         }
         if(index < 0) break;
         // Set new context
-        ctx_ = &context_[index];
-        ctx_->low = &contextLow_[index];
-        ctx_->number = index + 4;      
-        ctx_->source = src;
-        ctx_->handler = &handler;      
-        ctx_->reg = ::driver::Register::create();
-        if(ctx_->reg == NULL) break;
-        ctx_->stack = new Stack(::driver::Processor::stackType(), handler.stackSize() >> 3);
-        if(ctx_->stack == NULL || not ctx_->stack->isConstructed()) break;
-        ctx_->low->reg = ctx_->reg->registers();
-        ctx_->low->tos = ctx_->stack->tos();      
-        if(setMux(src, ctx_->number) == false) break;        
+        ctx_.hi = &contexts_->hi[index];
+        ctx_.lo = &contexts_->lo[index];
+        ctx_.hi->number = index + 4;      
+        ctx_.hi->source = src;
+        ctx_.hi->handler = &task;      
+        ctx_.hi->reg = ::driver::Register::create();
+        if(ctx_.hi->reg == NULL) break;
+        ctx_.hi->stack = new Stack(::driver::Processor::stackType(), task.stackSize() >> 3);
+        if(ctx_.hi->stack == NULL || not ctx_.hi->stack->isConstructed()) break;
+        ctx_.lo->reg = ctx_.hi->reg->registers();
+        ctx_.lo->tos = ctx_.hi->stack->tos();      
+        if(setMux(src, ctx_.hi->number) == false) break;        
         res = true;
       }
       while(false);
@@ -257,18 +257,18 @@ namespace driver
       bool is = Interrupt::globalDisable();
       disable();
       clear();
-      resetMux(ctx_->number);
-      ctx_->low->reg = NULL;
-      ctx_->low->tos = NULL;
-      delete ctx_->stack;
-      ctx_->stack = NULL;
-      delete ctx_->reg;
-      ctx_->reg = NULL;      
-      ctx_->handler = NULL;
-      ctx_->source = DSPINT;      
-      ctx_->number = 0;      
-      ctx_->low = NULL;
-      ctx_ = NULL;
+      resetMux(ctx_.hi->number);
+      ctx_.lo->reg = NULL;
+      ctx_.lo->tos = NULL;
+      delete ctx_.hi->stack;
+      ctx_.hi->stack = NULL;
+      delete ctx_.hi->reg;
+      ctx_.hi->reg = NULL;      
+      ctx_.hi->handler = NULL;
+      ctx_.hi->source = DSPINT;      
+      ctx_.hi->number = 0;      
+      ctx_.lo = NULL;
+      ctx_.hi = NULL;
       Interrupt::globalEnable(is);     
     }
     
@@ -278,7 +278,7 @@ namespace driver
     virtual void resetRegister()
     {
       if( not isAllocated() ) return;
-      ctx_->low->reg = ctx_->reg->registers();    
+      ctx_.lo->reg = ctx_.hi->reg->registers();    
     }
     
     /**
@@ -289,7 +289,7 @@ namespace driver
     virtual void setRegister(::driver::Register& reg)
     {
       if( not isAllocated() ) return;
-      ctx_->low->reg = reg.registers();
+      ctx_.lo->reg = reg.registers();
     }
 
     /**
@@ -300,13 +300,17 @@ namespace driver
      */
     static bool init(const ::Configuration& config)
     {
-      isInitialized_ = 0;    
-      config_ = config;
+      isInitialized_ = 0; 
+      regInt_ = 0;
+      contexts_ = NULL;
+      hiContexts_ = NULL;            
+      loContexts_ = NULL;      
+      if(config.cpuClock <= 0) return false;      
       regInt_ = new (reg::Intc::ADDRESS) reg::Intc();
-      // Init context table      
-      utility::Memory::memset(context_, 0x0, sizeof(context_));
-      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_)); 
-      // Init low-level
+      contexts_ = new Contexts();
+      if( contexts_ == NULL || not contexts_->isConstructed() ) return false;
+      hiContexts_ = &contexts_->hi[0];      
+      loContexts_ = &contexts_->lo[0];            
       initLow();
       // Set base value of registers
       for(int32 i=0; i<reg::Intc::EVENT_GROUPS; i++)
@@ -323,6 +327,11 @@ namespace driver
      */
     static void deinit()
     {
+      delete contexts_;
+      regInt_ = NULL;
+      loContexts_ = NULL;      
+      hiContexts_ = NULL;
+      contexts_ = NULL;      
       isInitialized_ = 0;    
     }
     
@@ -360,7 +369,7 @@ namespace driver
     bool isAllocated()
     {
       if( not isConstructed_ ) return false;
-      return ctx_ == NULL ? false : true;
+      return ctx_.hi == NULL ? false : true;
     }
     
     /**
@@ -410,7 +419,7 @@ namespace driver
     /**
      * HW interrupt handle routing.
      *
-     * @param index index of HW interrupt vector number in context table
+     * @param index index of HW interrupt vector number in contexts table
      */  
     static void handler(register int32 index);
 
@@ -478,7 +487,7 @@ namespace driver
      *       It has to contain two fields and total size has to be eight bytes.
      *       The address of it has to be aligned to eight.
      */
-    struct ContextLow
+    struct ContextLo
     {
       /**
        * DSP A0 for storing and restoring an intrrupted program.
@@ -489,13 +498,35 @@ namespace driver
        * Top of stack will be loaded to DSP SP for routing an intrrupt.
        */        
       const int64* tos;
+      
+      /** 
+       * Constructor.
+       */    
+      ContextLo() :
+        reg (NULL),
+        tos (NULL){
+      }
+      
+      /** 
+       * Destructor.
+       */
+     ~ContextLo(){}
+     
+      /**
+       * Equality operator.
+       *
+       * @param obj1 first object.
+       * @param obj2 second object.
+       * @return true if object are equal.
+       */
+      friend bool operator ==(const ContextLo& obj1, const ContextLo& obj2);     
 
     };
     
     /**
      * Hi level interrupt context.
      */
-    struct Context
+    struct ContextHi
     {
       /**
        * Number of interrupt vector.
@@ -522,27 +553,126 @@ namespace driver
        */         
       ::api::Stack<int64>* stack;
       
+      /** 
+       * Constructor.
+       */    
+      ContextHi() :
+        number  (0),
+        source  (EVT0),
+        handler (NULL),
+        reg     (NULL),
+        stack   (NULL){
+      }
+      
+      /** 
+       * Destructor.
+       */
+     ~ContextHi(){}
+     
+      /**
+       * Equality operator.
+       *
+       * @param obj1 first object.
+       * @param obj2 second object.
+       * @return true if object are equal.
+       */
+      friend bool operator ==(const ContextHi& obj1, const ContextHi& obj2);
+
+    };
+        
+    /**
+     * All interrupt resource contexts.
+     */
+    struct Contexts : public ::Object<>
+    {
+      typedef ::Object<> Parent;
+    
+      /**
+       * Number of HW interrupt vectors.
+       */
+      static const int32 NUMBER_VECTORS = 12;      
+      
+      /**
+       * Hi level interrupt contexts.
+       */            
+      ::utility::Buffer<ContextHi, NUMBER_VECTORS> hi;
+      
+      /**
+       * Low level interrupt contexts.
+       */    
+      ::utility::Buffer<ContextLo> lo;    
+      
+      /** 
+       * Constructor.
+       */    
+      Contexts() : Parent(),
+        hi (),
+        lo (NUMBER_VECTORS, reinterpret_cast< ContextLo* >( &buffer_[0] ) ){
+        setConstruct( construct() ); 
+      }
+      
+      /** 
+       * Destructor.
+       */
+     ~Contexts(){}
+     
+      /** 
+       * Constructs the object.
+       *
+       * @param handler user class which implements an interrupt handler interface.
+       * @param source  available interrupt source.     
+       * @return true if object has been constructed successfully.
+       */
+      bool construct()
+      {
+        if( not isConstructed() ) return false;
+        if( not hi.isConstructed() ) return false;
+        if( not lo.isConstructed() ) return false;
+        ContextHi defHi;
+        hi.illegal( defHi );
+        hi.fill( defHi );
+        ContextLo defLo;
+        lo.illegal( defLo );        
+        lo.fill( defLo );                
+        return true;
+      }          
+
+    };
+    
+    /**
+     * Context of this interrupt resource.
+     */    
+    struct Context
+    {
+      /**
+       * Hi level interrupt context.
+       */            
+      ContextHi* hi;
+      
       /**
        * Low level interrupt context.
        */        
-      ContextLow* low;        
-
-    };
+      ContextLo* lo;
+          
+      /** 
+       * Constructor.
+       */    
+      Context() : 
+        hi (NULL),
+        lo (NULL){
+      }
+      
+      /** 
+       * Destructor.
+       */
+     ~Context(){}
+     
+    };       
     
     /**
      * The driver initialized falg value.
      */
     static const int32 IS_INITIALIZED = 0x98753af7;    
-
-    /**
-     * Number of HW interrupt vectors.
-     */
-    static const int32 NUMBER_VECTORS = 12;
-
-    /**
-     * HW interrupt registers (no boot).
-     */
-    static reg::Intc* regInt_;
     
     /**
      * Driver has been initialized successfully (no boot).
@@ -550,35 +680,51 @@ namespace driver
     static int32 isInitialized_;
     
     /**
-     * Hi level interrupts context table (no boot).
-     */        
-    static Context context_[NUMBER_VECTORS];
+     * HW interrupt registers (no boot).
+     */
+    static reg::Intc* regInt_;    
 
     /**
-     * Low level interrupts context table (no boot).
-     */    
-    static ContextLow contextLow_[NUMBER_VECTORS];
+     * All interrupt resource contexts (no boot).
+     */
+    static Contexts* contexts_;
     
     /**
-     * The operating system configuration (no boot).
-     */
-    static ::Configuration config_;
-
-    /**
-     * Pointer to the hi level interrupt context.
+     * Hi level interrupts contexts table for fast access in interrupt routine (no boot).
      */    
-    Context* ctx_;
-  
+    static ContextHi* hiContexts_;
+    
+    /**
+     * Low level interrupts contexts table (no boot).
+     */    
+    static ContextLo* loContexts_;
+    
+    /**
+     * Buffer for allocating low level interrupts contexts table (no boot).
+     * 
+     * Here is uint64 used instead of ContextLo for prohibiting of calling
+     * default class constructors and excluding .pinit section by a compiler.
+     * Also, uint64 is needed to be sure that the buffer will be aligned to eight.
+     */    
+    static uint64 buffer_[ Contexts::NUMBER_VECTORS ];
+    
+    /**
+     * Context of the interrupt.
+     */    
+    Context ctx_;
+    
+    friend bool operator ==(const ContextHi& obj1, const ContextHi& obj2);
+    friend bool operator ==(const ContextLo& obj1, const ContextLo& obj2);  
   };
   
   /**
    * HW interrupt handle routing.
    *
-   * @param index index of HW interrupt vector number in context table
+   * @param index index of HW interrupt vector number in contexts table
    */  
   void InterruptController::handler(register int32 index)
   {
-    register Context* ctx = &context_[index];
+    register ContextHi* ctx = &hiContexts_[index];
     #ifdef EOOS_NESTED_INT
     register bool is = ctx->disable();
     Interrupt::globalEnable(true);
@@ -588,32 +734,68 @@ namespace driver
     Interrupt::globalDisable();
     ctx->enable(is);
     #endif
-  }    
+  }
   
   /**
-   * HW interrupt registers (no boot).
+   * Equality operator.
+   *
+   * @param obj1 first object.
+   * @param obj2 second object.
+   * @return true if object are equal.
    */
-  reg::Intc* InterruptController::regInt_;
+  inline bool operator ==(const InterruptController::ContextHi& obj1, const InterruptController::ContextHi& obj2)
+  {
+    if      ( obj1.number  != obj2.number  ) return false;
+    else if ( obj1.source  != obj2.source  ) return false;
+    else if ( obj1.handler != obj2.handler ) return false;
+    else if ( obj1.reg     != obj2.reg     ) return false;
+    else if ( obj1.stack   != obj2.stack   ) return false;
+    else return true;
+  }      
   
+  /**
+   * Equality operator.
+   *
+   * @param obj1 first object.
+   * @param obj2 second object.
+   * @return true if object are equal.
+   */
+  inline bool operator ==(const InterruptController::ContextLo& obj1, const InterruptController::ContextLo& obj2)
+  {
+    if      ( obj1.tos != obj2.tos ) return false;
+    else if ( obj1.reg != obj2.reg ) return false;
+    else return true;
+  }   
+
   /**
    * Driver has been initialized successfully (no boot).
    */
   int32 InterruptController::isInitialized_;  
 
   /**
-   * Hi level interrupts context table (no boot).
-   */        
-  InterruptController::Context InterruptController::context_[NUMBER_VECTORS];  
-
-  /**
-   * Low level interrupts context table (no boot).
-   */    
-  InterruptController::ContextLow InterruptController::contextLow_[NUMBER_VECTORS];
-
-  /**
-   * The operating system configuration (no boot).
+   * HW interrupt registers (no boot).
    */
-  ::Configuration InterruptController::config_; 
+  reg::Intc* InterruptController::regInt_;  
+  
+  /**
+   * All interrupt resource contexts (no boot).
+   */
+  InterruptController::Contexts* InterruptController::contexts_;
+  
+  /**
+   * Hi level interrupts contexts table for fast access in interrupt routine (no boot).
+   */    
+  InterruptController::ContextHi* InterruptController::hiContexts_;
+  
+  /**
+   * Low level interrupts contexts table (no boot).
+   */    
+  InterruptController::ContextLo* InterruptController::loContexts_;
+  
+  /**
+   * Buffer for allocating low level interrupts contexts table (no boot).
+   */    
+  uint64 InterruptController::buffer_[ InterruptController::Contexts::NUMBER_VECTORS ];      
 
 }
 #endif // DRIVER_INTERRUPT_CONTROLLER_HPP_

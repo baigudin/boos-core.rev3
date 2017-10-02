@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="D:\baigudin\github\baigudin\eoos\projects\eoos.exe.ti.tms320c64x.coff.ccstudio33\"
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.exe.ti.tms320c64x.coff.ccstudio33\"
 ProjectType=Executable
 CPUFamily=TMS320C64XX
 Tool="Compiler"
@@ -29,6 +29,7 @@ Source="..\..\source\system\system.System.cpp"
 Source="..\..\source\system\system.Thread.cpp"
 Source="..\..\source\system\system.Timer.cpp"
 Source="..\..\source\system\system.TimerInterrupt.cpp"
+Source="Debug\eoos.tms320c64x.debug.map"
 Source="source\Board.cpp"
 Source="source\Configuration.cpp"
 Source="source\libraries\rts6400.v6.0.11.lib"
@@ -46,6 +47,12 @@ Options=-c -h -m".\Debug\eoos.tms320c64x.debug.map" -o".\Debug\eoos.tms320c64x.d
 
 ["Linker" Settings: "Release"]
 Options=-a -c -m".\Release\eoos.tms320c64x.map" -o".\Release\eoos.tms320c64x.out" -w -x
+
+["Debug\eoos.tms320c64x.debug.map" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["Debug\eoos.tms320c64x.debug.map" Settings: "Release"]
+ExcludeFromBuild=true
 
 ["..\..\source\driver\ti\tms320c64x\memory\memory.tms320c64x.coff.cmd" Settings: "Debug"]
 LinkOrder=1

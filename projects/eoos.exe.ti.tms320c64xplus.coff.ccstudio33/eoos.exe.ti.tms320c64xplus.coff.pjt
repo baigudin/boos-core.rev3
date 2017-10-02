@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="D:\baigudin\github\baigudin\eoos\projects\eoos.exe.ti.tms320c64xplus.coff.ccstudio33\"
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.exe.ti.tms320c64xplus.coff.ccstudio33\"
 ProjectType=Executable
 CPUFamily=TMS320C64XX
 Tool="Compiler"

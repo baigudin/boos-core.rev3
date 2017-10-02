@@ -219,7 +219,7 @@ namespace driver
     static bool init(const ::Configuration& config)
     {
       isInitialized_ = 0;        
-      config_ = config;
+      cpuClock_ = config.cpuClock;
       for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         lock_[i] = false;      
@@ -252,6 +252,10 @@ namespace driver
       bool is = Interrupt::globalDisable();
       do
       {
+        if(lock_[index] == true)
+        {
+          break;
+        }
         uint32 addr;
         switch(index)
         {
@@ -262,11 +266,7 @@ namespace driver
         if(addr == 0) 
         {
           break;
-        }
-        if(lock_[index] == true)
-        {
-          break;
-        }
+        }        
         regTim_ = new (addr) reg::Timer();
         // Set the timer emulation mode
         regTim_->emumgtClkspd.bit.free = 0;
@@ -278,7 +278,7 @@ namespace driver
         {
           break;
         }
-        timerClock_ = config_.cpuClock / static_cast<int64>(regTim_->emumgtClkspd.bit.clkdiv);
+        timerClock_ = cpuClock_ / static_cast<int64>(regTim_->emumgtClkspd.bit.clkdiv);
         // Set Timer Control Register
         regTim_->tcr.value = 0;
         regTim_->tcr.bit.clksrcLo = 0;
@@ -350,9 +350,9 @@ namespace driver
     static int32 isInitialized_;        
     
     /**
-     * The operating system configuration (no boot).
-     */
-    static ::Configuration config_;
+     * CPU clock rate in Hz (no boot).
+     */      
+    static int64 cpuClock_;
     
     /**
      * Locked by some object flag of each HW timer (no boot).
@@ -380,11 +380,11 @@ namespace driver
    * Driver has been initialized successfully (no boot).
    */
   int32 TimerController::isInitialized_;    
-  
+
   /**
-   * The operating system configuration (no boot).
-   */
-  ::Configuration TimerController::config_;
+   * CPU clock rate in Hz (no boot).
+   */      
+  int64 TimerController::cpuClock_;  
 
   /**
    * Locked by some object flag of each HW timer (no boot).  

@@ -142,7 +142,7 @@ namespace driver
     static int64 sourceClock_;
     
     /**
-     * ARM clock rate in Hz (no boot).
+     * CPU clock rate in Hz (no boot).
      */      
     static int64 cpuClock_;
     
@@ -159,7 +159,7 @@ namespace driver
   int64 PllController::sourceClock_;
   
   /**
-   * ARM clock rate in Hz (no boot).
+   * CPU clock rate in Hz (no boot).
    */      
   int64 PllController::cpuClock_;
   

@@ -178,7 +178,7 @@ namespace driver
      */  
     virtual int64 internalClock() const
     {
-      return config_.cpuClock >> 3;    
+      return cpuClock_ >> 3;    
     }    
     
     /**
@@ -216,7 +216,7 @@ namespace driver
     static bool init(const ::Configuration& config)
     {
       isInitialized_ = 0;        
-      config_ = config;
+      cpuClock_ = config.cpuClock;
       for(int32 i=0; i<RESOURCES_NUMBER; i++) 
       {
         switch(i)
@@ -298,9 +298,9 @@ namespace driver
     static int32 isInitialized_;        
     
     /**
-     * The operating system configuration (no boot).
-     */
-    static ::Configuration config_;     
+     * CPU clock rate in Hz (no boot).
+     */      
+    static int64 cpuClock_;    
     
     /**
      * Locked by some object flag of each HW timer (no boot).
@@ -325,9 +325,9 @@ namespace driver
   int32 TimerController::isInitialized_;    
   
   /**
-   * The operating system configuration (no boot).
-   */
-  ::Configuration TimerController::config_;
+   * CPU clock rate in Hz (no boot).
+   */      
+  int64 TimerController::cpuClock_;
 
   /**
    * Locked by some object flag of each HW timer (no boot).  
