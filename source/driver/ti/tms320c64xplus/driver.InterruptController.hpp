@@ -115,14 +115,16 @@ namespace driver
       L2_CMPA         = 124, // L2 CPU memory protection fault
       L2_DMPA         = 125, // L2 DMA memory protection fault
       IDMA_CMPA       = 126, // IDMA CPU memory protection fault
-      IDMA_BUSERR     = 127  // IDMA bus error interrupt
+      IDMA_BUSERR     = 127, // IDMA bus error interrupt
+      UNDEF           = -1
     };  
   
     /** 
      * Constructor.
      */    
     InterruptController() : Parent(),
-      ctx_ (){
+      index_ (-1),
+      ctx_   (){
       setConstruct( construct() );
     } 
 
@@ -133,6 +135,7 @@ namespace driver
      * @param source  available interrupt source.
      */     
     InterruptController(::api::Task* handler, int32 source) : Parent(),
+      index_ (-1),    
       ctx_ (){
       setConstruct( construct(*handler, source) );
     }
@@ -201,47 +204,21 @@ namespace driver
      * @param source  available interrupt source.
      * @return true if handler is set successfully.
      */      
-    virtual bool setHandler(::api::Task& task, int32 source)
+    virtual bool setHandler(::api::Task& handler, int32 source)
     {
       bool res = false;
       bool is = Interrupt::globalDisable();
       do
       {
         if( not isConstructed_ ) break;
-        if( not isSource(source) ) break;
         if( isAllocated() ) break;
         Source src = static_cast<Source>(source);
-        // Test if interrupt source is alloced
-        bool isAllocated = false;
-        for(int32 i=0; i<Contexts::NUMBER_VECTORS; i++)
-        {
-          if(contexts_->hi[i].source != src) continue;
-          isAllocated = true;
-          break;
-        }
-        if( isAllocated ) break;
-        // Looking for free vector and alloc that if it is found          
-        int32 index = -1;
-        for(int32 i=0; i<Contexts::NUMBER_VECTORS; i++)
-        {
-          if(contexts_->hi[i].handler != NULL) continue;
-          index = i;
-          break;
-        }
-        if(index < 0) break;
-        // Set new context
-        ctx_.hi = &contexts_->hi[index];
-        ctx_.lo = &contexts_->lo[index];
-        ctx_.hi->number = index + 4;      
-        ctx_.hi->source = src;
-        ctx_.hi->handler = &task;      
-        ctx_.hi->reg = ::driver::Register::create();
-        if(ctx_.hi->reg == NULL) break;
-        ctx_.hi->stack = new Stack(::driver::Processor::stackType(), task.stackSize() >> 3);
-        if(ctx_.hi->stack == NULL || not ctx_.hi->stack->isConstructed()) break;
-        ctx_.lo->reg = ctx_.hi->reg->registers();
-        ctx_.lo->tos = ctx_.hi->stack->tos();      
-        if(setMux(src, ctx_.hi->number) == false) break;        
+        int32 index = contexts_->allocate(handler, src);
+        if(index == -1) break;
+        ctx_.hi = &contexts_->getHi(index);
+        ctx_.lo = &contexts_->getLo(index);
+        setMux();
+        index_ = index;
         res = true;
       }
       while(false);
@@ -257,18 +234,8 @@ namespace driver
       bool is = Interrupt::globalDisable();
       disable();
       clear();
-      resetMux(ctx_.hi->number);
-      ctx_.lo->reg = NULL;
-      ctx_.lo->tos = NULL;
-      delete ctx_.hi->stack;
-      ctx_.hi->stack = NULL;
-      delete ctx_.hi->reg;
-      ctx_.hi->reg = NULL;      
-      ctx_.hi->handler = NULL;
-      ctx_.hi->source = DSPINT;      
-      ctx_.hi->number = 0;      
-      ctx_.lo = NULL;
-      ctx_.hi = NULL;
+      resetMux();
+      contexts_->free(index_);
       Interrupt::globalEnable(is);     
     }
     
@@ -303,21 +270,19 @@ namespace driver
       isInitialized_ = 0; 
       regInt_ = 0;
       contexts_ = NULL;
-      hiContexts_ = NULL;            
-      loContexts_ = NULL;      
+      contextHi_ = NULL;
       if(config.cpuClock <= 0) return false;      
       regInt_ = new (reg::Intc::ADDRESS) reg::Intc();
       contexts_ = new Contexts();
       if( contexts_ == NULL || not contexts_->isConstructed() ) return false;
-      hiContexts_ = &contexts_->hi[0];      
-      loContexts_ = &contexts_->lo[0];            
+      contextHi_ = &contexts_->getHi(0);
       initLow();
       // Set base value of registers
-      for(int32 i=0; i<reg::Intc::EVENT_GROUPS; i++)
+      for(int32 i=1; i<4; i++)
       {
-        // Clear all event flag registers
-        regInt_->evtclr[i].value = 0xffffffff;        
-      }
+        // Clear all mux registers      
+        regInt_->intmux[i].value = 0;      
+      }      
       isInitialized_ = IS_INITIALIZED; 
       return true;
     }
@@ -329,8 +294,6 @@ namespace driver
     {
       delete contexts_;
       regInt_ = NULL;
-      loContexts_ = NULL;      
-      hiContexts_ = NULL;
       contexts_ = NULL;      
       isInitialized_ = 0;    
     }
@@ -369,18 +332,7 @@ namespace driver
     bool isAllocated()
     {
       if( not isConstructed_ ) return false;
-      return ctx_.hi == NULL ? false : true;
-    }
-    
-    /**
-     * Tests if given source is available.
-     *
-     * @param source interrupt source.
-     * @return true if the source is available.
-     */      
-    static bool isSource(int32 source)
-    {
-      return 0 <= source && source < 128 ? true : false;
+      return index_ == -1 ? false : true;
     }
     
     /**
@@ -388,9 +340,9 @@ namespace driver
      *
      * @param vn hardware interrupt vector number.
      */    
-    static void resetMux(int32 vn)
+    void resetMux()
     {
-      setMux(EVT0, vn);
+      setMuxRegister(0, ctx_.hi->number);    
     }    
     
     /**
@@ -398,23 +350,41 @@ namespace driver
      *
      * @param source available interrupt source.
      * @param vn     hardware interrupt vector number.
-     * @return true if no error.
      */    
-    static bool setMux(Source source, int32 vn)
+    void setMux()
     {
-      if(vn < 4 || vn > 16) return false;
+      setMuxRegister(ctx_.hi->source, ctx_.hi->number);
+    }
+    
+    /**
+     * Sets MUX register.
+     *
+     * @param source available interrupt source.
+     * @param vn     hardware interrupt vector number.
+     */    
+    static void setMuxRegister(int32 source, int32 vn)
+    {
+      if(vn < 4 || vn > 16) return;
       int32 i = vn >> 2;
       int32 p = vn & 0x3;
+      // Do reading a current register value, modify the value, and store it back. 
+      // This sequence is required only because TI has not corrected a bug yet with 
+      // the internal data bus of the interrupt controller. The bug cause that 
+      // during accessing to bit field of a register, STB instruction is used 
+      // and rewrites entire register.
+      reg::Intc::Intmux* reg = &regInt_->intmux[i];
+      reg::Intc::Intmux temp = 0;
+      temp.value = reg->value;
       switch(p)
       {
-        case  0: regInt_->intmux[i].bit.intsel0 = source & 0x3f; break;
-        case  1: regInt_->intmux[i].bit.intsel1 = source & 0x3f; break;
-        case  2: regInt_->intmux[i].bit.intsel2 = source & 0x3f; break;
-        case  3: regInt_->intmux[i].bit.intsel3 = source & 0x3f; break;
-        default: return false;
+        case  0: temp.bit.intsel0 = source & 0x7f; break;
+        case  1: temp.bit.intsel1 = source & 0x7f; break;
+        case  2: temp.bit.intsel2 = source & 0x7f; break;
+        case  3: temp.bit.intsel3 = source & 0x7f; break;
+        default: break;
       }
-      return true;
-    }
+      reg->value = temp.value;
+    }    
     
     /**
      * HW interrupt handle routing.
@@ -558,7 +528,7 @@ namespace driver
        */    
       ContextHi() :
         number  (0),
-        source  (EVT0),
+        source  (UNDEF),
         handler (NULL),
         reg     (NULL),
         stack   (NULL){
@@ -583,38 +553,127 @@ namespace driver
     /**
      * All interrupt resource contexts.
      */
-    struct Contexts : public ::Object<>
+    class Contexts : public ::Object<>
     {
       typedef ::Object<> Parent;
+      
+    public:
     
       /**
        * Number of HW interrupt vectors.
        */
       static const int32 NUMBER_VECTORS = 12;      
       
-      /**
-       * Hi level interrupt contexts.
-       */            
-      ::utility::Buffer<ContextHi, NUMBER_VECTORS> hi;
-      
-      /**
-       * Low level interrupt contexts.
-       */    
-      ::utility::Buffer<ContextLo> lo;    
-      
       /** 
        * Constructor.
        */    
       Contexts() : Parent(),
-        hi (),
-        lo (NUMBER_VECTORS, reinterpret_cast< ContextLo* >( &buffer_[0] ) ){
+        hi_        (),
+        lo_        (NUMBER_VECTORS, reinterpret_cast< ContextLo* >( &buffer_[0] ) ),
+        illegalHi_ (),
+        illegalLo_ (){
         setConstruct( construct() ); 
       }
       
       /** 
        * Destructor.
        */
-     ~Contexts(){}
+      virtual ~Contexts()
+      {
+      }
+      
+      /**
+       * Allocates interrupt vectot.
+       *
+       * @param task    user class which implements an interrupt handler interface.
+       * @param source  available interrupt source.
+       * @return a vector intdex, or -1 if error has been occurred.
+       */      
+      int32 allocate(::api::Task& task, Source source)
+      {
+        if( not isConstructed() ) return false;
+        int32 index = -1;
+        // Test if interrupt source had been alloced
+        bool wasAllocated = false;
+        for(int32 i=0; i<NUMBER_VECTORS; i++)
+        {
+          if(hi_[i].source != source) continue;
+          wasAllocated = true;
+          break;
+        }        
+        if( wasAllocated ) return -1;
+        // Looking for free vector and alloc that if it is found          
+        for(int32 i=0; i<Contexts::NUMBER_VECTORS; i++)
+        {
+          if(hi_[i].handler != NULL) continue;
+          index = i;
+          break;
+        }
+        if(index < 0) return -1;
+        // Set new context
+        ContextHi* hi = &hi_[index];
+        ContextLo* lo = &lo_[index];
+        hi->number = index + 4;      
+        hi->source = source;
+        hi->handler = &task;      
+        hi->reg = ::driver::Register::create();
+        if(hi->reg == NULL) return -1;
+        hi->stack = new Stack(::driver::Processor::stackType(), task.stackSize() >> 3);
+        if(hi->stack == NULL || not hi->stack->isConstructed()) return -1;
+        lo->reg = hi->reg->registers();
+        lo->tos = hi->stack->tos();      
+        return index;
+      } 
+      
+      /**
+       * Removes this interrupt source.
+       *
+       * @param index an interrupt index.       
+       */        
+      void free(int32 index)
+      {
+        if( not isConstructed() ) return;      
+        if( not isIndex(index) ) return ;   
+        ContextHi* hi = &hi_[index];
+        ContextLo* lo = &lo_[index];        
+        delete hi->stack;        
+        delete hi->reg;        
+        lo->reg = NULL;
+        lo->tos = NULL;
+        hi->stack = NULL;
+        hi->reg = NULL;      
+        hi->handler = NULL;
+        hi->source = UNDEF;      
+        hi->number = 0;      
+      }      
+      
+      /**
+       * Returns hi context.
+       *
+       * @param index an interrupt index.
+       * @return hi context.
+       */        
+      ContextHi& getHi(int32 index)
+      {
+        if( not isConstructed() ) return illegalHi_;      
+        if( not isIndex(index) ) return illegalHi_;              
+        return hi_[index];
+      }
+
+      /**
+       * Returns a low context.
+       *
+       * @param index an interrupt index.
+       * @return a low context.
+       */              
+      ContextLo& getLo(int32 index)
+      {
+        if( not isConstructed() ) return illegalLo_;      
+        if( not isIndex(index) ) return illegalLo_;              
+        return lo_[index];
+      }
+      
+    private:
      
       /** 
        * Constructs the object.
@@ -626,16 +685,65 @@ namespace driver
       bool construct()
       {
         if( not isConstructed() ) return false;
-        if( not hi.isConstructed() ) return false;
-        if( not lo.isConstructed() ) return false;
-        ContextHi defHi;
-        hi.illegal( defHi );
-        hi.fill( defHi );
-        ContextLo defLo;
-        lo.illegal( defLo );        
-        lo.fill( defLo );                
+        if( not hi_.isConstructed() ) return false;
+        if( not lo_.isConstructed() ) return false;
+        hi_.illegal(illegalHi_);
+        lo_.illegal(illegalLo_);
+        hi_.fill(illegalHi_);
+        lo_.fill(illegalLo_);                
         return true;
-      }          
+      } 
+      
+      /**
+       * Tests if given source is available.
+       *
+       * @param source interrupt source.
+       * @return true if the source is available.
+       */      
+      static bool isSource(int32 source)
+      {
+        return 0 <= source && source < 128 ? true : false;
+      }
+      
+      /**
+       * Tests if given index is available.
+       *
+       * @param index an index.
+       * @return true if the index is available.
+       */      
+      static bool isIndex(int32 index)
+      {
+        return 0 <= index && index < NUMBER_VECTORS ? true : false;
+      }      
+      
+      /**
+       * Hi level interrupt contexts.
+       */            
+      ::utility::Buffer<ContextHi, NUMBER_VECTORS> hi_;
+      
+      /**
+       * Low level interrupt contexts.
+       */    
+      ::utility::Buffer<ContextLo> lo_;
+
+      /**
+       * Hi level interrupt illegal context.
+       */
+      ContextHi illegalHi_;
+      
+      /**
+       * Low level interrupt illegal context.
+       */
+      ContextLo illegalLo_;      
+      
+      /**
+       * Buffer for allocating low level interrupts contexts table (no boot).
+       * 
+       * Here is uint64 used instead of ContextLo for prohibiting of calling
+       * default class constructors and excluding .pinit section by a compiler.
+       * Also, uint64 is needed to be sure that the buffer will be aligned to eight.
+       */    
+      static uint64 buffer_[NUMBER_VECTORS];      
 
     };
     
@@ -690,23 +798,18 @@ namespace driver
     static Contexts* contexts_;
     
     /**
-     * Hi level interrupts contexts table for fast access in interrupt routine (no boot).
+     * All interrupt resource contexts (no boot).
+     *
+     * This field is used only in interrupt service routine 
+     * for fast accessing to the context table.
+     * Don't use the field in any other cases.
      */    
-    static ContextHi* hiContexts_;
+    static ContextHi* contextHi_;    
     
     /**
-     * Low level interrupts contexts table (no boot).
-     */    
-    static ContextLo* loContexts_;
-    
-    /**
-     * Buffer for allocating low level interrupts contexts table (no boot).
-     * 
-     * Here is uint64 used instead of ContextLo for prohibiting of calling
-     * default class constructors and excluding .pinit section by a compiler.
-     * Also, uint64 is needed to be sure that the buffer will be aligned to eight.
-     */    
-    static uint64 buffer_[ Contexts::NUMBER_VECTORS ];
+     * Index of the interrupt context.
+     */       
+    int32 index_;
     
     /**
      * Context of the interrupt.
@@ -724,7 +827,7 @@ namespace driver
    */  
   void InterruptController::handler(register int32 index)
   {
-    register ContextHi* ctx = &hiContexts_[index];
+    register ContextHi* ctx = &contextHi_[index];
     #ifdef EOOS_NESTED_INT
     register bool is = ctx->disable();
     Interrupt::globalEnable(true);
@@ -783,19 +886,14 @@ namespace driver
   InterruptController::Contexts* InterruptController::contexts_;
   
   /**
-   * Hi level interrupts contexts table for fast access in interrupt routine (no boot).
+   * All interrupt resource contexts (no boot).
    */    
-  InterruptController::ContextHi* InterruptController::hiContexts_;
-  
-  /**
-   * Low level interrupts contexts table (no boot).
-   */    
-  InterruptController::ContextLo* InterruptController::loContexts_;
+  InterruptController::ContextHi* InterruptController::contextHi_;
   
   /**
    * Buffer for allocating low level interrupts contexts table (no boot).
    */    
-  uint64 InterruptController::buffer_[ InterruptController::Contexts::NUMBER_VECTORS ];      
+  uint64 InterruptController::Contexts::buffer_[ InterruptController::Contexts::NUMBER_VECTORS ];      
 
 }
 #endif // DRIVER_INTERRUPT_CONTROLLER_HPP_

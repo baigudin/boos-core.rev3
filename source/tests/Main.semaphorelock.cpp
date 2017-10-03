@@ -8,6 +8,7 @@
 #include "Main.hpp"
 #include "system.Thread.hpp"
 #include "system.Mutex.hpp"
+#include "system.Semaphore.hpp"
 #include "system.System.hpp"
 
 /**

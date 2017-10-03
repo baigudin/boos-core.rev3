@@ -37,19 +37,19 @@
    
     .ref  ___bss__
     .ref  _handler__Q2_6driver19InterruptControllerSFi
-    .ref  _buffer___Q2_6driver19InterruptController
+    .ref  _buffer___Q3_6driver19InterruptController8Contexts
     
-    .asg  ___bss__,                                         m_bss
-    .asg  _globalDisable__Q2_6driver9InterruptSFv,          m_global_disable
-    .asg  _globalEnable__Q2_6driver9InterruptSFb,           m_global_enable
-    .asg  _disableLow__Q2_6driver19InterruptControllerSFUi, m_disable
-    .asg  _enableLow__Q2_6driver19InterruptControllerSFUib, m_enable
-    .asg  _setLow__Q2_6driver19InterruptControllerSFUi,     m_set
-    .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,   m_clear
-    .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,    m_jump
-    .asg  _initLow__Q2_6driver19InterruptControllerSFv,     m_init
-    .asg  _handler__Q2_6driver19InterruptControllerSFi,     m_handler
-    .asg  _buffer___Q2_6driver19InterruptController,        v_context
+    .asg  ___bss__,                                           m_bss
+    .asg  _globalDisable__Q2_6driver9InterruptSFv,            m_global_disable
+    .asg  _globalEnable__Q2_6driver9InterruptSFb,             m_global_enable
+    .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
+    .asg  _enableLow__Q2_6driver19InterruptControllerSFUib,   m_enable
+    .asg  _setLow__Q2_6driver19InterruptControllerSFUi,       m_set
+    .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,     m_clear
+    .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,      m_jump
+    .asg  _initLow__Q2_6driver19InterruptControllerSFv,       m_init
+    .asg  _handler__Q2_6driver19InterruptControllerSFi,       m_handler
+    .asg  _buffer___Q3_6driver19InterruptController8Contexts, v_context
 
     .endif
 

@@ -14,12 +14,5 @@
  */   
 int32 Main::main()
 {
-  volatile bool isContinue = true;
-  while( isContinue )
-  {
-    asm(" nop");
-    asm(" nop");
-    asm(" nop");        
-  }
   return 0;
 }

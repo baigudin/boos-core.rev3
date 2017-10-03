@@ -33,9 +33,9 @@ namespace system
      * Constructor.
      *
      * @param permits the initial number of permits available.      
-     * @param fair true if this semaphore will guarantee FIFO granting of permits under contention.
+     * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.
      */      
-    Semaphore(int32 permits, bool fair);
+    Semaphore(int32 permits, bool isFair);
                             
     /** 
      * Destructor.
