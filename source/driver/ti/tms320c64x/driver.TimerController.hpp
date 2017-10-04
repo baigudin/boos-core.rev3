@@ -16,8 +16,6 @@ namespace driver
 {
   class TimerController : public ::driver::TimerResource
   {
-    friend class ::driver::Timer;
-    
     typedef ::driver::TimerResource  Parent;
     
   public:
@@ -180,7 +178,7 @@ namespace driver
      */  
     virtual int64 internalClock() const
     {
-      return config_.cpuClock >> 3;    
+      return cpuClock_ >> 3;    
     }    
     
     /**
@@ -209,6 +207,39 @@ namespace driver
       return -1;
     }
     
+    /**
+     * Initialization.
+     *
+     * @param config the operating system configuration.
+     * @return true if no errors.
+     */
+    static bool init(const ::Configuration& config)
+    {
+      isInitialized_ = 0;        
+      cpuClock_ = config.cpuClock;
+      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
+      {
+        switch(i)
+        {
+          case  0: new (reg::Timer::ADDRESS0) reg::Timer(); break;
+          case  1: new (reg::Timer::ADDRESS1) reg::Timer(); break;
+          case  2: new (reg::Timer::ADDRESS2) reg::Timer(); break;
+          default: return false;
+        }
+        lock_[i] = false;      
+      } 
+      isInitialized_ = IS_INITIALIZED;            
+      return true;
+    }
+    
+    /**
+     * Deinitialization.
+     */
+    static void deinit()
+    {
+      isInitialized_ = 0;    
+    }    
+    
   private:
   
     /** 
@@ -219,6 +250,7 @@ namespace driver
      */  
     bool construct(int32 index)
     {
+      if(isInitialized_ != IS_INITIALIZED) return false;    
       uint32 addr;
       bool is = Interrupt::globalDisable();
       switch(index)
@@ -236,36 +268,6 @@ namespace driver
     }
     
     /**
-     * Initialization.
-     *
-     * @param config the operating system configuration.
-     * @return true if no errors.
-     */
-    static bool init(const ::Configuration& config)
-    {
-      config_ = config;
-      for(int32 i=0; i<RESOURCES_NUMBER; i++) 
-      {
-        switch(i)
-        {
-          case  0: new (reg::Timer::ADDRESS0) reg::Timer(); break;
-          case  1: new (reg::Timer::ADDRESS1) reg::Timer(); break;
-          case  2: new (reg::Timer::ADDRESS2) reg::Timer(); break;
-          default: return false;
-        }
-        lock_[i] = false;      
-      } 
-      return true;
-    }
-    
-    /**
-     * Deinitialization.
-     */
-    static void deinit()
-    {
-    }
-
-    /**
      * Copy constructor.
      *
      * @param obj reference to source object.
@@ -279,6 +281,11 @@ namespace driver
      * @return reference to this object.     
      */
     TimerController& operator =(const TimerController& obj);
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x95633217;        
 
     /**
      * Number of HW timers.
@@ -286,9 +293,14 @@ namespace driver
     static const int32 RESOURCES_NUMBER = 3;
     
     /**
-     * The operating system configuration (no boot).
+     * Driver has been initialized successfully (no boot).
      */
-    static ::Configuration config_;     
+    static int32 isInitialized_;        
+    
+    /**
+     * CPU clock rate in Hz (no boot).
+     */      
+    static int64 cpuClock_;    
     
     /**
      * Locked by some object flag of each HW timer (no boot).
@@ -308,9 +320,14 @@ namespace driver
   };
   
   /**
-   * The operating system configuration (no boot).
+   * Driver has been initialized successfully (no boot).
    */
-  ::Configuration TimerController::config_;
+  int32 TimerController::isInitialized_;    
+  
+  /**
+   * CPU clock rate in Hz (no boot).
+   */      
+  int64 TimerController::cpuClock_;
 
   /**
    * Locked by some object flag of each HW timer (no boot).  

@@ -14,8 +14,6 @@ namespace driver
 {
   class PllController : public ::driver::PllResource
   {
-    friend class ::driver::Pll;
-      
     typedef ::driver::PllResource  Parent;
     
   public:
@@ -25,6 +23,7 @@ namespace driver
      */     
     PllController() : Parent()
     {
+      setConstruct( construct() );    
     }
     
     /** 
@@ -33,8 +32,6 @@ namespace driver
     virtual ~PllController()
     {
     }  
-  
-  private:  
 
     /**
      * Initialization.
@@ -44,6 +41,7 @@ namespace driver
      */
     static bool init(const ::Configuration& config)
     {
+      isInitialized_ = IS_INITIALIZED;                
       return true;
     }
 
@@ -52,7 +50,21 @@ namespace driver
      */
     static void deinit()
     {
+      isInitialized_ = 0;        
     }
+    
+  private:  
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
+    }    
     
     /**
      * Copy constructor.
@@ -69,6 +81,22 @@ namespace driver
      */
     PllController& operator =(const PllController& obj);
     
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x95633217;    
+    
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;        
+    
   };
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 PllController::isInitialized_;  
+
 }
 #endif // DRIVER_PLL_CONTROLLER_HPP_

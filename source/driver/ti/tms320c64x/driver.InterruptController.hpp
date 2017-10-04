@@ -19,8 +19,6 @@ namespace driver
 {
   class InterruptController : public ::driver::InterruptResource
   {
-    friend class ::driver::Interrupt;
-  
     typedef ::driver::InterruptResource     Parent;
     typedef ::utility::Stack<int64,Allocator>  Stack;
 
@@ -31,26 +29,26 @@ namespace driver
      */
     enum Source 
     {
-      DSPINT     = 0x00, //Host port host to DSP interrupt
-      TINT0      = 0x01, //Timer 0 interrupt
-      TINT1      = 0x02, //Timer 1 interrupt
-      SD_INTA    = 0x03, //EMIFA SDRAM timer interrupt
-      GPINT4     = 0x04, //GPIO interrupt 4/External interrupt 4
-      GPINT5     = 0x05, //GPIO interrupt 5/External interrupt 5
-      GPINT6     = 0x06, //GPIO interrupt 6/External interrupt 6
-      GPINT7     = 0x07, //GPIO interrupt 7/External interrupt 7
-      EDMA_INT   = 0x08, //EDMA channel (0 through 63) interrupt
-      XINT0      = 0x0c, //McBSP 0 transmit interrupt
-      RINT0      = 0x0d, //McBSP 0 receive interrupt
-      XINT1      = 0x0e, //McBSP 1 transmit interrupt
-      RINT1      = 0x0f, //McBSP 1 receive interrupt
-      GPINT0     = 0x10, //GPIO interrupt 0
-      XINT2      = 0x11, //McBSP 2 transmit interrupt
-      RINT2      = 0x12, //McBSP 2 receive interrupt
-      TINT2      = 0x13, //Timer 2 interrupt
-      SD_INTB    = 0x14, //EMIFB SDRAM timer interrupt
-      PCI_WAKEUP = 0x15, //PCI wakeup interrupt
-      UINT       = 0x17  //UTOPIA interupt
+      DSPINT     = 0x00, // Host port host to DSP interrupt
+      TINT0      = 0x01, // Timer 0 interrupt
+      TINT1      = 0x02, // Timer 1 interrupt
+      SD_INTA    = 0x03, // EMIFA SDRAM timer interrupt
+      GPINT4     = 0x04, // GPIO interrupt 4/External interrupt 4
+      GPINT5     = 0x05, // GPIO interrupt 5/External interrupt 5
+      GPINT6     = 0x06, // GPIO interrupt 6/External interrupt 6
+      GPINT7     = 0x07, // GPIO interrupt 7/External interrupt 7
+      EDMA_INT   = 0x08, // EDMA channel (0 through 63) interrupt
+      XINT0      = 0x0c, // McBSP 0 transmit interrupt
+      RINT0      = 0x0d, // McBSP 0 receive interrupt
+      XINT1      = 0x0e, // McBSP 1 transmit interrupt
+      RINT1      = 0x0f, // McBSP 1 receive interrupt
+      GPINT0     = 0x10, // GPIO interrupt 0
+      XINT2      = 0x11, // McBSP 2 transmit interrupt
+      RINT2      = 0x12, // McBSP 2 receive interrupt
+      TINT2      = 0x13, // Timer 2 interrupt
+      SD_INTB    = 0x14, // EMIFB SDRAM timer interrupt
+      PCI_WAKEUP = 0x15, // PCI wakeup interrupt
+      UINT       = 0x17  // UTOPIA interupt
     };  
   
     /** 
@@ -58,7 +56,7 @@ namespace driver
      */    
     InterruptController() : Parent(),
       ctx_ (NULL){
-      setConstruct( true );
+      setConstruct( construct() );
     } 
 
     /** 
@@ -69,7 +67,7 @@ namespace driver
      */     
     InterruptController(::api::Task* handler, int32 source) : Parent(),
       ctx_ (NULL){
-      setConstruct( setHandler(*handler, source) );
+      setConstruct( construct(*handler, source) );
     }
     
     /** 
@@ -238,8 +236,60 @@ namespace driver
       if(!isAllocated()) return;
       ctx_->low->reg = reg.registers();
     }
+    
+    /**
+     * Initialization.
+     *
+     * @param config the operating system configuration.
+     * @return true if no errors.
+     */
+    static bool init(const ::Configuration& config)
+    {
+      isInitialized_ = 0;    
+      config_ = config;
+      intc_ = new (reg::Intc::ADDRESS) reg::Intc();      
+      utility::Memory::memset(context_, 0x0, sizeof(context_));
+      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));    
+      isInitialized_ = IS_INITIALIZED;      
+      return true;
+    }
+    
+    /**
+     * Deinitialization.
+     */
+    static void deinit()
+    {
+      intc_ = NULL;
+      utility::Memory::memset(context_, 0x0, sizeof(context_));
+      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));         
+      isInitialized_ = 0;      
+    }    
 
   private:
+  
+    /** 
+     * Constructs the object.
+     *
+     * @return true if object has been constructed successfully.
+     */
+    bool construct()
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return true;
+    }
+    
+    /** 
+     * Constructs the object.
+     *
+     * @param handler user class which implements an interrupt handler interface.
+     * @param source  available interrupt source.     
+     * @return true if object has been constructed successfully.
+     */
+    bool construct(::api::Task& handler, int32 source)
+    {
+      if(isInitialized_ != IS_INITIALIZED) return false;
+      return setHandler(handler, source);
+    }
   
     /**
      * Tests if this interrupt source can be polarized.
@@ -292,31 +342,6 @@ namespace driver
     }      
     
     /**
-     * Initialization.
-     *
-     * @param config the operating system configuration.
-     * @return true if no errors.
-     */
-    static bool init(const ::Configuration& config)
-    {
-      config_ = config;
-      intc_ = new (reg::Intc::ADDRESS) reg::Intc();      
-      utility::Memory::memset(context_, 0x0, sizeof(context_));
-      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));    
-      return true;
-    }
-    
-    /**
-     * Deinitialization.
-     */
-    static void deinit()
-    {
-      intc_ = NULL;
-      utility::Memory::memset(context_, 0x0, sizeof(context_));
-      utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));         
-    }
-    
-    /**
      * Current object has HW interrupt.
      *
      * @return true if object has interrupt source.
@@ -328,7 +353,7 @@ namespace driver
     }      
     
     /**
-     * Set MUX register.
+     * Sets MUX register.
      *
      * @param source available interrupt source.
      * @param vn hardware interrupt vector number.
@@ -473,11 +498,21 @@ namespace driver
       ContextLow* low;        
 
     };
+    
+    /**
+     * The driver initialized falg value.
+     */
+    static const int32 IS_INITIALIZED = 0x35441887;    
 
     /**
      * Number of HW interrupt vectors.
      */
     static const int32 NUMBER_VECTORS = 12;
+
+    /**
+     * Driver has been initialized successfully (no boot).
+     */
+    static int32 isInitialized_;        
 
     /**
      * HW interrupt registers (no boot).
@@ -524,6 +559,11 @@ namespace driver
     ctx->enable(is);
     #endif
   }    
+  
+  /**
+   * Driver has been initialized successfully (no boot).
+   */
+  int32 InterruptController::isInitialized_;    
   
   /**
    * HW interrupt registers (no boot).

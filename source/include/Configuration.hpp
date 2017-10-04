@@ -42,6 +42,8 @@ public:
   
   /** 
    * Copy constructor.
+   *
+   * @param obj a source object.
    */     
   Configuration(const Configuration& obj) :
     sourceClock (obj.sourceClock),
@@ -60,8 +62,8 @@ public:
   /**
    * Assignment operator.
    *
-   * @param obj reference to source object.
-   * @return reference to this object.     
+   * @param obj a source object.
+   * @return this object.     
    */
   Configuration& operator =(const Configuration& obj)
   {

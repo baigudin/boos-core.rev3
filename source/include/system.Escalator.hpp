@@ -152,7 +152,7 @@ namespace system
       }
       
       /**
-       * Inequality operator.
+       * Equality operator.
        *
        * @param obj1 reference first object.
        * @param obj2 reference second object.
@@ -297,7 +297,7 @@ namespace system
   };
   
   /**
-   * Inequality operator.
+   * Equality operator.
    *
    * @param obj1 reference first object.
    * @param obj2 reference second object.

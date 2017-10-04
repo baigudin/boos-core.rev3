@@ -1,0 +1,62 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.exe.ti.tms320c64xplus.coff.ccstudio33\"
+ProjectType=Executable
+CPUFamily=TMS320C64XX
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="Linker"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Boot.cpp"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Boot.ll.asm"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Interrupt.cpp"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Interrupt.ll.asm"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Pll.cpp"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Processor.cpp"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Register.cpp"
+Source="..\..\source\driver\ti\tms320c64xplus\driver.Timer.cpp"
+Source="..\..\source\system\system.Escalator.cpp"
+Source="..\..\source\system\system.Interrupt.cpp"
+Source="..\..\source\system\system.Main.cpp"
+Source="..\..\source\system\system.Mutex.cpp"
+Source="..\..\source\system\system.Semaphore.cpp"
+Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
+Source="..\..\source\system\system.Timer.cpp"
+Source="..\..\source\system\system.TimerInterrupt.cpp"
+Source="Debug\eoos.tms320c64xplus.debug.map"
+Source="source\Board.cpp"
+Source="source\Configuration.cpp"
+Source="source\libraries\rts64plus.v6.0.11.lib"
+Source="source\Main.cpp"
+Source="..\..\source\driver\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -mv6400+ --mem_model:data=far
+
+["Compiler" Settings: "Release"]
+Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far --abi=coffabi
+
+["Linker" Settings: "Debug"]
+Options=-c -h -m".\Debug\eoos.tms320c64xplus.debug.map" -o".\Debug\eoos.tms320c64xplus.debug.out" -s -w -x
+
+["Linker" Settings: "Release"]
+Options=-a -c -m".\Release\eoos.tms320c64xplus.map" -o".\Release\eoos.tms320c64xplus.out" -w -x
+
+["Debug\eoos.tms320c64xplus.debug.map" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["Debug\eoos.tms320c64xplus.debug.map" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\..\source\driver\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["..\..\source\driver\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Release"]
+LinkOrder=1
+

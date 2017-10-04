@@ -61,7 +61,7 @@ namespace driver
      * 
      * Method restores default registers for storing the CPU registers to it.
      * This method may be called in an user interrupt handler, it means
-     * the default conxet will be restored by the context restore procedure.
+     * the default conxet will be restored with the context restore procedure.
      */
     virtual void resetRegister() = 0;
     
