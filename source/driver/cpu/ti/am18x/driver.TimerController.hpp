@@ -135,7 +135,7 @@ namespace driver
         virtual void setPeriod(int64 us=0)
         {
             if(!isConstructed_) return;
-            int64 clock = internalClock();
+            int64 clock = getInternalClock();
             if(clock == 0) return;       
             uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffffffffffff;
             bool is = isStarted();
@@ -181,7 +181,7 @@ namespace driver
          *
          * @return timer digits.
          */  
-        virtual int32 digits() const
+        virtual int32 getDigit() const
         {
             return 64;
         }
@@ -191,7 +191,7 @@ namespace driver
          *
          * @return timer internal clock.
          */  
-        virtual int64 internalClock() const
+        virtual int64 getInternalClock() const
         {
             if(!isConstructed_) return 0;
             int64 oscin = config_.sourceClock;
@@ -274,7 +274,7 @@ namespace driver
          *
          * @return available interrupt source.
          */  
-        virtual int32 interrupSource() const
+        virtual int32 getInterrupSource() const
         {
             switch(index_)
             {

@@ -120,7 +120,7 @@ namespace driver
             }
             else
             {
-                int64 clock = internalClock();
+                int64 clock = getInternalClock();
                 if(clock == 0) return;      
                 uint64 prd = (us * clock) / 1000000;
                 if( (prd & 0xffffffff00000000) == 0) regTim_->prd.value = prd & 0x00000000ffffffff;
@@ -166,7 +166,7 @@ namespace driver
          *
          * @return timer digits.
          */  
-        virtual int32 digits() const
+        virtual int32 getDigit() const
         {
             return 32;
         }
@@ -176,7 +176,7 @@ namespace driver
          *
          * @return timer internal clock.
          */  
-        virtual int64 internalClock() const
+        virtual int64 getInternalClock() const
         {
             return cpuClock_ >> 3;    
         }    
@@ -196,7 +196,7 @@ namespace driver
          *
          * @return available interrupt source, or -1 if error has been occurred.
          */  
-        virtual int32 interrupSource() const
+        virtual int32 getInterrupSource() const
         {
             switch(index_)
             {

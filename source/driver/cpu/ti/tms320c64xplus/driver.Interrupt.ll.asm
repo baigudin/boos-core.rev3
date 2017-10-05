@@ -181,7 +181,7 @@ m_isr:
         stdw            a21:a20, *++a0[2]
      || stdw            b21:b20, *++b0[2]
      || mv              b3, a3
-    ;|| mvc FOR BACKLOG ier, b3
+     || mvc             itsr, b3
         stdw            a23:a22, *++a0[2]
      || stdw            b23:b22, *++b0[2]
         ; Call an interrupt handler
@@ -232,7 +232,7 @@ m_restore?
      || mvc             a28, amr
         lddw            *a31++[2], a13:a12
      || lddw            *b31++[2], b13:b12
-    ;|| mvc FOR BACKLOG b29, ier
+     || mvc             b29, itsr
         lddw            *a31++[2], a15:a14
      || lddw            *b31++[2], b15:b14
      || mvc             b28, csr

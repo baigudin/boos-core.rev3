@@ -266,20 +266,20 @@ namespace driver
         }
         
         /**
-         * Resets registers context for storing to the default.
-         */
-        virtual void resetRegister()
-        {
-        }
-        
-        /**
          * Sets new registers context for storing.
          *
          * @param reg new registers context.
          */
-        virtual void setRegister(::driver::Register& reg)
+        virtual void setContext(::driver::Register& reg)
         {
         }
+        
+        /**
+         * Restores registers context for storing to the default.
+         */
+        virtual void restoreContext()
+        {
+        }        
         
         /**
          * Disables all maskable interrupts.

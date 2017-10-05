@@ -41,7 +41,7 @@ namespace driver
             a26_(0), a27_(0), b26_(0), b27_(0),
             a28_(0), a29_(0), b28_(0), b29_(0),
             a30_(0), a31_(0), b30_(0), b31_(0),
-            amr_(0), irp_(0), csr_(0), ier_(0){
+            amr_(0), irp_(0), csr_(0),itsr_(0){
             setConstruct( construct() );
         }
         
@@ -122,7 +122,7 @@ namespace driver
             a26_ = a27_ = b26_ = b27_ =
             a28_ = a29_ = b28_ = b29_ =
             a30_ = a31_ = b30_ = b31_ =
-            amr_ = irp_ = csr_ = ier_ = 0x00000000; 
+            amr_ = irp_ = csr_ = itsr_= 0x00000000; 
             #else // !EOOS_DEBUG
             int32 id = 0x0B00C;
             a0_  = 0xa00<<20|id;  b0_  = 0xb00<<20|id;
@@ -157,7 +157,7 @@ namespace driver
             a29_ = 0xa29<<20|id;  b29_ = 0xb29<<20|id;
             a30_ = 0xa30<<20|id;  b30_ = 0xb30<<20|id;
             a31_ = 0xa31<<20|id;  b31_ = 0xb31<<20|id;
-            amr_ = irp_ = csr_ = ier_ = 0x00000000;
+            amr_ = irp_ = csr_ = itsr_ = 0x00000000;
             #endif // EOOS_DEBUG
             a15_ = 0x00000000;
             return true;
@@ -207,7 +207,7 @@ namespace driver
             amr_ = reg.amr_;
             irp_ = reg.irp_;
             csr_ = reg.csr_;
-            ier_ = reg.ier_;
+            itsr_ = reg.itsr_;
             return reg.isConstructed();
         }
         
@@ -234,7 +234,7 @@ namespace driver
             a26_(obj.a26_), a27_(obj.a27_), b26_(obj.b26_), b27_(obj.b27_),
             a28_(obj.a28_), a29_(obj.a29_), b28_(obj.b28_), b29_(obj.b29_),
             a30_(obj.a30_), a31_(obj.a31_), b30_(obj.b30_), b31_(obj.b31_),
-            amr_(obj.amr_), irp_(obj.irp_), csr_(obj.csr_), ier_(obj.ier_){
+            amr_(obj.amr_), irp_(obj.irp_), csr_(obj.csr_),itsr_(obj.itsr_){
             setConstruct( copy(obj) );
         }
         
@@ -318,7 +318,7 @@ namespace driver
               a26_, a27_, b26_, b27_,
               a28_, a29_, b28_, b29_,
               a30_, a31_, b30_, b31_,
-              amr_, irp_, csr_, ier_; 
+              amr_, irp_, csr_, itsr_; 
       
     };  
 }

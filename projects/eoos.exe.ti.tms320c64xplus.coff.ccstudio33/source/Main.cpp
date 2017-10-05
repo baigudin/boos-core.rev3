@@ -14,5 +14,12 @@
  */   
 int32 Main::main()
 {
+    volatile bool exe = true;
+    while(exe)
+    {
+        asm(" nop");
+        asm(" nop");
+        asm(" nop");                
+    }
     return 0;
 }

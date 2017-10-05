@@ -37,7 +37,7 @@ Source="source\Main.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd"
 
 ["Compiler" Settings: "Debug"]
-Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -mv6400+ --mem_model:data=far
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_DEBUG" -mv6400+ --mem_model:data=far
 
 ["Compiler" Settings: "Release"]
 Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far --abi=coffabi
