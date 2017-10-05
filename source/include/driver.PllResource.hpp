@@ -16,60 +16,60 @@
 
 namespace driver
 {
-  class PllResource : public ::Object<>, public ::driver::Pll
-  {
-    typedef ::Object<>  Parent;
-    
-  public:
-  
-    /** 
-     * Constructor.
-     */     
-    PllResource() : Parent(),
-      isConstructed_ (getConstruct()){
-    }    
-  
-    /** 
-     * Destructor.
-     */                               
-    virtual ~PllResource()
+    class PllResource : public ::Object<>, public ::driver::Pll
     {
-    }
+        typedef ::Object<>  Parent;
+      
+    public:
     
-    /**
-     * Tests if this object has been constructed.
-     *
-     * @return true if object has been constructed successfully.
-     */    
-    virtual bool isConstructed() const
-    {
-      return isConstructed_;
-    }
+        /** 
+         * Constructor.
+         */     
+        PllResource() : Parent(),
+          isConstructed_ (getConstruct()){
+        }    
+        
+        /** 
+         * Destructor.
+         */                               
+        virtual ~PllResource()
+        {
+        }
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }
+      
+    protected:
+      
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;
+      
+    private:
     
-  protected:
-    
-    /** 
-     * The root object constructed flag.
-     */  
-    const bool& isConstructed_;
-    
-  private:
+        /**
+         * Copy constructor.
+         *
+         * @param obj reference to source object.
+         */
+        PllResource(const PllResource& obj);
+        
+        /**
+         * Assignment operator.
+         *
+         * @param obj reference to source object.
+         * @return reference to this object.     
+         */
+        PllResource& operator =(const PllResource& obj);      
   
-    /**
-     * Copy constructor.
-     *
-     * @param obj reference to source object.
-     */
-    PllResource(const PllResource& obj);
-
-    /**
-     * Assignment operator.
-     *
-     * @param obj reference to source object.
-     * @return reference to this object.     
-     */
-    PllResource& operator =(const PllResource& obj);      
-
-  };
+    };
 }
 #endif // DRIVER_PLL_RESOURCE_HPP_

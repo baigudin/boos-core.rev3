@@ -14,30 +14,30 @@
 
 namespace api
 {
-  class Task : public ::api::Object
-  {
-    
-  public:
-
-    /** 
-     * Destructor.
-     */
-    virtual ~Task(){}
-    
-    /**
-     * The method with self context.
-     */  
-    virtual void main() = 0;
-    
-    /**
-     * Returns size of stack.
-     *
-     * The method returns size of stack in bytes which should be allocated for the task.
-     *
-     * @return stack size in bytes.
-     */  
-    virtual int32 stackSize() const = 0;
-
-  };
+    class Task : public ::api::Object
+    {
+      
+    public:
+  
+        /** 
+         * Destructor.
+         */
+        virtual ~Task(){}
+        
+        /**
+         * The method with self context.
+         */  
+        virtual void main() = 0;
+        
+        /**
+         * Returns size of stack.
+         *
+         * The method returns size of stack in bytes which should be allocated for the task.
+         *
+         * @return stack size in bytes.
+         */  
+        virtual int32 getStackSize() const = 0;
+  
+    };
 }
 #endif // API_TASK_HPP_

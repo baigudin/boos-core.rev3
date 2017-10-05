@@ -13,29 +13,30 @@
 
 namespace api
 {
-  /** 
-   * @param Type data type of element.
-   */ 
-  template <typename Type>
-  class Iterable : public ::api::Object
-  {
+    /** 
+     * @param Type data type of element.
+     */ 
+    template <typename Type>
+    class Iterable : public ::api::Object
+    {
+      
+    public:
     
-  public:
+        /**
+         * Destructor.
+         */
+        virtual ~Iterable(){}
+       
+        /**
+         * Returns an iterator of elements.
+         *
+         * You have to call the delete operator for returned iterator when 
+         * it has been used, and you do not need to iterate a collection.
+         *
+         * @return pointer to new iterator.
+         */
+        virtual ::api::Iterator<Type>* getIterator() = 0;
   
-    /**
-     * Destructor.
-     */
-    virtual ~Iterable(){}
-
-    /**
-     * Returns an iterator of elements.
-     *
-     * You have to call delete operator for returned iterator after it is used.
-     *
-     * @return pointer to new iterator.
-     */
-    virtual ::api::Iterator<Type>* iterator() = 0;
-
-  };
+    };
 }
 #endif // API_ITERABLE_HPP_

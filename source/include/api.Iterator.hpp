@@ -13,41 +13,41 @@
 
 namespace api
 {
-  /** 
-   * @param Type data type of iterator element.
-   */ 
-  template <typename Type>
-  class Iterator : public ::api::IllegalValue<Type>
-  {
+    /** 
+     * @param Type data type of iterator element.
+     */ 
+    template <typename Type>
+    class Iterator : public ::api::IllegalValue<Type>
+    {
+      
+    public:
     
-  public:
-  
-    /**
-     * Destructor.
-     */
-    virtual ~Iterator(){}
+        /**
+         * Destructor.
+         */
+        virtual ~Iterator(){}
+        
+        /**
+         * Returns next element and advances the cursor position.
+         *
+         * @return reference to element.
+         */      
+        virtual Type getNext() = 0;
+        
+        /**
+         * Tests if this iteration may return a next element.
+         *
+         * @return true if next element is had.
+         */      
+        virtual bool hasNext() const = 0;
+        
+        /**
+         * Removes the last element returned by this iterator.
+         *
+         * @return true if an element is removed successfully.
+         */
+        virtual bool remove() = 0;
 
-    /**
-     * Returns next element and advances the cursor position.
-     *
-     * @return reference to element.
-     */      
-    virtual Type next() = 0;
-
-    /**
-     * Tests if this iteration may return a next element.
-     *
-     * @return true if next element is had.
-     */      
-    virtual bool hasNext() const = 0;
-
-    /**
-     * Removes the last element returned by this iterator.
-     *
-     * @return true if an element is removed successfully.
-     */
-    virtual bool remove() = 0;
-
-  };
+    };
 }
 #endif // API_ITERATOR_HPP_

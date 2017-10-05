@@ -16,60 +16,60 @@
 
 namespace driver
 {
-  class WatchdogResource : public ::Object<>, public ::driver::Watchdog
-  {
-    typedef ::Object<>  Parent;
-    
-  public:
-  
-    /** 
-     * Constructor.
-     */     
-    WatchdogResource() : Parent(),
-      isConstructed_ (getConstruct()){
-    }    
-  
-    /** 
-     * Destructor.
-     */                               
-    virtual ~WatchdogResource()
+    class WatchdogResource : public ::Object<>, public ::driver::Watchdog
     {
-    }
+        typedef ::Object<>  Parent;
+      
+    public:
     
-    /**
-     * Tests if this object has been constructed.
-     *
-     * @return true if object has been constructed successfully.
-     */    
-    virtual bool isConstructed() const
-    {
-      return isConstructed_;
-    }
+        /** 
+         * Constructor.
+         */     
+        WatchdogResource() : Parent(),
+            isConstructed_ (getConstruct()){
+        }    
+      
+        /** 
+         * Destructor.
+         */                               
+        virtual ~WatchdogResource()
+        {
+        }
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }
+      
+    protected:
+      
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;
+      
+    private:
     
-  protected:
-    
-    /** 
-     * The root object constructed flag.
-     */  
-    const bool& isConstructed_;
-    
-  private:
+        /**
+         * Copy constructor.
+         *
+         * @param obj reference to source object.
+         */
+        WatchdogResource(const WatchdogResource& obj);
+        
+        /**
+         * Assignment operator.
+         *
+         * @param obj reference to source object.
+         * @return reference to this object.     
+         */
+        WatchdogResource& operator =(const WatchdogResource& obj);      
   
-    /**
-     * Copy constructor.
-     *
-     * @param obj reference to source object.
-     */
-    WatchdogResource(const WatchdogResource& obj);
-
-    /**
-     * Assignment operator.
-     *
-     * @param obj reference to source object.
-     * @return reference to this object.     
-     */
-    WatchdogResource& operator =(const WatchdogResource& obj);      
-
-  };
+    };
 }
 #endif // DRIVER_WATCHDOG_RESOURCE_HPP_

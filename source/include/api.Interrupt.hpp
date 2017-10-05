@@ -12,31 +12,31 @@
 
 namespace api
 {
-  class Interrupt : public ::api::Toggle
-  {
-
-  public:
-    
-    /** 
-     * Destructor.
-     */                               
-    virtual ~Interrupt(){}
-    
-    /**
-     * Jumps to interrupt hardware vector.
-     */      
-    virtual void jump() = 0;
-    
-    /**
-     * Clears an interrupt status of this source.
-     */     
-    virtual void clear() = 0;
-    
-    /**
-     * Sets an interrupt status of this source.
-     */    
-    virtual void set() = 0;
-    
-  };
+    class Interrupt : public ::api::Toggle
+    {
+  
+    public:
+      
+        /** 
+         * Destructor.
+         */                               
+        virtual ~Interrupt(){}
+        
+        /**
+         * Jumps to interrupt hardware vector.
+         */      
+        virtual void jump() = 0;
+        
+        /**
+         * Clears an interrupt status of this source.
+         */     
+        virtual void clear() = 0;
+        
+        /**
+         * Sets an interrupt status of this source.
+         */    
+        virtual void set() = 0;
+      
+    };
 }
 #endif // API_INTERRUPT_HPP_

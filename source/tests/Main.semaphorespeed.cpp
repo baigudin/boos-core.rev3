@@ -54,21 +54,21 @@
  */   
 int32 Main::main()
 {
-  // Create and check a semaphore
-  ::system::Semaphore rsem(1, false);
-  if(!rsem.isConstructed()) return 1;  
-  // Create a semaphore interface of the semaphore,
-  // because normally, semaphores are released 
-  // by references or pointers
-  ::api::Semaphore& isem = rsem;
-  volatile int64 time[2], result;
-  time[0] = ::system::System::nanoTime();
-  for(int32 i=0; i<1000000; i++)
-  {
-    rsem.acquire(1);
-    isem.release(1);
-  }
-  time[1] = ::system::System::nanoTime();
-  result = time[1] - time[0];
-  return result ? 0 : 1;
+    // Create and check a semaphore
+    ::system::Semaphore rsem(1, false);
+    if(!rsem.isConstructed()) return 1;  
+    // Create a semaphore interface of the semaphore,
+    // because normally, semaphores are released 
+    // by references or pointers
+    ::api::Semaphore& isem = rsem;
+    volatile int64 time[2], result;
+    time[0] = ::system::System::nanoTime();
+    for(int32 i=0; i<1000000; i++)
+    {
+        rsem.acquire(1);
+        isem.release(1);
+    }
+    time[1] = ::system::System::nanoTime();
+    result = time[1] - time[0];
+    return result ? 0 : 1;
 }

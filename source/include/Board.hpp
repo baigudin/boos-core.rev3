@@ -16,18 +16,18 @@ class Board
 
 public:
 
-  /**
-   * Initializes a processor board.
-   *
-   * @param config the operating system configuration.
-   * @return true if no errors have been occurred.
-   */   
-  static bool init(const ::Configuration config);
-  
-  /**
-   * Deinitializes a processor board.
-   */
-  static void deinit();
+    /**
+     * Initializes a processor board.
+     *
+     * @param config the operating system configuration.
+     * @return true if no errors have been occurred.
+     */   
+    static bool initialize(const ::Configuration config);
+    
+    /**
+     * Deinitializes a processor board.
+     */
+    static void deinitialize();
   
 };
 #endif // BOARD_HPP_ 

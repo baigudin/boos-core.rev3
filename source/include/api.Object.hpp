@@ -12,35 +12,35 @@
 
 namespace api
 {  
-  class Object
-  {
-
-  public:
-
-    /** 
-     * Destructor.
-     */
-    virtual ~Object(){}
-
-    /**
-     * Tests if this object has been constructed.
-     *
-     * @return true if object has been constructed successfully.
-     */    
-    virtual bool isConstructed() const = 0;
-    
-    /**
-     * Tests if given object has been constructed object.
-     *
-     * @param obj pointer to object.
-     * @return true if object has been constructed successfully.
-     */
-    template<class Type>
-    static inline bool isObject(const Type* obj)
+    class Object
     {
-      return obj != NULL ? obj->isConstructed() : false;    
-    }
-    
-  };
+  
+    public:
+  
+        /** 
+         * Destructor.
+         */
+        virtual ~Object(){}
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const = 0;
+        
+        /**
+         * Tests if given object has been constructed object.
+         *
+         * @param obj pointer to object.
+         * @return true if object has been constructed successfully.
+         */
+        template<class Type>
+        static inline bool isObject(const Type* obj)
+        {
+          return obj != NULL ? obj->isConstructed() : false;    
+        }
+      
+    };
 }
 #endif // API_OBJECT_HPP_
