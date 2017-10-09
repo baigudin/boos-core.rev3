@@ -12,16 +12,16 @@ Config="Debug"
 Config="Release"
 
 [Source Files]
-Source="..\..\source\driver\ti\tms320c28x\driver.Boot.cpp"
-Source="..\..\source\driver\ti\tms320c28x\driver.Boot.ll.asm"
-Source="..\..\source\driver\ti\tms320c28x\driver.Interrupt.cpp"
-Source="..\..\source\driver\ti\tms320c28x\driver.Interrupt.ll.asm"
-Source="..\..\source\driver\ti\tms320c28x\driver.Pll.cpp"
-Source="..\..\source\driver\ti\tms320c28x\driver.Processor.cpp"
-Source="..\..\source\driver\ti\tms320c28x\driver.Register.cpp"
-Source="..\..\source\driver\ti\tms320c28x\driver.Register.ll.asm"
-Source="..\..\source\driver\ti\tms320c28x\driver.Timer.cpp"
-Source="..\..\source\driver\ti\tms320c28x\driver.Watchdog.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Boot.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Boot.ll.asm"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Interrupt.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Interrupt.ll.asm"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Pll.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Processor.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.ll.asm"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Timer.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Watchdog.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
 Source="..\..\source\system\system.Mutex.cpp"
@@ -34,7 +34,7 @@ Source="source\Board.cpp"
 Source="source\Configuration.cpp"
 Source="source\Main.cpp"
 Source="source\libraries\rts2800_fpu32.lib"
-Source="..\..\source\driver\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd"
+Source="..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd"
 
 ["Compiler" Settings: "Debug"]
 Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
@@ -51,12 +51,12 @@ Options=-c -m".\Release\eoos.tms320f28x3x.map" -o".\Release\eoos.tms320f28x3x.ou
 ["Debug\eoos.tms320f28x3x.debug.map" Settings: "Debug"]
 ExcludeFromBuild=true
 
-["Debug\eoos.tms320f28x3x.debug.map" Settings: "Release"]
+["Release\eoos.tms320f28x3x.map" Settings: "Release"]
 ExcludeFromBuild=true
 
-["..\..\source\driver\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]
+["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]
 LinkOrder=1
 
-["..\..\source\driver\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Release"]
+["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Release"]
 LinkOrder=1
 

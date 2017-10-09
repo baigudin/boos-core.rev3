@@ -1,0 +1,45 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir=""
+ProjectType=Library
+CPUFamily=TMS320C64XX
+Tool="Archiver"
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="XDC"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Boot.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Boot.ll.asm"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Interrupt.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Interrupt.ll.asm"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Pll.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Processor.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Register.cpp"
+Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Timer.cpp"
+Source="..\..\source\system\system.Escalator.cpp"
+Source="..\..\source\system\system.Interrupt.cpp"
+Source="..\..\source\system\system.Main.cpp"
+Source="..\..\source\system\system.Mutex.cpp"
+Source="..\..\source\system\system.Semaphore.cpp"
+Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
+Source="..\..\source\system\system.Timer.cpp"
+Source="..\..\source\system\system.TimerInterrupt.cpp"
+
+["Archiver" Settings: "Debug"]
+Options=-r -o"..\..\libraries\eoos.ti.tms320c64x.coff.debug.lib"
+
+["Archiver" Settings: "Release"]
+Options=-r -o"..\..\libraries\eoos.ti.tms320c64x.coff.lib"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far
+
+["Compiler" Settings: "Release"]
+Options=-o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -mv6400 --mem_model:data=far
+

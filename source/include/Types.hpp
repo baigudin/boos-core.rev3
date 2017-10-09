@@ -13,12 +13,12 @@
 #undef NULL
 #endif
 #if __cplusplus >= 201103L  // Since C++11
-  typedef decltype(nullptr)  nullptr_t;
-  const nullptr_t NULL = nullptr;
+    typedef decltype(nullptr)  nullptr_t;
+    const nullptr_t NULL = nullptr;
 #elif __cplusplus           // Until C++11
-  const int NULL = 0;
+    const int NULL = 0;
 #else
-  #error "The source file must be compiled by C++ compiler"
+    #error "The source file must be compiled by C++ compiler"
 #endif
 
 // LP32 or 2/4/4 (int is 16-bit, long and pointer are 32-bit)

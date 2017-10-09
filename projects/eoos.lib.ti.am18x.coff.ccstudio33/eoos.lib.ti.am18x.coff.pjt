@@ -1,0 +1,43 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir=""
+ProjectType=Library
+CPUFamily=TMS470R2X
+Tool="Archiver"
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="XDC"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\..\source\driver\cpu\ti\am18x\driver.Boot.cpp"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Boot.ll.asm"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Interrupt.cpp"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Interrupt.ll.asm"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Pll.cpp"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Processor.cpp"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Register.cpp"
+Source="..\..\source\driver\cpu\ti\am18x\driver.Timer.cpp"
+Source="..\..\source\system\system.Interrupt.cpp"
+Source="..\..\source\system\system.Main.cpp"
+Source="..\..\source\system\system.Mutex.cpp"
+Source="..\..\source\system\system.Semaphore.cpp"
+Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
+Source="..\..\source\system\system.Timer.cpp"
+Source="..\..\source\system\system.TimerInterrupt.cpp"
+
+["Archiver" Settings: "Debug"]
+Options=-r -o"..\..\libraries\eoos.ti.am18x.coff.debug.lib"
+
+["Archiver" Settings: "Release"]
+Options=-r -o"..\..\libraries\eoos.ti.am18x.coff.lib"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -me -mv5e --abi=ti_arm9_abi --code_state=32 --coff
+
+["Compiler" Settings: "Release"]
+Options=-o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -me -mv5e --abi=ti_arm9_abi --code_state=32 --coff
+

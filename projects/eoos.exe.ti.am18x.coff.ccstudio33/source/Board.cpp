@@ -13,15 +13,15 @@
  * @param config the operating system configuration.
  * @return true if no errors have been occurred.
  */
-bool Board::init(const ::Configuration config)
+bool Board::initialize(const ::Configuration config)
 {
-  // The simplest example for doing something
-  return config.cpuClock > 0 ? true : false;
+    // The simplest example for doing something
+    return config.cpuClock > 0 ? true : false;
 }
 
 /**
  * Deinitializes a processor board.
  */
-void Board::deinit()
+void Board::deinitialize()
 {
 }

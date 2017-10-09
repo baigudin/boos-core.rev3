@@ -15,60 +15,62 @@
 
 namespace system
 {
-  /**
-   * The method which will be stated first.
-   * 
-   * @return error code or zero.
-   */   
-  int32 Main::main()
-  {
-    int32 stage = 0;
-    int32 error = -1;
-    const ::Configuration config = ::Configuration();
-    do{
-      // Stage 1 
-      stage++;
-      if( not ::Allocator::init(config) ) break;        
-      // Stage 2 
-      stage++;
-      if( not ::driver::Processor::init(config) ) break;    
-      // Stage 3
-      stage++;
-      if( not ::Board::init(config) ) break;
-      // Stage 4 
-      stage++;
-      if( not ::system::Interrupt::init() ) break;      
-      // Stage 5
-      stage++;
-      if( not ::system::Thread::init() ) break;      
-      // Stage 6
-      stage++;
-      if( not ::system::System::init() ) break;      
-      // Stage complete
-      stage = -1;
-      {
-        Thread main;
-        if(main.isConstructed())
-        {
-          main.start();
-          ::system::Thread::execute();
-          error = main.error();
-        }
-      }
-    }while(false);
-    switch(stage)
+    /**
+     * The method which will be stated first.
+     * 
+     * @return error code or zero.
+     */   
+    int32 Main::main()
     {
-      default:
-      case  6: ::system::System::deinit();
-      case  5: ::system::Thread::deinit();
-      case  4: ::system::Interrupt::deinit();
-      case  3: ::Board::deinit();      
-      case  2: ::driver::Processor::deinit();
-      case  1: ::Allocator::deinit();      
-      case  0: break;
+        int32 stage = 0;
+        int32 error = -1;
+        const ::Configuration config = ::Configuration();
+        do
+        {
+            // Stage 1 
+            stage++;
+            if( not ::Allocator::initialize(config) ) break;        
+            // Stage 2 
+            stage++;
+            if( not ::driver::Processor::initialize(config) ) break;    
+            // Stage 3
+            stage++;
+            if( not ::Board::initialize(config) ) break;
+            // Stage 4 
+            stage++;
+            if( not ::system::Interrupt::initialize() ) break;      
+            // Stage 5
+            stage++;
+            if( not ::system::Thread::initialize() ) break;      
+            // Stage 6
+            stage++;
+            if( not ::system::System::initialize() ) break;      
+            // Stage complete
+            stage = -1;
+            {
+                Thread main;
+                if(main.isConstructed())
+                {
+                    main.start();
+                    ::system::Thread::execute();
+                    error = main.error();
+                }
+            }
+        }
+        while(false);
+        switch(stage)
+        {
+            default:
+            case  6: ::system::System::deinitialize();
+            case  5: ::system::Thread::deinitialize();
+            case  4: ::system::Interrupt::deinitialize();
+            case  3: ::Board::deinitialize();      
+            case  2: ::driver::Processor::deinitialize();
+            case  1: ::Allocator::deinitialize();      
+            case  0: break;
+        }
+        return error;
     }
-    return error;
-  }
 }
 
 /**
@@ -87,7 +89,7 @@ namespace system
 #ifdef EOOS_VENDOR_BOOT
 int main()
 {
-  return ::system::Main::main() & 0x0000ffff;
+    return ::system::Main::main() & 0x0000ffff;
 }
 #endif // EOOS_VENDOR_BOOT
 

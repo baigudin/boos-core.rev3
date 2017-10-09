@@ -13,36 +13,36 @@
 
 namespace driver
 {
-  class Pll : public ::api::Object
-  {
-  
-  public:
-  
-    /** 
-     * Destructor.
-     */                               
-    virtual ~Pll(){}
+    class Pll : public ::api::Object
+    {
+    
+    public:
+    
+        /** 
+         * Destructor.
+         */                               
+        virtual ~Pll(){}
+            
+        /**
+         * Returns the PLL interface of a target processor.
+         *
+         * @return target processor hardware interface, or NULL if error has been occurred.
+         */
+        static ::driver::Pll* create();    
         
-    /**
-     * Returns the PLL interface of a target processor.
-     *
-     * @return target processor hardware interface, or NULL if error has been occurred.
-     */
-    static ::driver::Pll* create();    
-    
-    /**
-     * Initializes the driver.
-     *
-     * @param config the operating system configuration.
-     * @return true if no errors have been occurred.
-     */   
-    static bool init(const ::Configuration config);
-    
-    /**
-     * Deinitializes the driver.
-     */
-    static void deinit();    
-    
-  };
+        /**
+         * Initializes the driver.
+         *
+         * @param config the operating system configuration.
+         * @return true if no errors have been occurred.
+         */   
+        static bool initialize(const ::Configuration config);
+        
+        /**
+         * Deinitializes the driver.
+         */
+        static void deinitialize();    
+      
+    };
 }
 #endif // DRIVER_PLL_HPP_

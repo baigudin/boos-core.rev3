@@ -12,23 +12,23 @@
 
 namespace api
 {
-  class Resource : public ::api::Object
-  {
-
-  public:
+    class Resource : public ::api::Object
+    {
   
-    /** 
-     * Destructor.
-     */
-    virtual ~Resource(){}
-
-    /** 
-     * Tests if this resource is blocked.
-     *
-     * @return true if this resource is blocked.
-     */ 
-    virtual bool isBlocked() = 0;
-
-  };
+    public:
+    
+        /** 
+         * Destructor.
+         */
+        virtual ~Resource(){}
+        
+        /** 
+         * Tests if this resource is blocked.
+         *
+         * @return true if this resource is blocked.
+         */ 
+        virtual bool isBlocked() = 0;
+  
+    };
 }
 #endif // API_RESOURCE_HPP_
