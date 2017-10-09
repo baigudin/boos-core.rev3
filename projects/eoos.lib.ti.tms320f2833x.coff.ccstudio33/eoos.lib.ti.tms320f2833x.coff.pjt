@@ -39,5 +39,5 @@ Options=-r -o"..\..\libraries\eoos.ti.tms320f2833x.coff.lib"
 Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -d"EOOS_VENDOR_BOOT" -ml -v28 --float_support=fpu32
 
 ["Compiler" Settings: "Release"]
-Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
+Options=-o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
 
