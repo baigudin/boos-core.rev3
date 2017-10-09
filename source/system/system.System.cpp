@@ -23,7 +23,7 @@ namespace system
     }
   
     /**
-     * Current value of the running system.
+     * Current value of the running system in nanoseconds.
      *
      * @return time in nanoseconds.
      */  

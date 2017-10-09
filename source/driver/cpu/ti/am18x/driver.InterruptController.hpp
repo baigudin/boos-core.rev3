@@ -306,21 +306,21 @@ namespace driver
         }
         
         /**
-         * Resets registers context for storing to the default.
-         */
-        virtual void resetRegister()
-        {
-            if(isAllocated()) ctx_->low->reg = ctx_->reg->getRegisters();
-        }
-        
-        /**
          * Sets new registers context for store.
          *
          * @param reg pointer to new registers context.
          */
-        virtual void setRegister(::driver::Register& reg)
+        virtual void setContext(::driver::Register& reg)
         {
             if(isAllocated()) ctx_->low->reg = reg.getRegisters();
+        }
+        
+        /**
+         * Resets registers context for storing to the default.
+         */
+        virtual void restoreContext()
+        {
+            if(isAllocated()) ctx_->low->reg = ctx_->reg->getRegisters();
         }
         
         /**
@@ -374,9 +374,9 @@ namespace driver
          */
         static void deinitialize()
         {
-          deinitAintc();      
-          aintc_ = NULL;      
-          isInitialized_ = 0;      
+            deinitAintc();      
+            aintc_ = NULL;      
+            isInitialized_ = 0;      
         }
       
     private:    

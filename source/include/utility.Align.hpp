@@ -161,8 +161,8 @@ namespace utility
             Type r = 0;
             for(int32 i=SIZE-1; i>=0; i--) 
             { 
-              r <<= 8; 
-              r |= (Type)val_[i] & 0xff; 
+                r <<= 8; 
+                r |= (Type)val_[i] & 0xff; 
             } 
             return r; 
         }
@@ -189,9 +189,9 @@ namespace utility
     template <typename Type> 
     inline bool operator ==(const Align<Type>& obj1, const Align<Type>& obj2)
     {
-      Type t1 = obj1;
-      Type t2 = obj2;
-      return t1 == t2;
+        Type t1 = obj1;
+        Type t2 = obj2;
+        return t1 == t2;
     }
   
     /**
@@ -204,9 +204,9 @@ namespace utility
     template <typename Type> 
     inline bool operator !=(const Align<Type>& obj1, const Align<Type>& obj2)
     {
-      Type t1 = obj1;
-      Type t2 = obj2;
-      return t1 != t2;
+        Type t1 = obj1;
+        Type t2 = obj2;
+        return t1 != t2;
     }
 } 
 #endif // UTILITY_ALIGN_HPP_

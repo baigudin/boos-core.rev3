@@ -43,8 +43,8 @@ namespace api
         template<typename Type> 
         Type unlock(Type value)
         {
-          unlock();
-          return value;
+            unlock();
+            return value;
         }
   
     };

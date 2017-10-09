@@ -24,7 +24,7 @@ public:
      */    
     static void* allocate(size_t size)
     {
-      return heap_ != NULL ? heap_->allocate(size, NULL) : NULL;
+        return heap_ != NULL ? heap_->allocate(size, NULL) : NULL;
     }
   
     /**
@@ -34,7 +34,7 @@ public:
      */      
     static void free(void* ptr)
     {
-      if(heap_ != NULL && ptr != NULL) heap_->free(ptr);  
+        if(heap_ != NULL && ptr != NULL) heap_->free(ptr);  
     }
   
     /**
@@ -44,7 +44,7 @@ public:
      */
     static ::api::Heap* getHeap()
     {
-      return heap_;
+        return heap_;
     }
     
     /**
@@ -55,8 +55,8 @@ public:
      */   
     static bool initialize(const ::Configuration config)
     {
-      setHeap(config.heapAddr, config.heapSize);
-      return heap_ != NULL ? true : false;
+        setHeap(config.heapAddr, config.heapSize);
+        return heap_ != NULL ? true : false;
     }
     
     /**
@@ -77,8 +77,8 @@ private:
      */
     static void setHeap(void* addr, int64 size)
     {
-      heap_ = addr != NULL && size > 0 ? new (addr) ::utility::Heap(size) : NULL;
-      if(heap_ == NULL || !heap_->isConstructed()) heap_ = NULL;
+        heap_ = addr != NULL && size > 0 ? new (addr) ::utility::Heap(size) : NULL;
+        if(heap_ == NULL || !heap_->isConstructed()) heap_ = NULL;
     }
   
     /**

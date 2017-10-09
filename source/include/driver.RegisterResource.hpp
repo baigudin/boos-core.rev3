@@ -57,7 +57,7 @@ namespace driver
          * @param arg1  first router argument.
          * @param arg2  second router argument.     
          */  
-        virtual void initialize(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
+        virtual void setInitialization(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
         {
         }
         
@@ -66,7 +66,7 @@ namespace driver
          *
          * @return memory address of registers order, or NULL if error has been occurred.
          */    
-        virtual void* registers()
+        virtual void* getRegisters()
         {
             return NULL;
         }

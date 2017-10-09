@@ -218,24 +218,24 @@ namespace driver
         }
         
         /**
-         * Resets registers context for storing to the default.
-         */
-        virtual void resetRegister()
-        {
-            if(!isAllocated()) return;
-            ctx_->low->reg = ctx_->reg->getRegisters();
-        }
-        
-        /**
          * Sets new registers context for store.
          *
          * @param reg pointer to new registers context.
          */
-        virtual void setRegister(::driver::Register& reg)
+        virtual void setContext(::driver::Register& reg)
         {
             if(!isAllocated()) return;
             ctx_->low->reg = reg.getRegisters();
         }
+        
+        /**
+         * Restores registers context for storing to the default.
+         */
+        virtual void restoreContext()
+        {
+            if(!isAllocated()) return;
+            ctx_->low->reg = ctx_->reg->getRegisters();
+        }        
         
         /**
          * Initialization.

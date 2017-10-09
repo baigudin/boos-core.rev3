@@ -51,7 +51,7 @@ Options=-c -m".\Release\eoos.tms320f28x3x.map" -o".\Release\eoos.tms320f28x3x.ou
 ["Debug\eoos.tms320f28x3x.debug.map" Settings: "Debug"]
 ExcludeFromBuild=true
 
-["Debug\eoos.tms320f28x3x.debug.map" Settings: "Release"]
+["Release\eoos.tms320f28x3x.map" Settings: "Release"]
 ExcludeFromBuild=true
 
 ["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]

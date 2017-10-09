@@ -26,7 +26,7 @@ namespace driver
          * Constructor.
          */     
         PllResource() : Parent(),
-          isConstructed_ (getConstruct()){
+            isConstructed_ (getConstruct()){
         }    
         
         /** 

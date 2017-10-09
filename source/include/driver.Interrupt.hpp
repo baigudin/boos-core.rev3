@@ -57,15 +57,6 @@ namespace driver
         virtual void removeHandler() = 0;
         
         /**
-         * Resets registers context for storing to the default.
-         * 
-         * Method restores default registers for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * the default conxet will be restored with the context restore procedure.
-         */
-        virtual void resetRegister() = 0;
-        
-        /**
          * Sets new registers context for storing.
          * 
          * Method sets a new register context for storing the CPU registers to it.
@@ -74,7 +65,16 @@ namespace driver
          *
          * @param reg new registers context.
          */
-        virtual void setRegister(::driver::Register& reg) = 0;
+        virtual void setContext(::driver::Register& reg) = 0;
+
+        /**
+         * Restores registers context for storing to the default.
+         * 
+         * Method restores default registers for storing the CPU registers to it.
+         * This method may be called in an user interrupt handler, it means
+         * the default conxet will be restored with the context restore procedure.
+         */
+        virtual void restoreContext() = 0;        
         
         /**
          * Returns the interrupt interface of a target processor.
@@ -111,8 +111,8 @@ namespace driver
         template<class Type>
         static inline bool enableAll(bool status, Type ret)
         {
-          enableAll(status);
-          return ret;   
+            enableAll(status);
+            return ret;   
         }    
         
         /**

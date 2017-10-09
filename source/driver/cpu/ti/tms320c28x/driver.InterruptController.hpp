@@ -245,15 +245,15 @@ namespace driver
             bool res = false;
             bool is = Interrupt::disableAll();
             do{
-              if( not isConstructed_ ) break;
-              if( not isSource(source) ) break;
-              if( isAllocated() ) break;        
-              Source src = static_cast<Source>(source);
-              Context* ctx = new Context(handler, src);
-              if(ctx == NULL || not ctx->isConstructed()) break;
-              ctx_ = ctx;
-              table_.ctx[ctx_->grp][ctx_->num] = ctx_;
-              res = true;
+                if( not isConstructed_ ) break;
+                if( not isSource(source) ) break;
+                if( isAllocated() ) break;        
+                Source src = static_cast<Source>(source);
+                Context* ctx = new Context(handler, src);
+                if(ctx == NULL || not ctx->isConstructed()) break;
+                ctx_ = ctx;
+                table_.ctx[ctx_->grp][ctx_->num] = ctx_;
+                res = true;
             }while(false);
             return Interrupt::enableAll(is, res);
         }
@@ -266,20 +266,20 @@ namespace driver
         }
         
         /**
-         * Resets registers context for storing to the default.
-         */
-        virtual void resetRegister()
-        {
-        }
-        
-        /**
          * Sets new registers context for storing.
          *
          * @param reg new registers context.
          */
-        virtual void setRegister(::driver::Register& reg)
+        virtual void setContext(::driver::Register& reg)
         {
         }
+        
+        /**
+         * Restores registers context for storing to the default.
+         */
+        virtual void restoreContext()
+        {
+        }        
         
         /**
          * Disables all maskable interrupts.
@@ -308,8 +308,8 @@ namespace driver
             regPie_ = new (reg::Pie::ADDRESS) reg::Pie();
             // Init context table
             for(int32 g=0; g<12; g++)
-                 for(int32 n=0; n<8; n++)
-                     table_.ctx[g][n] = NULL;
+                for(int32 n=0; n<8; n++)
+                    table_.ctx[g][n] = NULL;
             for(int32 n=0; n<32; n++)           
                  table_.ctx[12][n] = NULL;           
             // CPU and PIE vectors table initialization
@@ -585,23 +585,23 @@ namespace driver
                 // The source is CPU source
                 if(grp == 12)
                 {
-                  switch(source)
-                  {
-                    case CPU_TIMER1_TINT1: num = 12; break;
-                    case CPU_TIMER2_TINT2: num = 13; break;
-                    default: return false;
-                  }
-                  maskPieAck = 0x0;
-                  maskPieIer = 0x0;
-                  maskCpuIer = 0x1 << num;
+                    switch(source)
+                    {
+                        case CPU_TIMER1_TINT1: num = 12; break;
+                        case CPU_TIMER2_TINT2: num = 13; break;
+                        default: return false;
+                    }
+                    maskPieAck = 0x0;
+                    maskPieIer = 0x0;
+                    maskCpuIer = 0x1 << num;
                 }
                 // The source is PIE source
                 else
                 {
-                  pie = &regPie->pie[grp];
-                  maskPieAck = 0x1 << grp;
-                  maskPieIer = 0x1 << num;
-                  maskCpuIer = 0x1 << grp;
+                    pie = &regPie->pie[grp];
+                    maskPieAck = 0x1 << grp;
+                    maskPieIer = 0x1 << num;
+                    maskCpuIer = 0x1 << grp;
                 }
                 // Create context CPU registers
                 reg = ::driver::Register::create();

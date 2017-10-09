@@ -65,7 +65,7 @@ namespace system
             // Test for completing execution
             if( list_.isEmpty() )
             {
-                int_.resetRegister();
+                int_.restoreContext();
                 tim_.stop();        
                 tim_.setCount(0);
                 tim_.setPeriod();
@@ -101,7 +101,7 @@ namespace system
                     {
                         task->status_ = Task::RUNNING;
                         // Switch to the task
-                        int_.setRegister(*task->register_);
+                        int_.setContext(*task->register_);
                         tim_.setCount(0);
                         tim_.setPeriod(task->priority_ * QUANT);
                         return;

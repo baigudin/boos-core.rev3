@@ -77,9 +77,6 @@ namespace driver
         
         /** 
          * Enables a controller.
-         *
-         * The true passed argument directly turns a controller on, 
-         * and the false does nothing, a controller stays in the current state.
          * 
          * @param status returned status by disable method, or true for directly turning a controller on.
          */    
@@ -107,26 +104,18 @@ namespace driver
         }
         
         /**
-         * Resets registers context for storing to the default.
-         * 
-         * Method restores default registers for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * the default conxet will be restored by the context restore procedure.
-         */
-        virtual void resetRegister()
-        {
-        }
-        
-        /**
          * Sets new registers context for storing.
-         * 
-         * Method sets a new register context for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * given conxet will be restored by the context restore procedure.
          *
          * @param reg new registers context.
          */
-        virtual void setRegister(::driver::Register& reg)
+        virtual void setContext(::driver::Register& reg)
+        {
+        }        
+        
+        /**
+         * Restores registers context for storing to the default.
+         */
+        virtual void restoreContext()
         {
         }
       
