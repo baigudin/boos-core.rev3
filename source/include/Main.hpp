@@ -15,12 +15,12 @@ class Main
 
 public:
   
-  /**
-   * User method which will be stated as first.
-   *
-   * @return error code or zero.
-   */
-  static int32 main();
+    /**
+     * User method which will be stated as first.
+     *
+     * @return error code or zero.
+     */
+    static int32 main();
 
 };
 #endif // MAIN_HPP_

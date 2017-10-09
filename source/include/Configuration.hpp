@@ -15,62 +15,64 @@ struct Configuration
 
 public:
 
-  /**
-   * Source clock of CPU oscillator in Hz.
-   */      
-  int64 sourceClock;
+    /**
+     * Source clock of CPU oscillator in Hz.
+     */      
+    int64 sourceClock;
+    
+    /**
+     * CPU clock in Hz.
+     */  
+    int64 cpuClock;
   
-  /**
-   * CPU clock in Hz.
-   */  
-  int64 cpuClock;
-
-  /**
-   * Start address of heap page.
-   */      
-  void* heapAddr;    
+    /**
+     * Start address of heap page.
+     */      
+    void* heapAddr;    
+    
+    /**
+     * Size of heap page in bytes.
+     */
+    int64 heapSize;   
   
-  /**
-   * Size of heap page in bytes.
-   */
-  int64 heapSize;   
-
-  /** 
-   * Constructor.
-   */     
-  Configuration();
+    /** 
+     * Constructor.
+     */     
+    Configuration();
+    
+    /** 
+     * Copy constructor.
+     *
+     * @param obj a source object.
+     */     
+    Configuration(const Configuration& obj) :
+        sourceClock (obj.sourceClock),
+        cpuClock    (obj.cpuClock),
+        heapAddr    (obj.heapAddr),
+        heapSize    (obj.heapSize){
+    }
+        
+    /** 
+     * Destructor.
+     */
+   ~Configuration()
+    {
+    }
   
-  /** 
-   * Copy constructor.
-   */     
-  Configuration(const Configuration& obj) :
-    sourceClock (obj.sourceClock),
-    cpuClock    (obj.cpuClock),
-    heapAddr    (obj.heapAddr),
-    heapSize    (obj.heapSize){
-  }
-      
-  /** 
-   * Destructor.
-   */
- ~Configuration()
-  {
-  }
-
-  /**
-   * Assignment operator.
-   *
-   * @param obj reference to source object.
-   * @return reference to this object.     
-   */
-  Configuration& operator =(const Configuration& obj)
-  {
-    sourceClock = obj.sourceClock;
-    cpuClock    = obj.cpuClock;
-    heapAddr    = obj.heapAddr;
-    heapSize    = obj.heapSize;
-    return *this;
-  }
+    /**
+     * Assignment operator.
+     *
+     * @param obj a source object.
+     * @return this object.     
+     */
+    Configuration& operator =(const Configuration& obj)
+    {
+        sourceClock = obj.sourceClock;
+        cpuClock    = obj.cpuClock;
+        heapAddr    = obj.heapAddr;
+        heapSize    = obj.heapSize;
+        return *this;
+    }
      
 };
 #endif // CONFIGURATION_HPP_

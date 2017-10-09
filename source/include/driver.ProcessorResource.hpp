@@ -16,60 +16,60 @@
 
 namespace driver
 {
-  class ProcessorResource : public ::Object<>, public ::driver::Processor
-  {
-    typedef ::Object<>  Parent;
-    
-  public:
-  
-    /** 
-     * Constructor.
-     */     
-    ProcessorResource() : Parent(),
-      isConstructed_ (getConstruct()){
-    }    
-  
-    /** 
-     * Destructor.
-     */                               
-    virtual ~ProcessorResource()
+    class ProcessorResource : public ::Object<>, public ::driver::Processor
     {
-    }
+        typedef ::Object<>  Parent;
+      
+    public:
     
-    /**
-     * Tests if this object has been constructed.
-     *
-     * @return true if object has been constructed successfully.
-     */    
-    virtual bool isConstructed() const
-    {
-      return isConstructed_;
-    }
+        /** 
+         * Constructor.
+         */     
+        ProcessorResource() : Parent(),
+            isConstructed_ (getConstruct()){
+        }    
+        
+        /** 
+         * Destructor.
+         */                               
+        virtual ~ProcessorResource()
+        {
+        }
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }
+      
+    protected:
+      
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;
+      
+    private:
     
-  protected:
-    
-    /** 
-     * The root object constructed flag.
-     */  
-    const bool& isConstructed_;
-    
-  private:
+        /**
+         * Copy constructor.
+         *
+         * @param obj reference to source object.
+         */
+        ProcessorResource(const ProcessorResource& obj);
+        
+        /**
+         * Assignment operator.
+         *
+         * @param obj reference to source object.
+         * @return reference to this object.     
+         */
+        ProcessorResource& operator =(const ProcessorResource& obj);      
   
-    /**
-     * Copy constructor.
-     *
-     * @param obj reference to source object.
-     */
-    ProcessorResource(const ProcessorResource& obj);
-
-    /**
-     * Assignment operator.
-     *
-     * @param obj reference to source object.
-     * @return reference to this object.     
-     */
-    ProcessorResource& operator =(const ProcessorResource& obj);      
-
-  };
+    };
 }
 #endif // DRIVER_PROCESSOR_RESOURCE_HPP_

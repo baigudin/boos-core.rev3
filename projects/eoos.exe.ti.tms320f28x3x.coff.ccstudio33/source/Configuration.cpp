@@ -11,8 +11,8 @@
  * Constructor.
  */     
 Configuration::Configuration() :
-  sourceClock        (30000000),
-  cpuClock           (150000000),
-  heapAddr           (reinterpret_cast<void*>(0x0000f000)),
-  heapSize           (0x00001000){
+    sourceClock        (30000000),
+    cpuClock           (150000000),
+    heapAddr           (reinterpret_cast<void*>(0x0000f000)),
+    heapSize           (0x00001000){
 }

@@ -13,36 +13,36 @@
 
 namespace driver
 {
-  class Watchdog : public ::api::Object
-  {
-  
-  public:
-  
-    /** 
-     * Destructor.
-     */                               
-    virtual ~Watchdog(){}
-        
-    /**
-     * Returns the Watchdog interface of a target processor.
-     *
-     * @return target processor hardware interface, or NULL if error has been occurred.
-     */
-    static ::driver::Watchdog* create();    
+    class Watchdog : public ::api::Object
+    {
     
-    /**
-     * Initializes the driver.
-     *
-     * @param config the operating system configuration.
-     * @return true if no errors have been occurred.
-     */   
-    static bool init(const ::Configuration config);
+    public:
     
-    /**
-     * Deinitializes the driver.
-     */
-    static void deinit();    
-    
-  };
+         /** 
+          * Destructor.
+          */                               
+         virtual ~Watchdog(){}
+             
+         /**
+          * Returns the Watchdog interface of a target processor.
+          *
+          * @return target processor hardware interface, or NULL if error has been occurred.
+          */
+         static ::driver::Watchdog* create();    
+         
+         /**
+          * Initializes the driver.
+          *
+          * @param config the operating system configuration.
+          * @return true if no errors have been occurred.
+          */   
+         static bool initialize(const ::Configuration config);
+         
+         /**
+          * Deinitializes the driver.
+          */
+         static void deinitialize();    
+
+    };
 }
 #endif // DRIVER_WATCHDOG_HPP_
