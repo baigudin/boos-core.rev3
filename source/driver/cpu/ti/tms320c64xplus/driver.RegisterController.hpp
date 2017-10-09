@@ -25,23 +25,24 @@ namespace driver
          */  
         RegisterController() : Parent(),
             align8_ (0xb00cffffffffb00c),      
-            a0_ (0),  a1_(0),  b0_(0),  b1_(0),
-            a2_ (0),  a3_(0),  b2_(0),  b3_(0),
-            a4_ (0),  a5_(0),  b4_(0),  b5_(0),
-            a6_ (0),  a7_(0),  b6_(0),  b7_(0),
-            a8_ (0),  a9_(0),  b8_(0),  b9_(0),
-            a10_(0), a11_(0), b10_(0), b11_(0),
-            a12_(0), a13_(0), b12_(0), b13_(0),
-            a14_(0), a15_(0), b14_(0), b15_(0),
-            a16_(0), a17_(0), b16_(0), b17_(0),
-            a18_(0), a19_(0), b18_(0), b19_(0),
-            a20_(0), a21_(0), b20_(0), b21_(0),
-            a22_(0), a23_(0), b22_(0), b23_(0),
-            a24_(0), a25_(0), b24_(0), b25_(0),
-            a26_(0), a27_(0), b26_(0), b27_(0),
-            a28_(0), a29_(0), b28_(0), b29_(0),
-            a30_(0), a31_(0), b30_(0), b31_(0),
-            amr_(0), irp_(0), csr_(0),itsr_(0){
+            a0_ (0),   a1_(0),   b0_(0),   b1_(0),
+            a2_ (0),   a3_(0),   b2_(0),   b3_(0),
+            a4_ (0),   a5_(0),   b4_(0),   b5_(0),
+            a6_ (0),   a7_(0),   b6_(0),   b7_(0),
+            a8_ (0),   a9_(0),   b8_(0),   b9_(0),
+            a10_(0),  a11_(0),  b10_(0),  b11_(0),
+            a12_(0),  a13_(0),  b12_(0),  b13_(0),
+            a14_(0),  a15_(0),  b14_(0),  b15_(0),
+            a16_(0),  a17_(0),  b16_(0),  b17_(0),
+            a18_(0),  a19_(0),  b18_(0),  b19_(0),
+            a20_(0),  a21_(0),  b20_(0),  b21_(0),
+            a22_(0),  a23_(0),  b22_(0),  b23_(0),
+            a24_(0),  a25_(0),  b24_(0),  b25_(0),
+            a26_(0),  a27_(0),  b26_(0),  b27_(0),
+            a28_(0),  a29_(0),  b28_(0),  b29_(0),
+            a30_(0),  a31_(0),  b30_(0),  b31_(0),
+            amr_(0),  irp_(0),  csr_(0), itsr_(0),
+            ilc_(0), rilc_(0), tmp1_(0), tmp2_(0){
             setConstruct( construct() );
         }
         
@@ -66,14 +67,21 @@ namespace driver
         virtual void setInitialization(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
         {
             if(!isConstructed_) return;
-            CSR csr = 0;
+            // Initialize Control Status Register (Csr).        
+            Csr csr = 0;
             // Set GIE bit to zero for restoring with out crash, because
-            // this value will be set while a restoring is being executed, and
+            // this value will be set while the restoring is being executed, and
             // an enabling of global interrupts is not needed case.
             csr.bit.gie = 0;
             // Set PGIE bit to one for first calling restored context with set GIE bit.
             // Simply, we need to have enabled global interrupts in a new thread.
             csr.bit.pgie = 1;
+            // Initialize Inrerrupt Task State Register (ITSR).
+            Tsr itsr;
+            // PGIE bit of CSR register is mapped to GIE bit of ITSR register.
+            // Thus, we have to set the bit for globally enabling interrupts of a new thread.
+            itsr.bit.gie = 1;
+            // Initialize self values of registers
             irp_ = entry;
             b3_  = 0; // LP
             b14_ = reinterpret_cast<int32>(&__bss__);        
@@ -83,6 +91,7 @@ namespace driver
             b4_  = arg2;
             b5_  = 0;
             csr_ = csr.value;
+            itsr_= itsr.value;            
         }
       
         /** 
@@ -122,7 +131,8 @@ namespace driver
             a26_ = a27_ = b26_ = b27_ =
             a28_ = a29_ = b28_ = b29_ =
             a30_ = a31_ = b30_ = b31_ =
-            amr_ = irp_ = csr_ = itsr_= 0x00000000; 
+            amr_ = irp_ = csr_ = itsr_= 
+            ilc_ = rilc_= tmp1_= tmp2_= 0x00000000;
             #else // !EOOS_DEBUG
             int32 id = 0x0B00C;
             a0_  = 0xa00<<20|id;  b0_  = 0xb00<<20|id;
@@ -157,7 +167,8 @@ namespace driver
             a29_ = 0xa29<<20|id;  b29_ = 0xb29<<20|id;
             a30_ = 0xa30<<20|id;  b30_ = 0xb30<<20|id;
             a31_ = 0xa31<<20|id;  b31_ = 0xb31<<20|id;
-            amr_ = irp_ = csr_ = itsr_ = 0x00000000;
+            amr_ = irp_ = csr_  = itsr_ 
+                 = ilc_ = rilc_ = tmp1_ = tmp2_ = 0x00000000;
             #endif // EOOS_DEBUG
             a15_ = 0x00000000;
             return true;
@@ -207,7 +218,11 @@ namespace driver
             amr_ = reg.amr_;
             irp_ = reg.irp_;
             csr_ = reg.csr_;
-            itsr_ = reg.itsr_;
+            itsr_= reg.itsr_;
+            ilc_ = reg.ilc_;
+            rilc_= reg.rilc_;
+            tmp1_= reg.tmp1_;
+            tmp2_= reg.tmp2_;
             return reg.isConstructed();
         }
         
@@ -218,23 +233,24 @@ namespace driver
          */
         RegisterController(const RegisterController& obj) : //Parent(),
             align8_ (obj.align8_),
-            a0_ (obj.a0_),  a1_ (obj.a1_),  b0_ (obj.b0_),  b1_ (obj.b1_),
-            a2_ (obj.a2_),  a3_ (obj.a3_),  b2_ (obj.b2_),  b3_ (obj.b3_),
-            a4_ (obj.a4_),  a5_ (obj.a5_),  b4_ (obj.b4_),  b5_ (obj.b5_),
-            a6_ (obj.a6_),  a7_ (obj.a7_),  b6_ (obj.b6_),  b7_ (obj.b7_),
-            a8_ (obj.a8_),  a9_ (obj.a9_),  b8_ (obj.b8_),  b9_ (obj.b9_),
-            a10_(obj.a10_), a11_(obj.a11_), b10_(obj.b10_), b11_(obj.b11_),
-            a12_(obj.a12_), a13_(obj.a13_), b12_(obj.b12_), b13_(obj.b13_),
-            a14_(obj.a14_), a15_(obj.a15_), b14_(obj.b14_), b15_(obj.b15_),
-            a16_(obj.a16_), a17_(obj.a17_), b16_(obj.b16_), b17_(obj.b17_),
-            a18_(obj.a18_), a19_(obj.a19_), b18_(obj.b18_), b19_(obj.b19_),
-            a20_(obj.a20_), a21_(obj.a21_), b20_(obj.b20_), b21_(obj.b21_),
-            a22_(obj.a22_), a23_(obj.a23_), b22_(obj.b22_), b23_(obj.b23_),
-            a24_(obj.a24_), a25_(obj.a25_), b24_(obj.b24_), b25_(obj.b25_),
-            a26_(obj.a26_), a27_(obj.a27_), b26_(obj.b26_), b27_(obj.b27_),
-            a28_(obj.a28_), a29_(obj.a29_), b28_(obj.b28_), b29_(obj.b29_),
-            a30_(obj.a30_), a31_(obj.a31_), b30_(obj.b30_), b31_(obj.b31_),
-            amr_(obj.amr_), irp_(obj.irp_), csr_(obj.csr_),itsr_(obj.itsr_){
+            a0_ (obj.a0_),   a1_ (obj.a1_),   b0_ (obj.b0_),   b1_ (obj.b1_),
+            a2_ (obj.a2_),   a3_ (obj.a3_),   b2_ (obj.b2_),   b3_ (obj.b3_),
+            a4_ (obj.a4_),   a5_ (obj.a5_),   b4_ (obj.b4_),   b5_ (obj.b5_),
+            a6_ (obj.a6_),   a7_ (obj.a7_),   b6_ (obj.b6_),   b7_ (obj.b7_),
+            a8_ (obj.a8_),   a9_ (obj.a9_),   b8_ (obj.b8_),   b9_ (obj.b9_),
+            a10_(obj.a10_),  a11_(obj.a11_),  b10_(obj.b10_),  b11_(obj.b11_),
+            a12_(obj.a12_),  a13_(obj.a13_),  b12_(obj.b12_),  b13_(obj.b13_),
+            a14_(obj.a14_),  a15_(obj.a15_),  b14_(obj.b14_),  b15_(obj.b15_),
+            a16_(obj.a16_),  a17_(obj.a17_),  b16_(obj.b16_),  b17_(obj.b17_),
+            a18_(obj.a18_),  a19_(obj.a19_),  b18_(obj.b18_),  b19_(obj.b19_),
+            a20_(obj.a20_),  a21_(obj.a21_),  b20_(obj.b20_),  b21_(obj.b21_),
+            a22_(obj.a22_),  a23_(obj.a23_),  b22_(obj.b22_),  b23_(obj.b23_),
+            a24_(obj.a24_),  a25_(obj.a25_),  b24_(obj.b24_),  b25_(obj.b25_),
+            a26_(obj.a26_),  a27_(obj.a27_),  b26_(obj.b26_),  b27_(obj.b27_),
+            a28_(obj.a28_),  a29_(obj.a29_),  b28_(obj.b28_),  b29_(obj.b29_),
+            a30_(obj.a30_),  a31_(obj.a31_),  b30_(obj.b30_),  b31_(obj.b31_),
+            amr_(obj.amr_),  irp_(obj.irp_),  csr_(obj.csr_), itsr_(obj.itsr_),
+            ilc_(obj.ilc_), rilc_(obj.rilc_),tmp1_(obj.tmp1_),tmp2_(obj.tmp2_){
             setConstruct( copy(obj) );
         }
         
@@ -252,28 +268,28 @@ namespace driver
         }       
         
         /**
-         * Control Status Register (CSR).
+         * Control Status Register (Csr).
          */
-        union CSR
+        union Csr
         {
-            CSR() : 
+            Csr() : 
                 value (0){
             }
             
-            CSR(uint32 def) : 
+            Csr(uint32 def) : 
                 value (def){
             }
             
-            CSR(const CSR& reg) : 
+            Csr(const Csr& reg) : 
                 value (reg.value){
             }        
             
-           ~CSR()
+           ~Csr()
             {
                 value = 0;
             }    
            
-            CSR& operator =(const CSR& reg)
+            Csr& operator =(const Csr& reg)
             {
                 value = reg.value;
                 return *this;
@@ -293,6 +309,54 @@ namespace driver
                 uint32 cpuId      : 8;
             } bit;
         };
+        
+        /**
+         * Task State Register (TSR).
+         */
+        union Tsr
+        {
+            Tsr() : 
+                value (0){
+            }
+            
+            Tsr(uint32 def) : 
+                value (def){
+            }
+            
+            Tsr(const Tsr& reg) : 
+                value (reg.value){
+            }        
+            
+           ~Tsr()
+            {
+                value = 0;
+            }    
+           
+            Tsr& operator =(const Tsr& reg)
+            {
+                value = reg.value;
+                return *this;
+            }
+          
+            uint32 value;
+            struct 
+            {
+                uint32 gie  : 1;
+                uint32 sgie : 1;
+                uint32 gee  : 1;
+                uint32 xen  : 1;
+                uint32 dbgm : 1;
+                uint32      : 1;
+                uint32 cxm  : 2;
+                uint32      : 1;
+                uint32 intr : 1;
+                uint32 exc  : 1;
+                uint32      : 3;
+                uint32 splx : 1;
+                uint32 ib   : 1;
+                uint32      : 16;
+            } bit;
+        };       
       
         /**
          * For alignment to eight on stack
@@ -302,23 +366,24 @@ namespace driver
         /**
          * CPU registers.    
          */
-        int32 a0_,  a1_,  b0_,  b1_,
-              a2_,  a3_,  b2_,  b3_,
-              a4_,  a5_,  b4_,  b5_,
-              a6_,  a7_,  b6_,  b7_,
-              a8_,  a9_,  b8_,  b9_,
-              a10_, a11_, b10_, b11_,
-              a12_, a13_, b12_, b13_,
-              a14_, a15_, b14_, b15_,
-              a16_, a17_, b16_, b17_,
-              a18_, a19_, b18_, b19_,
-              a20_, a21_, b20_, b21_,
-              a22_, a23_, b22_, b23_,
-              a24_, a25_, b24_, b25_,
-              a26_, a27_, b26_, b27_,
-              a28_, a29_, b28_, b29_,
-              a30_, a31_, b30_, b31_,
-              amr_, irp_, csr_, itsr_; 
+        int32 a0_,   a1_,   b0_,   b1_,
+              a2_,   a3_,   b2_,   b3_,
+              a4_,   a5_,   b4_,   b5_,
+              a6_,   a7_,   b6_,   b7_,
+              a8_,   a9_,   b8_,   b9_,
+              a10_,  a11_,  b10_,  b11_,
+              a12_,  a13_,  b12_,  b13_,
+              a14_,  a15_,  b14_,  b15_,
+              a16_,  a17_,  b16_,  b17_,
+              a18_,  a19_,  b18_,  b19_,
+              a20_,  a21_,  b20_,  b21_,
+              a22_,  a23_,  b22_,  b23_,
+              a24_,  a25_,  b24_,  b25_,
+              a26_,  a27_,  b26_,  b27_,
+              a28_,  a29_,  b28_,  b29_,
+              a30_,  a31_,  b30_,  b31_,
+              amr_,  irp_,  csr_, itsr_,
+              ilc_, rilc_, tmp1_, tmp2_;
       
     };  
 }

@@ -17,8 +17,8 @@
     .asg  b14, dp
     .asg  a15, fp
     
-    .asg  0001h, C_REG_CSR_GIE
-    .asg  0002h, C_REG_CSR_PGIE
+    .asg  0001h, C_REG_GIE
+    .asg  0002h, C_REG_SGIE
 
     ; EABI
     .if   EABI
@@ -70,7 +70,7 @@ mc_ri?  b               mc_ri?
 ; Hardware nonmaskable interrupt handler.
 ;
 ; This is a macro command for nonmaskable interrupt table.
-; It has fixed size that equals eight.
+; It has fixed size that equals to eight.
 ; ----------------------------------------------------------------------------
 nmi     .macro
         .align          20h
@@ -82,7 +82,7 @@ nmi     .macro
 ; Hardware interrupt handler (the execution is 7 cycles).
 ;
 ; This is a macro command for interrupts table.
-; It has fixed size that equals eight.
+; It has fixed size that equals to eight.
 ; ----------------------------------------------------------------------------
 handler .macro          num
         .align          20h
@@ -104,12 +104,12 @@ m_reset:
         ; Reset interrupt vector
         .align          20h
         b               m_reset+24
-        mvc             csr, b0
-        and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
-        mvc             b0, csr
-        mvkl            _c_int00, b0
-        mvkh            _c_int00, b0
-        b               b0
+     || dint
+        mvk             0, b0
+     || mvkl            _c_int00, a0        
+        mvc             b0, tsr
+     || mvkh            _c_int00, a0
+        b               a0
         nop             5
         ; Nonmaskable interrupt vector
         nmi
@@ -133,10 +133,10 @@ m_reset:
 ; Nonreset interrupt service routine.
 ;
 ; 07 cycles is vector execution
-; 21 cycles is save time of context and branch to routine.
-; 27 cycles is restore time of context and return from interrupt.
+; 22 cycles is save time of context and branch to routine.
+; 28 cycles is restore time of context and return from interrupt.
 ; 
-; 55 cycles is total service time.
+; 57 cycles is total service time.
 ; ----------------------------------------------------------------------------
         .text
 m_isr:
@@ -151,26 +151,33 @@ m_isr:
      || lddw            *-b1[3], b3:b2
         stdw            a5:a4, *++a0[4]
      || stdw            b5:b4, *++b0[4]
-        ; Load a vector number to A4 argument register
+        ; Load the vector number to A4 argument register and
+        ; a memory address of the vector low context to A5
         lddw            *-sp[1], a5:a4        
         stdw            a7:a6, *++a0[2]
      || stdw            b7:b6, *++b0[2]
         stdw            a9:a8, *++a0[2]
      || stdw            b9:b8, *++b0[2]
+     || mvc             ilc, b6    
         stdw            a3:a2, *-a0[8]
-     || stdw            b3:b2, *-b0[8]	    
+     || stdw            b3:b2, *-b0[8]
+     || mv              b6, a6
+     || mvc             rilc, b7
         stdw            a11:a10, *++a0[2]
      || stdw            b11:b10, *++b0[2]
+     || mv              b7, a7     
+    ;|| mvc             ilc, b6 ; FOR BACKLOG STORING A REGISTER
         stdw            a13:a12, *++a0[2]
      || stdw            b13:b12, *++b0[2]
+    ;|| mvc             rilc, b7 ; FOR BACKLOG STORING A REGISTER     
         stdw            a15:a14, *++a0[2]
      || stdw            b15:b14, *++b0[2]
         ; Load an interrupt TOS address to B15 (SP) register and
-        ; Store an address of contexLow table to A14
+        ; Remove an address of  the vector low context to A14
         lddw            *a5, b15:b14
      || mv              a5, a14
      || mvc             amr, b2
-     || zero            a1
+     || zero            b4
         stdw            a17:a16, *++a0[2]
      || stdw            b17:b16, *++b0[2]
      || mvc             irp, b3
@@ -184,38 +191,43 @@ m_isr:
      || mvc             itsr, b3
         stdw            a23:a22, *++a0[2]
      || stdw            b23:b22, *++b0[2]
-        ; Call an interrupt handler
-     || b               m_handler
         stdw            a25:a24, *++a0[2]
      || stdw            b25:b24, *++b0[2]
-     || mvkl            m_bss, dp
+     || mvkl            m_bss, dp    
+        ; Call an interrupt handler
+     || b               m_handler     
         stdw            a27:a26, *++a0[2]
      || stdw            b27:b26, *++b0[2]
      || mvkh            m_bss, dp
         stdw            a29:a28, *++a0[2]
      || stdw            b29:b28, *++b0[2]
-     || mvc             a1, amr
+     || mvc             b4, amr
         stdw            a31:a30, *++a0[2]
      || stdw            b31:b30, *++b0[2]
      || mvc             a1, irp
-        ; A10 and B10 registers contain pointers to A29:A28 and B29:B28
-     || mv              a0, a10
-     || mv              b0, b10
-        ; Store A2-AMR, A3-IRP, B2-CSR, and B3-backlog to context
+        ; Store A2-AMR, A3-IRP, B2-CSR, and B3-ITSR
         stdw            a3:a2, *+a0[2]
      || stdw            b3:b2, *+b0[2]
+        ; Store A6-ILC, A7-RILC, B7-TMP1, and B7-TMP2
+        stdw            a7:a6, *+a0[4]
+     || stdw            b7:b6, *+b0[4]                  
      || zero            fp
      || addkpc          m_restore?, b3, 0
 m_restore?
         ; Restore a context 
         ldw             *a14, a31
-        mvk             32, a30
-     || mvk             32, b30
-        nop             3
+        mvk             20h, a28
+     || mvk             20h, b28
+        mvk             22h, a26
+     || mvk             22h, b26
+        nop             2
         add             a31, 8, b31
-        ; Load A28-AMR, A29-IRP, B28-CSR, and B29-backlog to registers
-        lddw            *+a31[a30], a29:a28
-     || lddw            *+b31[b30], b29:b28
+        ; Store A26-ILC, A27-RILC, B26-TMP1, and B27-TMP2
+        lddw            *+a31[a26], a27:a26
+     || lddw            *+b31[b26], b27:b26
+        ; Load A28-AMR, A29-IRP, B28-CSR, and B29-backlog to registers     
+        lddw            *+a31[a28], a29:a28
+     || lddw            *+b31[b28], b29:b28
         lddw            *a31++[2], a1:a0
      || lddw            *b31++[2], b1:b0
         lddw            *a31++[2], a3:a2
@@ -224,24 +236,28 @@ m_restore?
      || lddw            *b31++[2], b5:b4
         lddw            *a31++[2], a7:a6
      || lddw            *b31++[2], b7:b6
+     || mvc             a26, ilc
         lddw            *a31++[2], a9:a8
      || lddw            *b31++[2], b9:b8
-     || mvc             a29, irp
+     || mvc             a27, rilc     
         lddw            *a31++[2], a11:a10
      || lddw            *b31++[2], b11:b10
-     || mvc             a28, amr
+    ;|| mvc             b26, tmp1 ; FOR BACKLOG RESTORING A REGISTER     
         lddw            *a31++[2], a13:a12
      || lddw            *b31++[2], b13:b12
-     || mvc             b29, itsr
+    ;|| mvc             b27, tmp2 ; FOR BACKLOG RESTORING A REGISTER          
         lddw            *a31++[2], a15:a14
      || lddw            *b31++[2], b15:b14
-     || mvc             b28, csr
+     || mvc             a29, irp     
         lddw            *a31++[2], a17:a16
      || lddw            *b31++[2], b17:b16
+     || mvc             a28, amr          
         lddw            *a31++[2], a19:a18
      || lddw            *b31++[2], b19:b18
+     || mvc             b29, itsr         
         lddw            *a31++[2], a21:a20
      || lddw            *b31++[2], b21:b20
+     || mvc             b28, csr          
         lddw            *a31++[2], a23:a22
      || lddw            *b31++[2], b23:b22
         lddw            *a31++[2], a25:a24
@@ -263,10 +279,10 @@ m_restore?
         .text
 m_global_disable:
         b               b3
-        mvc             csr, b0
-        and             C_REG_CSR_GIE, b0, a4
-        and            ~C_REG_CSR_GIE, b0, b0
-        mvc             b0, csr
+        dint
+        mvc             tsr, b0        
+        and             C_REG_SGIE, b0, a4
+        shr             a4, 1, a4 
         nop             1
 
 ; ----------------------------------------------------------------------------
@@ -278,11 +294,12 @@ m_global_disable:
 m_global_enable:
         b               b3
         and             1, a4, a1
-   [a1] mvc             csr, b0
-   [a1] or              C_REG_CSR_GIE, b0, b0
-   [a1] mvc             b0, csr
-        nop             1
-
+     || mvc             tsr, b0
+   [a1] or              C_REG_SGIE, b0, b0
+  [!a1] and            ~C_REG_SGIE, b0, b0   
+        mvc             b0, tsr
+        rint
+        
 ; ----------------------------------------------------------------------------
 ; Locks maskable interrupt source.
 ;
@@ -291,22 +308,17 @@ m_global_enable:
 ; ----------------------------------------------------------------------------
         .text
 m_disable:
-        b               m_10?      
-        mvk             1, a1      
-        shl             a1, a4, a1 
-     || mvc             csr, b0    
-        mv              b0, b1  
-     || and            ~C_REG_CSR_GIE, b0, b0 
-        mvc             b0, csr
-        mvc             ier, b0            
-m_10?   b               b3         
-     || not             a1, a1     
-     || shr             b0, a4, a4 
+        b               b3
+     || mvk             1, a1
+        dint
+     || shl             a1, a4, a1
+        mvc             ier, b0
+     || not             a1, a1
+        shr             b0, a4, a4
+     || and             b0, a1, a1
         and             a4, 1, a4
-        and             b0, a1, a1 
-        or              a1, 3, a1  
-        mvc             a1, ier    
-        mvc             b1, csr
+     || mvc             a1, ier            
+        rint
 
 ; ----------------------------------------------------------------------------
 ; Unlocks maskable interrupt source.
@@ -316,20 +328,15 @@ m_10?   b               b3
 ; ----------------------------------------------------------------------------
         .text
 m_enable:
-        b               m_20?    
-        and             1, b4, a1
-        shl             a1, a4, a1 
-     || mvc             csr, b0    
-        mv              b0, b1  
-        and            ~C_REG_CSR_GIE, b0, b0 
-        mvc             b0, csr    
-     || or              a1, 3, a1  
-m_20?   b               b3         
-        mvc             ier, b0    
+        b               b3
+     || and             1, b4, a1
+        dint
+     || shl             a1, a4, a1         
+     || mvc             ier, b0
         or              b0, a1, b0 
         mvc             b0, ier    
-        mvc             b1, csr    
-        mvk             0, a4 
+        rint
+        nop             1        
    
 ; ----------------------------------------------------------------------------
 ; Sets a maskable interrupt status.
@@ -362,24 +369,27 @@ m_clear:
 ; ----------------------------------------------------------------------------
 ; Jumps to interrupt HW vector.
 ;
+; The method must be executed in Supervisor Mode, as it works 
+; with ITSR register. Also, the OS basically is being executed 
+; in the mode and does not switch any tasks to User Mode. So, 
+; the algorithm will be changed when a circumstance is changed.
+;
 ; @param A4 hardware interrupt vector number.
 ; ----------------------------------------------------------------------------
         .text
 m_jump:
-        ; Move GIE to PGIE, clear GIE, and
-        ; calculate interrupt vector address
+        ; Save TSR to ITSR, disable global interrupts,
+        ; and calculate interrupt vector address
         b               m_jmp?
-     || mvc             csr, b0
-        and             C_REG_CSR_GIE, b0, a0
-     || mvkl            m_reset, b4
-        shl             a0, 1, a0
-        and            ~(C_REG_CSR_GIE|C_REG_CSR_PGIE), b0, b0
-     || mvkh            m_reset, b4
-        or              b0, a0, b0
-     || shl             a4, 5, a4
-        mvc             b0, csr
-     || add             b4, a4, a4
-        ; Jump to handler
+     || mvc             tsr, b0
+        dint
+     || mvc             b0, itsr        
+     || shl             a4, 5, a4             
+        mvkl            m_reset, a0
+        mvkh            m_reset, a0     
+        add             a0, a4, a4     
+        nop 
+        ; Jump to the vector
 m_jmp?  b               a4
         mvkl            m_ret?, b0
         mvkh            m_ret?, b0
@@ -388,7 +398,6 @@ m_jmp?  b               a4
         ; Return point
 m_ret?  b               b3
         nop             5
-        
         
 ; ----------------------------------------------------------------------------
 ; Initializes the interrupt controller.

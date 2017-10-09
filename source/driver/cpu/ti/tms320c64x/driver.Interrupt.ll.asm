@@ -56,7 +56,7 @@
 ;
 ; This is a macro command for interrupts table 
 ; that is used for reserved vectors.
-; It has fixed size that equals eight.
+; It has fixed size that equals to eight.
 ; ----------------------------------------------------------------------------
 reserve .macro
 mc_ri?  b               mc_ri?
@@ -73,7 +73,7 @@ mc_ri?  b               mc_ri?
 ; Hardware nonmaskable interrupt handler.
 ;
 ; This is a macro command for nonmaskable interrupt table.
-; It has fixed size that equals eight.
+; It has fixed size that equals to eight.
 ; ----------------------------------------------------------------------------
 nmi     .macro
         b               nrp
@@ -187,7 +187,7 @@ m_isr:
         stdw            a21:a20, *++a0[2]
      || stdw            b21:b20, *++b0[2]
      || mv              b3, a3
-    ;|| mvc FOR BACKLOG reg, b3 FOR STORING A REGISTER
+    ;|| mvc             reg, b3 ; FOR BACKLOG STORING A REGISTER
         stdw            a23:a22, *++a0[2]
      || stdw            b23:b22, *++b0[2]
         ; Call an interrupt handler
@@ -238,7 +238,7 @@ m_restore?
      || mvc             a28, amr
         lddw            *a31++[2], a13:a12
      || lddw            *b31++[2], b13:b12
-    ;|| mvc FOR BACKLOG b29, reg FOR RESTORING A REGISTER
+    ;|| mvc             b29, reg ; FOR BACKLOG RESTORING A REGISTER
         lddw            *a31++[2], a15:a14
      || lddw            *b31++[2], b15:b14
      || mvc             b28, csr
