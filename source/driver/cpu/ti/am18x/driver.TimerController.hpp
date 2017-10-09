@@ -278,10 +278,10 @@ namespace driver
         {
             switch(index_)
             {
-              case 0: return T64P0_TINT12;
-              case 1: return T64P1_TINT12;
-              case 2: return T64P2_ALL;
-              case 3: return T64P3_ALL;        
+                case 0: return T64P0_TINT12;
+                case 1: return T64P1_TINT12;
+                case 2: return T64P2_ALL;
+                case 3: return T64P3_ALL;        
             }
             return -1;
         }

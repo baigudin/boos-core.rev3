@@ -374,9 +374,9 @@ namespace driver
          */
         static void deinitialize()
         {
-          deinitAintc();      
-          aintc_ = NULL;      
-          isInitialized_ = 0;      
+            deinitAintc();      
+            aintc_ = NULL;      
+            isInitialized_ = 0;      
         }
       
     private:    

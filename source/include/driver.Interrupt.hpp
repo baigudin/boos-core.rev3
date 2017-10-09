@@ -111,8 +111,8 @@ namespace driver
         template<class Type>
         static inline bool enableAll(bool status, Type ret)
         {
-          enableAll(status);
-          return ret;   
+            enableAll(status);
+            return ret;   
         }    
         
         /**

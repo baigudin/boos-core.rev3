@@ -31,7 +31,7 @@ namespace system
         static int64 getTimeMs();
         
         /** 
-         * Returns a current value of the running system.
+         * Returns a current value of the running system in nanoseconds.
          *
          * @return time in nanoseconds.
          */      

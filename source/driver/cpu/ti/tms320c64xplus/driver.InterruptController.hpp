@@ -691,12 +691,6 @@ namespace driver
                 lo_.setIllegal(illegalLo_);
                 hi_.fill(illegalHi_);
                 lo_.fill(illegalLo_);                
-                
-                
-                // TOREM
-                
-                hi_[0].handler = reinterpret_cast< ::api::Task* >(0xffffffff);
-                
                 return true;
             } 
             

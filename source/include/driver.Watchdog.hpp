@@ -42,7 +42,7 @@ namespace driver
           * Deinitializes the driver.
           */
          static void deinitialize();    
-      
+
     };
 }
 #endif // DRIVER_WATCHDOG_HPP_

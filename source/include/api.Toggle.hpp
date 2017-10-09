@@ -49,8 +49,8 @@ namespace api
         template<typename Type>
         Type enable(bool status, Type ret)
         {
-          enable(status);
-          return ret;
+            enable(status);
+            return ret;
         }
   
     };
