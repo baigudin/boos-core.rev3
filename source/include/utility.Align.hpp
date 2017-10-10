@@ -2,8 +2,7 @@
  * Alignment of simple types to byte boundary of memory.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef UTILITY_ALIGN_HPP_
 #define UTILITY_ALIGN_HPP_
@@ -17,7 +16,9 @@ namespace utility
      * @param SIZEOF size of aligning data.
      * @param Alloc  heap memory allocator class.
      */  
-    template <typename Type, int32 SIZEOF=sizeof(Type), class Alloc=::Allocator>
+    template <typename Type, 
+              int32 SIZEOF=sizeof(Type), 
+              class Alloc=::Allocator>
     class Align
     {
       
@@ -93,7 +94,7 @@ namespace utility
          * Operator new.
          *
          * @param size number of bytes to allocate.
-         * @return allocated memory address or a null pointer.
+         * @return allocated memory address or NULL.
          */
         void* operator new(size_t size)
         {
@@ -115,7 +116,7 @@ namespace utility
         /**
          * Operator delete.
          *
-         * @param ptr address of allocated memory block or a null pointer.
+         * @param ptr address of allocated memory block or NULL.
          */
         void operator delete(void* ptr)
         {
@@ -187,7 +188,8 @@ namespace utility
      * @return true if objects are equal.
      */
     template <typename Type> 
-    inline bool operator ==(const Align<Type>& obj1, const Align<Type>& obj2)
+    inline bool operator ==(const Align<Type>& obj1, 
+                            const Align<Type>& obj2)
     {
         Type t1 = obj1;
         Type t2 = obj2;
@@ -202,7 +204,8 @@ namespace utility
      * @return true if objects are not equal.
      */  
     template <typename Type> 
-    inline bool operator !=(const Align<Type>& obj1, const Align<Type>& obj2)
+    inline bool operator !=(const Align<Type>& obj1, 
+                            const Align<Type>& obj2)
     {
         Type t1 = obj1;
         Type t2 = obj2;

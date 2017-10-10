@@ -2,8 +2,7 @@
  * Hardware timer resource interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef API_TIMER_HPP_
 #define API_TIMER_HPP_
@@ -46,7 +45,8 @@ namespace api
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero value sets a period to maximum value.
+         * @param us timer period in microseconds, zero value sets 
+         *           a period to maximum value.
          */      
         virtual void setPeriod(int64 us=0) = 0;
         
@@ -63,7 +63,7 @@ namespace api
         /**
          * Returns this timer index.
          *
-         * @return index of this timer, or -1 if error has been occurred.
+         * @return index of this timer, or -1 if error is occurred.
          */
         virtual int32 getIndex() const = 0;    
       

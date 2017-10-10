@@ -1,9 +1,8 @@
 /**
- * TI TMS320C64x registers.
+ * TI TMS320C64x+ registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_REGISTER_CONTROLLER_HPP_
 #define DRIVER_REGISTER_CONTROLLER_HPP_

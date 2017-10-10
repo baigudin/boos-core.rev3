@@ -1,12 +1,12 @@
 /** 
  * Target processor register factory. 
  *
- * The class describes a skeleton implementation of CPU register resource.
- * It should be inherited by all classes, which aim expanding the implementation. 
+ * The class describes a skeleton implementation of 
+ * CPU register resource. It should be inherited by all classes, 
+ * which aim expanding the implementation. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_REGISTER_RESOURCE_HPP_
 #define DRIVER_REGISTER_RESOURCE_HPP_
@@ -16,7 +16,9 @@
 
 namespace driver
 {
-    class RegisterResource : public ::Object<>, public ::driver::Register
+    class RegisterResource : 
+        public ::Object<>, 
+        public ::driver::Register
     {
         typedef ::Object<>  Parent;
       
@@ -57,14 +59,17 @@ namespace driver
          * @param arg1  first router argument.
          * @param arg2  second router argument.     
          */  
-        virtual void setInitialization(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
+        virtual void setInitialization(::api::Stack<int64>& stack, 
+                                       int32 entry, 
+                                       int32 arg1, int32 arg2)
         {
         }
         
         /** 
-         * Returns a pointer to the first register of CPU registers context.
+         * Returns a pointer to the first register of CPU context.
          *
-         * @return memory address of registers order, or NULL if error has been occurred.
+         * @return memory address of registers order, or NULL 
+         *         if error has been occurred.
          */    
         virtual void* getRegisters()
         {

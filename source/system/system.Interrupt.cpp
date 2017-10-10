@@ -2,8 +2,7 @@
  * Hardware interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.Interrupt.hpp"
 #include "system.System.hpp"
@@ -23,10 +22,12 @@ namespace system
     /**
      * Constructor.
      *
-     * @param handler pointer to user class which implements an interrupt handler interface.   
+     * @param handler pointer to user class which implements 
+     *                an interrupt handler interface.   
      * @param source  available interrupt source.
      */
-    Interrupt::Interrupt(::api::Task& handler, int32 source) : Parent(),
+    Interrupt::Interrupt(::api::Task& handler, int32 source) : 
+        Parent(),
         isConstructed_ (getConstruct()),
         driver_        (NULL){
         setConstruct( construct(&handler, source) );
@@ -43,7 +44,8 @@ namespace system
     /**
      * Constructor.
      *
-     * @param handler pointer to user class which implements an interrupt handler interface.   
+     * @param handler pointer to user class which implements 
+     *                an interrupt handler interface.   
      * @param source  available interrupt source.
      * @return true if object has been constructed successfully.
      */
@@ -105,7 +107,8 @@ namespace system
     /**
      * Locks this interrupt source.
      *
-     * @return an interrupt enable source bit value before method was called.
+     * @return an interrupt enable source bit value 
+     *         before method was called.
      */    
     bool Interrupt::disable()
     {
@@ -188,7 +191,8 @@ namespace system
     /** 
      * Disables all maskable interrupts.
      *
-     * @return global interrupt enable bit value before method was called.
+     * @return global interrupt enable bit value 
+     *         before method was called.
      */ 
     bool Interrupt::Global::disable()
     {

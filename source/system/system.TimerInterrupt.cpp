@@ -2,8 +2,7 @@
  * Hardware timer interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.TimerInterrupt.hpp"
 #include "driver.Interrupt.hpp" 
@@ -23,7 +22,8 @@ namespace system
     /** 
      * Constructor.
      *
-     * @param handler user class which implements an interrupt handler interface.
+     * @param handler user class which implements 
+     *                an interrupt handler interface.
      */     
     TimerInterrupt::TimerInterrupt(::api::Task& handler) : 
         Interrupt (),
@@ -34,10 +34,12 @@ namespace system
     /**
      * Constructor.
      *
-     * @param handler user class which implements an interrupt handler interface.
+     * @param handler user class which implements 
+     *                an interrupt handler interface.
      * @param number  available timer number for interrupting.
      */     
-    TimerInterrupt::TimerInterrupt(::api::Task& handler, int32 number) : 
+    TimerInterrupt::TimerInterrupt(::api::Task& handler, 
+                                   int32 number) : 
         Interrupt (),
         Timer     (number){
         setConstruct( construct(&handler) );    
@@ -53,7 +55,8 @@ namespace system
     /**
      * Constructor.
      *
-     * @param handler user class which implements an interrupt handler interface.
+     * @param handler user class which implements 
+     *                an interrupt handler interface.
      * @return true if object has been constructed successfully.     
      */     
     bool TimerInterrupt::construct(::api::Task* handler)
@@ -61,7 +64,10 @@ namespace system
         if(!isConstructed()) return false;
         if(!ResTim::getDriver().isInterrupting()) return false;
         if(handler == NULL) return true;
-        return ResInt::getDriver().setHandler(*handler, ResTim::getDriver().getInterrupSource());
+        return ResInt::getDriver().setHandler( 
+                    *handler, 
+                    ResTim::getDriver().getInterrupSource()
+                );
     }
     
     /**

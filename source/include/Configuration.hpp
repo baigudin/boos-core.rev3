@@ -2,8 +2,7 @@
  * The configuration of a target processor.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef CONFIGURATION_HPP_
 #define CONFIGURATION_HPP_

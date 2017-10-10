@@ -1,12 +1,12 @@
 /** 
  * Target processor interrupt controller resource.
  *
- * The class describes a skeleton implementation of an interrupt resource.
- * It should be inherited by all classes, which aim expanding the implementation.
+ * The class describes a skeleton implementation of 
+ * an interrupt resource. It should be inherited by all classes, 
+ * which aim expanding the implementation.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_INTERRUPT_RESOURCE_HPP_
 #define DRIVER_INTERRUPT_RESOURCE_HPP_
@@ -16,7 +16,9 @@
 
 namespace driver
 {
-    class InterruptResource : public ::Object<>, public ::driver::Interrupt
+    class InterruptResource : 
+        public ::Object<>, 
+        public ::driver::Interrupt
     {
         typedef ::Object<>  Parent;  
   
@@ -68,7 +70,8 @@ namespace driver
         /** 
          * Disables a controller.
          *
-         * @return an enable source bit value of a controller before method was called.
+         * @return an enable source bit value of a controller 
+         *         before method was called.
          */ 
         virtual bool disable()
         {
@@ -78,7 +81,8 @@ namespace driver
         /** 
          * Enables a controller.
          * 
-         * @param status returned status by disable method, or true for directly turning a controller on.
+         * @param status returned status by disable method, or true 
+         *               for directly turning a controller on.
          */    
         virtual void enable(bool status=true)
         {
@@ -87,7 +91,8 @@ namespace driver
         /**
          * Sets interrupt source handler.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          * @return true if handler is set successfully.
          */      

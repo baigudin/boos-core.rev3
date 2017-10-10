@@ -2,8 +2,7 @@
  * Target processor phase-locked loop controller factory. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_PLL_HPP_
 #define DRIVER_PLL_HPP_
@@ -26,7 +25,8 @@ namespace driver
         /**
          * Returns the PLL interface of a target processor.
          *
-         * @return target processor hardware interface, or NULL if error has been occurred.
+         * @return target processor hardware interface, or NULL 
+         *         if error has been occurred.
          */
         static ::driver::Pll* create();    
         

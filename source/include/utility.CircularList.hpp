@@ -2,8 +2,7 @@
  * Circular doubly linked list.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef UTILITY_CIRCULAR_LIST_HPP_
 #define UTILITY_CIRCULAR_LIST_HPP_
@@ -17,7 +16,8 @@ namespace utility
      * @param Alloc heap memory allocator class.
      */  
     template <typename Type, class Alloc=::Allocator>
-    class CircularList : public ::utility::AbstractLinkedList<Type,Alloc>
+    class CircularList : 
+        public ::utility::AbstractLinkedList<Type,Alloc>
     {
         typedef ::utility::AbstractLinkedList<Type,Alloc>  Parent;
         typedef ::utility::LinkedNode<Type,Alloc>          Node;
@@ -53,11 +53,13 @@ namespace utility
          * @param index start position in this list.  
          * @return pointer to new list iterator.
          */
-        virtual ::api::ListIterator<Type>* getListIterator(int32 index)
+        virtual 
+        ::api::ListIterator<Type>* getListIterator(int32 index)
         {
             if(!this->isConstructed()) return NULL;
             Iterator* iterator = new Iterator(index, *this);
-            if(iterator != NULL && iterator->isConstructed()) return iterator;
+            if(iterator != NULL && iterator->isConstructed()) 
+                return iterator;
             delete iterator;
             return NULL;
         }
@@ -82,11 +84,13 @@ namespace utility
         /**
          * The list iterator.
          *
-         * This class is implemented in private zone of the list class.
+         * This class is implemented in private zone of the class.
          * For this reason, for fast iteration some tests are skipped.
          * You have to use this class only if it has been constructed.
          */      
-        class Iterator : public Object<Alloc>, public ::api::ListIterator<Type>
+        class Iterator : 
+            public Object<Alloc>, 
+            public ::api::ListIterator<Type>
         {
             typedef Object<Alloc>             Parent;
             typedef CircularList<Type,Alloc>  List;
@@ -117,7 +121,7 @@ namespace utility
             /**
              * Tests if this object has been constructed.
              *
-             * @return true if object has been constructed successfully.
+             * @return true if object has been constructed.
              */    
             virtual bool isConstructed() const
             {
@@ -134,7 +138,8 @@ namespace utility
             {
                 if(count_.list != count_.self) return false;
                 Node* last = last_;
-                if(list_.add(getNextIndex(), element) == false) return false;
+                if(list_.add(getNextIndex(), element) == false) 
+                    return false;
                 count_.self++;
                 rindex_ = ILLEGAL_INDEX;
                 if(last == NULL) curs_ = last_;
@@ -161,7 +166,7 @@ namespace utility
             }
           
             /**
-             * Returns previous element and advances the cursor backwards.
+             * Returns prev element and advances the cursor backwards.
              *
              * @return reference to element.
              */      
@@ -174,13 +179,15 @@ namespace utility
             }
           
             /**
-             * Returns the index of the element that would be returned by a subsequent call to previous().
+             * Returns previous index of the element.
              *
-             * @return index of the previous element or -1 if the list iterator is at the beginning of the list.
+             * @return index of the previous element or -1 
+             *  if the list iterator is at the beginning of the list.
              */      
             virtual int32 getPreviousIndex() const
             {
-                return hasPrevious() ? curs_->getPrevious()->getIndex() : -1;
+                return hasPrevious() 
+                     ? curs_->getPrevious()->getIndex() : -1;
             }
           
             /**
@@ -210,9 +217,10 @@ namespace utility
             }
           
             /**
-             * Returns the index of the element that would be returned by a subsequent call to next().
+             * Returns the next index of the element.
              *
-             * @return index of the next element or list size if the list iterator is at the end of the list.
+             * @return index of the next element or list size 
+             *  if the list iterator is at the end of the list.
              */      
             virtual int32 getNextIndex() const
             {
@@ -232,9 +240,10 @@ namespace utility
             }
           
             /**
-             * Returns illegal element which will be return as error value.
+             * Returns illegal element which is return as error value.
              *
-             * If illegal value is not set method returns uninitialized variable.
+             * If illegal value is not set method returns 
+             * uninitialized variable.
              *
              * @return illegal element.
              */
@@ -244,7 +253,7 @@ namespace utility
             }
           
             /**
-             * Sets illegal element which will be returned as error value.
+             * Sets illegal element which is returned as error value.
              *
              * @param value illegal value.
              */
@@ -359,7 +368,7 @@ namespace utility
             Node* curs_;
           
             /**
-             * Index of element of list which can be removed by remove method.
+             * List element index that can be removed by remove().
              */
             int32 rindex_;
           

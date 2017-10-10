@@ -2,8 +2,7 @@
  * Hardware timer interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_TIMER_INTERRUPT_HPP_
 #define SYSTEM_TIMER_INTERRUPT_HPP_
@@ -13,7 +12,9 @@
 
 namespace system
 {
-    class TimerInterrupt : public ::system::Interrupt, public ::system::Timer
+    class TimerInterrupt : 
+        public ::system::Interrupt, 
+        public ::system::Timer
     {
         typedef ::system::Interrupt Parent;
         typedef ::system::Interrupt ResInt;    
@@ -24,14 +25,16 @@ namespace system
         /** 
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          */     
         TimerInterrupt(::api::Task& handler);
         
         /**
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param number  available timer number for interrupting.
          */     
         TimerInterrupt(::api::Task& handler, int32 number);
@@ -67,7 +70,8 @@ namespace system
         /**
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @return true if object has been constructed successfully.     
          */     
         bool construct(::api::Task* handler);    

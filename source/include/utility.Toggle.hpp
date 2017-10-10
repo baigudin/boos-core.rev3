@@ -2,8 +2,7 @@
  * Toggle of toggle interface.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef UTILITY_TOGGLE_HPP_
 #define UTILITY_TOGGLE_HPP_
@@ -38,7 +37,7 @@ namespace utility
         /** 
          * Constructor.
          *
-         * @param sw reference to toggle interface for controlling its.
+         * @param sw toggle interface for controlling its.
          */
         Toggle(::api::Toggle& sw) : Parent(),
             pointer_ (&sw),      
@@ -48,11 +47,12 @@ namespace utility
         /** 
          * Constructor.
          *
-         * Until the referenced pointer equals NULL the Toggle will not switch
-         * given controller. This feature is the most important when a controller
-         * might be used before it is initialized.
+         * Until the referenced pointer equals NULL the Toggle 
+         * will not switch given controller. This feature is 
+         * the most important when a controller might be used 
+         * before it is initialized.
          *
-         * @param sw reference to pointer of toggle interface for controlling its.
+         * @param sw toggle interface for controlling its.
          */
         Toggle(::api::Toggle*& sw) : Parent(),
             pointer_ (NULL),    
@@ -78,7 +78,8 @@ namespace utility
         /** 
          * Disables a controller.
          *
-         * @return an enable source bit value of a controller before method was called.
+         * @return an enable source bit value of a controller 
+         *         before method was called.
          */ 
         virtual bool disable()
         {

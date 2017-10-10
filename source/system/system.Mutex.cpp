@@ -2,8 +2,7 @@
  * Mutex class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #include "system.Mutex.hpp"
 #include "system.Thread.hpp"
@@ -50,7 +49,8 @@ namespace system
     {
         if(!isConstructed_) return false;
         bool is = Int::disableAll();
-        // The first checking for acquiring available permits of the mutex
+        // The first checking for acquiring 
+        // available permits of the mutex
         if( count_ - 1 >= 0 && fifo_.isEmpty() )
         {
             // Decrement the number of available permits
@@ -60,14 +60,17 @@ namespace system
         }
         Thread* thread = &Thread::getCurrent();
         // Add current thread to the queue tail
-        if( fifo_.add(thread) == false ) return Int::enableAll(is, false);
+        if( fifo_.add(thread) == false ) 
+            return Int::enableAll(is, false);
         while(true)
         {
-            // Block current thread on the mutex and switch to another thread
+            // Block current thread on the mutex
+            // and switch to another thread
             Thread::block(*this);
             // Test if head thread is current thread
             if(fifo_.peek() != thread) continue;
-            // Test available permits for no breaking the fifo queue by removing
+            // Test available permits for no breaking 
+            // the fifo queue by removing
             if(count_ - 1 < 0) continue;
             // Decrement the number of available permits
             count_ -= 1;        

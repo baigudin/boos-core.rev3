@@ -2,8 +2,7 @@
  * Target processor timers factory. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_TIMER_HPP_
 #define DRIVER_TIMER_HPP_
@@ -59,7 +58,8 @@ namespace driver
         /**
          * Returns an available interrupt source for this timer.
          *
-         * @return available interrupt source, or -1 if error has been occurred.
+         * @return available interrupt source, or -1 
+         *         if error has been occurred.
          */  
         virtual int32 getInterrupSource() const = 0;
             
@@ -67,9 +67,11 @@ namespace driver
          * Returns the timer interface of a target processor.
          *
          * @param res the driver resource creating structure.
-         * @return target processor timer interface, or NULL if error has been occurred.
+         * @return target processor timer interface, or NULL 
+         *         if error has been occurred.
          */
-        static ::driver::Timer* create(const ::driver::Timer::Resource res);    
+        static 
+        ::driver::Timer* create(const ::driver::Timer::Resource res);    
         
         /**
          * Initializes the driver.

@@ -2,8 +2,7 @@
  * Abstract class for sequential accessing to data store.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef UTILITY_ABSTRACT_LINKED_LIST_HPP_
 #define UTILITY_ABSTRACT_LINKED_LIST_HPP_
@@ -81,7 +80,8 @@ namespace utility
          */      
         virtual bool add(Type element)
         {
-            return isConstructed() ? addNode(getLength(), element) : false;
+            return isConstructed() 
+                 ? addNode(getLength(), element) : false;
         }
       
         /**
@@ -97,7 +97,7 @@ namespace utility
         }      
       
         /**
-         * Removes all elements from this list.       
+         * Removes all elements.       
          */  
         virtual void clear()
         {
@@ -107,7 +107,7 @@ namespace utility
         }
       
         /**
-         * Removes the first element from this list.
+         * Removes the first element.
          *
          * @return true if an element is removed successfully.
          */
@@ -117,7 +117,7 @@ namespace utility
         }
       
         /**
-         * Removes the last element from this list.
+         * Removes the last element.
          *
          * @return true if an element is removed successfully.
          */
@@ -144,18 +144,20 @@ namespace utility
          */
         virtual bool remove(int32 index)
         {
-            return isConstructed() ? removeNode( getNodeByIndex(index) ) : false;
+            return isConstructed() 
+                 ? removeNode( getNodeByIndex(index) ) : false;
         }
       
         /**
-         * Removes the first occurrence of the specified element from this list.
+         * Removes the first occurrence of the specified element.
          *
          * @param element reference to element.
          * @return true if an element is removed successfully.
          */
         virtual bool removeElement(const Type& element)
         {
-            return isConstructed() ? removeNode( getNodeByElement(element) ) : false;
+            return isConstructed() 
+                 ? removeNode( getNodeByElement(element) ) : false;
         }
       
         /**
@@ -189,7 +191,7 @@ namespace utility
         }
         
         /**
-         * Returns an element from this list by index.
+         * Returns an element by index.
          *
          * @param index position in this list.  
          * @return indexed element of this list.
@@ -222,9 +224,7 @@ namespace utility
         }
       
         /**
-         * Returns illegal element which will be returned as error value.
-         *
-         * If illegal value is not set method returns uninitialized variable.
+         * Returns illegal element which is returned as error value.
          *
          * @return illegal element.
          */
@@ -256,10 +256,11 @@ namespace utility
         }
       
         /**
-         * Returns the index of the first occurrence of the specified element in this list.
+         * Returns the the first occurrenced specified element index.
          *
          * @param element reference to the element.
-         * @return index or -1 if this list does not contain the element.
+         * @return index or -1 if this list does not contain 
+         *         the element.
          */
         virtual int32 getIndexOf(const Type& element) const
         {
@@ -281,16 +282,19 @@ namespace utility
         /**
          * Returns an array of all list links to elements.
          *
-         * You have to call delete operator for returned value after it have used.
+         * You have to call delete operator for returned value 
+         * after it have used.
          *
-         * @return pointer to reference of elements or NULL if list is empty.
+         * @return pointer to reference of elements or NULL 
+         *         if list is empty.
          */  
         virtual ::utility::Buffer<Type,0,Alloc>* array() const
         {
             if(!isConstructed()) return NULL;
             int32 count = getLength();
             if(count == 0) return NULL;
-            Buffer<Type,0,Alloc>* buf = new Buffer<Type,0,Alloc>(count, illegal_);
+            Buffer<Type,0,Alloc>* buf 
+                = new Buffer<Type,0,Alloc>(count, illegal_);
             if(buf == NULL || !buf->isConstructed())
             {
                 delete buf;
@@ -320,7 +324,8 @@ namespace utility
         /**
          * Inserts new element to the specified position in this list.
          *
-         * Given element will be copied to self nodes structure by a copy constructor calling.
+         * Given element will be copied to self nodes structure 
+         * by a copy constructor calling.
          *
          * @param index   position in this list.  
          * @param element inserting element.

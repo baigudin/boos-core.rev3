@@ -2,8 +2,7 @@
  * Toggle interface of some controllers.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef API_TOGGLE_HPP_
 #define API_TOGGLE_HPP_
@@ -25,7 +24,8 @@ namespace api
         /** 
          * Disables a controller.
          *
-         * @return an enable source bit value of a controller before method was called.
+         * @return an enable source bit value of a controller 
+         *         before method was called.
          */ 
         virtual bool disable() = 0;
         
@@ -33,9 +33,11 @@ namespace api
          * Enables a controller.
          *
          * The true passed argument directly turns a controller on, 
-         * and the false does nothing, a controller stays in the current state.
+         * and the false does nothing, a controller stays in 
+         * the current state.
          * 
-         * @param status returned status by disable method, or true for directly turning a controller on.
+         * @param status returned status by disable method, or true 
+         *        for directly turning a controller on.
          */    
         virtual void enable(bool status=true) = 0;
         

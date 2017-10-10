@@ -2,8 +2,7 @@
  * Hardware interrupt controller.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_INTERRUPT_CONTROLLER_HPP_
 #define DRIVER_INTERRUPT_CONTROLLER_HPP_
@@ -19,8 +18,8 @@ namespace driver
 {
     class InterruptController : public ::driver::InterruptResource
     {
-        typedef ::driver::InterruptResource                   Parent;
-        typedef ::utility::Stack<int64, Allocator>            Stack;
+        typedef ::driver::InterruptResource         Parent;
+        typedef ::utility::Stack<int64, Allocator>  Stack;
   
     public:
     
@@ -29,12 +28,12 @@ namespace driver
          */
         enum Source 
         {
-            EVT0            = 0,   // Output of event combiner 0 in interrupt controller, for events 1 - 31.
-            EVT1            = 1,   // Output of event combiner 1 in interrupt controller, for events 32 - 63.
-            EVT2            = 2,   // Output of event combiner 2 in interrupt controller, for events 64 - 95.
-            EVT3            = 3,   // Output of event combiner 3 in interrupt controller, for events 96 - 127.
-            EMU_DTDMA       = 9,   // EMU interrupt for: Host scan access; DTDMA transfer complete; AET interrupt
-            EMU_RTDXRX      = 11,  // EMU real-time data exchange (RTDX) receive complete
+            EVT0            = 0,   // Output of event combiner 0
+            EVT1            = 1,   // Output of event combiner 1
+            EVT2            = 2,   // Output of event combiner 2
+            EVT3            = 3,   // Output of event combiner 3
+            EMU_DTDMA       = 9,   // EMU interrupt
+            EMU_RTDXRX      = 11,  // EMU RTDX receive complete
             EMU_RTDXTX      = 12,  // EMU RTDX transmit complete
             IDMA0           = 13,  // IDMA channel 0 interrupt
             IDMA1           = 14,  // IDMA channel 1 interrupt
@@ -46,10 +45,10 @@ namespace driver
             INTDST1         = 21,  // RapidIO interrupt 1
             INTDST2         = 22,  // RapidIO interrupt 2
             INTDST3         = 23,  // RapidIO interrupt 3
-            EDMA3CC_GINT    = 24,  // EDMA3 channel global completion interrupt
+            EDMA3CC_GINT    = 24,  // EDMA3 channel global completion
             MACRXINT        = 25,  // Ethernet MAC receive interrupt
             MACTXINT        = 26,  // Ethernet MAC transmit interrupt
-            MACTHRESH       = 27,  // Ethernet MAC receive threshold interrupt
+            MACTHRESH       = 27,  // Ethernet MAC receive threshold
             INTDST4         = 28,  // RapidIO interrupt 4
             INTDST5         = 29,  // RapidIO interrupt 5
             INTDST6         = 30,  // RapidIO interrupt 6
@@ -81,14 +80,14 @@ namespace driver
             TINTHI0         = 68,  // Timer 0 higher counter interrupt
             TINTLO1         = 69,  // Timer 1 lower counter interrupt
             TINTHI1         = 70,  // Timer 1 higher counter interrupt
-            EDMA3CC_INT0    = 71,  // EDMA3CC completion interrupt - Mask0
-            EDMA3CC_INT1    = 72,  // EDMA3CC completion interrupt - Mask1
-            EDMA3CC_INT2    = 73,  // EDMA3CC completion interrupt - Mask2
-            EDMA3CC_INT3    = 74,  // EDMA3CC completion interrupt - Mask3
-            EDMA3CC_INT4    = 75,  // EDMA3CC completion interrupt - Mask4
-            EDMA3CC_INT5    = 76,  // EDMA3CC completion interrupt - Mask5
-            EDMA3CC_INT6    = 77,  // EDMA3CC completion interrupt - Mask6
-            EDMA3CC_INT7    = 78,  // EDMA3CC completion interrupt - Mask7
+            EDMA3CC_INT0    = 71,  // EDMA3CC completion - Mask0
+            EDMA3CC_INT1    = 72,  // EDMA3CC completion - Mask1
+            EDMA3CC_INT2    = 73,  // EDMA3CC completion - Mask2
+            EDMA3CC_INT3    = 74,  // EDMA3CC completion - Mask3
+            EDMA3CC_INT4    = 75,  // EDMA3CC completion - Mask4
+            EDMA3CC_INT5    = 76,  // EDMA3CC completion - Mask5
+            EDMA3CC_INT6    = 77,  // EDMA3CC completion - Mask6
+            EDMA3CC_INT7    = 78,  // EDMA3CC completion - Mask7
             EDMA3CC_ERRINT  = 79,  // EDMA3CC error interrupt
             EDMA3TC0_ERRINT = 81,  // EDMA3TC0 error interrupt
             EDMA3TC1_ERRINT = 82,  // EDMA3TC1 error interrupt
@@ -97,13 +96,13 @@ namespace driver
             EDMA3CC_AET     = 85,  // EDMA3CC AET Event
             EDMA3TC4_ERRINT = 86,  // EDMA3TC4 error interrupt
             EDMA3TC5_ERRINT = 87,  // EDMA3TC5 error interrupt
-            ETBOVFLINT      = 94,  // Overflow condition occurred in ETB
-            ETBUNFLINT      = 95,  // Underflow condition occurred in ETB
-            INTERR          = 96,  // Interrupt Controller dropped CPU interrupt event
+            ETBOVFLINT      = 94,  // Overflow  in ETB
+            ETBUNFLINT      = 95,  // Underflow in ETB
+            INTERR          = 96,  // Interrupt Controller dropped CPU
             EMC_IDMAERR     = 97,  // EMC invalid IDMA parameters
             EFIINTA         = 100, // EFI interrupt from side A
             EFIINTB         = 101, // EFI interrupt from side B
-            L1P_ED1         = 113, // L1P single bit error detected during DMA read
+            L1P_ED1         = 113, // L1P single bit error detected
             L2_ED1          = 116, // L2 single bit error detected
             L2_ED2          = 117, // L2 two bit error detected
             PDC_INT         = 118, // Powerdown sleep interrupt
@@ -131,10 +130,12 @@ namespace driver
         /** 
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          */     
-        InterruptController(::api::Task* handler, int32 source) : Parent(),
+        InterruptController(::api::Task* handler, int32 source) : 
+            Parent(),
             index_ (-1),    
             ctx_ (){
             setConstruct( construct(*handler, source) );
@@ -178,7 +179,8 @@ namespace driver
         /**
          * Locks this interrupt source.
          *
-         * @return an interrupt enable source bit value before method was called.
+         * @return an interrupt enable source bit value 
+         *         before method was called.
          */    
         virtual bool disable()
         {
@@ -200,7 +202,8 @@ namespace driver
         /**
          * Sets interrupt source handler.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          * @return true if handler is set successfully.
          */      
@@ -271,10 +274,12 @@ namespace driver
             regInt_ = 0;
             contexts_ = NULL;
             contextHi_ = NULL;
-            if(config.cpuClock <= 0) return false;      
+            if(config.cpuClock <= 0) 
+                return false;      
             regInt_ = new (reg::Intc::ADDRESS) reg::Intc();
             contexts_ = new Contexts();
-            if( contexts_ == NULL || not contexts_->isConstructed() ) return false;
+            if( contexts_ == NULL || not contexts_->isConstructed() ) 
+                return false;
             contextHi_ = &contexts_->getHi(0);
             initLow();
             // Set base value of registers
@@ -314,7 +319,8 @@ namespace driver
         /** 
          * Constructs the object.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.     
          * @return true if object has been constructed successfully.
          */
@@ -367,11 +373,13 @@ namespace driver
             if(vn < 4 || vn > 16) return;
             int32 i = vn >> 2;
             int32 p = vn & 0x3;
-            // Do reading a current register value, modify the value, and store it back. 
-            // This sequence is required only because TI has not corrected a bug yet with 
-            // the internal data bus of the interrupt controller. The bug cause that 
-            // during accessing to bit field of a register, STB instruction is used 
-            // and rewrites entire register.
+            // Do reading a current register value, modify the value, 
+            // and store it back. This sequence is required only 
+            // because TI has not corrected a bug yet with 
+            // the internal data bus of the interrupt controller. 
+            // The bug cause that during accessing to bit field of 
+            // a register, STB instruction is used and rewrites 
+            // entire register.
             reg::Intc::Intmux* reg = &regInt_->intmux[i];
             reg::Intc::Intmux temp = 0;
             temp.value = reg->value;
@@ -389,7 +397,7 @@ namespace driver
         /**
          * HW interrupt handle routing.
          *
-         * @param index index of HW interrupt vector number in contexts table
+         * @param index index of HW interrupt vector number.
          */  
         static void handler(register int32 index);
       
@@ -397,7 +405,8 @@ namespace driver
          * Locks maskable interrupt source.
          *
          * @param vn hardware interrupt vector number.
-         * @return an interrupt enable source bit in low bit before method was called.
+         * @return an interrupt enable source bit in low bit 
+         *         before method was called.
          */
         static bool disableLow(uint32 vn);
         
@@ -448,14 +457,16 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        InterruptController& operator =(const InterruptController& obj);
+        InterruptController& 
+        operator =(const InterruptController& obj);
           
         /**
          * Low level interrupt context.
          *
-         * NOTE: This struct data is used by low level interrupt routine.
-         *       It has to contain two fields and total size has to be eight bytes.
-         *       The address of it has to be aligned to eight.
+         * NOTE: This struct data is used by low level interrupt 
+         *       routine. It has to contain two fields and total 
+         *       size has to be eight bytes. The address of it has 
+         *       to be aligned to eight.
          */
         struct ContextLo
         {
@@ -465,7 +476,7 @@ namespace driver
             void* reg;
             
             /**
-             * Top of stack will be loaded to DSP SP for routing an intrrupt.
+             * Top of stack will be loaded to DSP SP for routing.
              */        
             const int64* tos;
             
@@ -489,7 +500,8 @@ namespace driver
              * @param obj2 second object.
              * @return true if object are equal.
              */
-            friend bool operator ==(const ContextLo& obj1, const ContextLo& obj2);     
+            friend bool operator ==(const ContextLo& obj1, 
+                                    const ContextLo& obj2);     
       
         };
         
@@ -546,7 +558,8 @@ namespace driver
              * @param obj2 second object.
              * @return true if object are equal.
              */
-            friend bool operator ==(const ContextHi& obj1, const ContextHi& obj2);
+            friend bool operator ==(const ContextHi& obj1, 
+                                    const ContextHi& obj2);
       
         };
             
@@ -569,7 +582,10 @@ namespace driver
              */    
             Contexts() : Parent(),
                 hi_        (),
-                lo_        (NUMBER_VECTORS, reinterpret_cast< ContextLo* >( &buffer_[0] ) ),
+                lo_        (NUMBER_VECTORS, 
+                            reinterpret_cast< ContextLo* >( 
+                                &buffer_[0] 
+                            ) ),
                 illegalHi_ (),
                 illegalLo_ (){
                 setConstruct( construct() ); 
@@ -585,9 +601,11 @@ namespace driver
             /**
              * Allocates interrupt vectot.
              *
-             * @param task    user class which implements an interrupt handler interface.
-             * @param source  available interrupt source.
-             * @return a vector intdex, or -1 if error has been occurred.
+             * @param task   user class which implements 
+             *               an interrupt handler interface.
+             * @param source available interrupt source.
+             * @return a vector intdex, or -1 
+             *         if error has been occurred.
              */      
             int32 allocate(::api::Task& task, Source source)
             {
@@ -602,7 +620,8 @@ namespace driver
                     break;
                 }        
                 if( wasAllocated ) return -1;
-                // Looking for free vector and alloc that if it is found          
+                // Looking for free vector and 
+                // alloc that if it is found          
                 for(int32 i=0; i<Contexts::NUMBER_VECTORS; i++)
                 {
                     if(hi_[i].handler != NULL) continue;
@@ -618,8 +637,13 @@ namespace driver
                 hi->handler = &task;      
                 hi->reg = ::driver::Register::create();
                 if(hi->reg == NULL) return -1;
-                hi->stack = new Stack(::driver::Processor::getStackType(), task.getStackSize() >> 3);
-                if(hi->stack == NULL || not hi->stack->isConstructed()) return -1;
+                hi->stack = new Stack(
+                    ::driver::Processor::getStackType(), 
+                    task.getStackSize() >> 3
+                );
+                if( hi->stack == NULL 
+                 || not hi->stack->isConstructed()) 
+                    return -1;
                 lo->reg = hi->reg->getRegisters();
                 lo->tos = hi->stack->getTos();      
                 return index;
@@ -678,9 +702,10 @@ namespace driver
             /** 
              * Constructs the object.
              *
-             * @param handler user class which implements an interrupt handler interface.
+             * @param handler user class which implements 
+             *                an interrupt handler interface.
              * @param source  available interrupt source.     
-             * @return true if object has been constructed successfully.
+             * @return true if object has been constructed.
              */
             bool construct()
             {
@@ -713,7 +738,8 @@ namespace driver
              */      
             static bool isIndex(int32 index)
             {
-                return 0 <= index && index < NUMBER_VECTORS ? true : false;
+                return 0 <= index && index < NUMBER_VECTORS 
+                     ? true : false;
             }      
             
             /**
@@ -737,11 +763,13 @@ namespace driver
             ContextLo illegalLo_;      
             
             /**
-             * Buffer for allocating low level interrupts contexts table (no boot).
+             * Buffer for allocating low contexts table (no boot).
              * 
-             * Here is uint64 used instead of ContextLo for prohibiting of calling
-             * default class constructors and excluding .pinit section by a compiler.
-             * Also, uint64 is needed to be sure that the buffer will be aligned to eight.
+             * Here is uint64 used instead of ContextLo for 
+             * prohibiting of calling default class constructors and 
+             * excluding .pinit section by a compiler. Also, uint64 
+             * is needed to be sure that the buffer will be 
+             * aligned to eight.
              */    
             static uint64 buffer_[NUMBER_VECTORS];      
       
@@ -816,14 +844,17 @@ namespace driver
          */    
         Context ctx_;
         
-        friend bool operator ==(const ContextHi& obj1, const ContextHi& obj2);
-        friend bool operator ==(const ContextLo& obj1, const ContextLo& obj2);  
+        friend bool operator ==(const ContextHi& obj1, 
+                                const ContextHi& obj2);
+        
+        friend bool operator ==(const ContextLo& obj1, 
+                                const ContextLo& obj2);  
     };
     
     /**
      * HW interrupt handle routing.
      *
-     * @param index index of HW interrupt vector number in contexts table
+     * @param index index of HW interrupt vector number in contexts.
      */  
     void InterruptController::handler(register int32 index)
     {
@@ -846,7 +877,9 @@ namespace driver
      * @param obj2 second object.
      * @return true if object are equal.
      */
-    inline bool operator ==(const InterruptController::ContextHi& obj1, const InterruptController::ContextHi& obj2)
+    inline 
+    bool operator ==(const InterruptController::ContextHi& obj1, 
+                     const InterruptController::ContextHi& obj2)
     {
         if      ( obj1.number  != obj2.number  ) return false;
         else if ( obj1.source  != obj2.source  ) return false;
@@ -863,7 +896,9 @@ namespace driver
      * @param obj2 second object.
      * @return true if object are equal.
      */
-    inline bool operator ==(const InterruptController::ContextLo& obj1, const InterruptController::ContextLo& obj2)
+    inline 
+    bool operator ==(const InterruptController::ContextLo& obj1, 
+                     const InterruptController::ContextLo& obj2)
     {
         if      ( obj1.tos != obj2.tos ) return false;
         else if ( obj1.reg != obj2.reg ) return false;
@@ -891,9 +926,11 @@ namespace driver
     InterruptController::ContextHi* InterruptController::contextHi_;
     
     /**
-     * Buffer for allocating low level interrupts contexts table (no boot).
+     * Buffer for allocating low level interrupts contexts (no boot).
      */    
-    uint64 InterruptController::Contexts::buffer_[ InterruptController::Contexts::NUMBER_VECTORS ];      
+    uint64 InterruptController::Contexts::buffer_[ 
+        InterruptController::Contexts::NUMBER_VECTORS 
+    ];
   
 }
 #endif // DRIVER_INTERRUPT_CONTROLLER_HPP_

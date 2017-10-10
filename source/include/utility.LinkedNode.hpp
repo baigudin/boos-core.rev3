@@ -2,8 +2,7 @@
  * Element for linked lists.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef UTILITY_LINKED_NODE_HPP_
 #define UTILITY_LINKED_NODE_HPP_
@@ -60,7 +59,8 @@ namespace utility
          *
          * @param node pointer to inserted node.
          */
-        virtual void insertAfter(::utility::LinkedNode<Type,Alloc>* node)
+        virtual 
+        void insertAfter(::utility::LinkedNode<Type,Alloc>* node)
         {
             link(node);
             node->index_ = index_;
@@ -80,7 +80,8 @@ namespace utility
          *
          * @param node pointer to inserted node.
          */
-        virtual void insertBefore(::utility::LinkedNode<Type,Alloc>* node)
+        virtual 
+        void insertBefore(::utility::LinkedNode<Type,Alloc>* node)
         {
             prev_->link(node);
             node->index_ = index_;

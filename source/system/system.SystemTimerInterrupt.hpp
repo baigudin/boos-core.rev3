@@ -2,8 +2,7 @@
  * Hardware timer interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_SYSTEM_TIMER_INTERRUPT_HPP_
 #define SYSTEM_SYSTEM_TIMER_INTERRUPT_HPP_
@@ -14,7 +13,9 @@
  
 namespace system
 {
-    class SystemTimerInterrupt : public ::system::TimerInterrupt, public ::api::Task
+    class SystemTimerInterrupt : 
+        public ::system::TimerInterrupt, 
+        public ::api::Task
     {
         typedef ::system::TimerInterrupt Parent;
         typedef ::system::Interrupt      ResInt;
@@ -25,7 +26,8 @@ namespace system
         /** 
          * Constructor.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.
          */     
         SystemTimerInterrupt() : Parent(),
             cnt_   (0),
@@ -90,7 +92,8 @@ namespace system
         int64 updateTime(uint64 cnt)
         {
             int64 time, dc, dt;
-            int64 timerFrequency = Timer::getDriver().getInternalClock();
+            int64 timerFrequency = 
+                  Timer::getDriver().getInternalClock();
             if(timerFrequency == 0) return time_;
             bool is = global().disable();
             // Set delta count it the value in timer clocks
@@ -123,7 +126,8 @@ namespace system
             if(!isConstructed()) return false;
             ::api::Task& handler = reinterpret(this);
             int32 source = ResTim::getDriver().getInterrupSource();
-            if(!ResInt::getDriver().setHandler(handler, source)) return false;
+            if(!ResInt::getDriver().setHandler(handler, source)) 
+                return false;
             setPeriod();
             setCount(0);
             start();
@@ -134,11 +138,12 @@ namespace system
         /**
          * Fixs a collision to call a TimerInterrupt constructor.
          *
-         * Method gives to compiler an understanding about what should be called.
-         * The parent constructor will called, just not a copy constructor.
+         * Method gives to compiler an understanding about what 
+         * should be called. The parent constructor will called, 
+         * just not a copy constructor.
          *
          * @param cls pointer to this class.
-         * @return the reference to InterruptHandler interface of given class.
+         * @return InterruptHandler interface of given class.
          */
         static ::api::Task& reinterpret(SystemTimerInterrupt* cls)
         {
@@ -158,7 +163,8 @@ namespace system
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        SystemTimerInterrupt& operator =(const SystemTimerInterrupt& obj);    
+        SystemTimerInterrupt& 
+        operator =(const SystemTimerInterrupt& obj);    
         
         /**
          * Previous counter value.

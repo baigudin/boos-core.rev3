@@ -2,8 +2,7 @@
  * System class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.System.hpp"
 #include "system.SystemTimerInterrupt.hpp"
@@ -50,11 +49,13 @@ namespace system
     {
         // Create the operating system system tick timer
         interrupt_ = new SystemTimerInterrupt();
-        if(interrupt_ == NULL || !interrupt_->isConstructed()) return false;
+        if(interrupt_ == NULL || !interrupt_->isConstructed()) 
+            return false;
         // Set heap interrupt controller
         global_ = NULL;
         ::api::Heap* heap = ::Allocator::getHeap();
-        if(heap == NULL || !heap->isConstructed()) return false;
+        if(heap == NULL || !heap->isConstructed()) 
+            return false;
         global_ = &interrupt_->global();
         heap->setToggle(global_);
         return true;

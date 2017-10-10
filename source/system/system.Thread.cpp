@@ -2,8 +2,7 @@
  * Thread class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.Thread.hpp"
 #include "system.Scheduler.hpp"
@@ -36,7 +35,8 @@ namespace system
     /** 
      * Constructor.
      *
-     * @param task an task interface whose main method is invoked when this thread is started.
+     * @param task an task interface whose main method is invoked 
+     *             when this thread is started.
      */
     Thread::Thread(::api::Task& task) : Parent(),
         task_     (NULL),
@@ -149,7 +149,7 @@ namespace system
     /**
      * Sets this thread priority.
      *
-     * @param priority number of priority in range [MIN_PRIORITY, MAX_PRIORITY].
+     * @param priority number of priority in available range.
      */  
     void Thread::setPriority(int32 priority)
     {
@@ -170,7 +170,7 @@ namespace system
     }
     
     /** 
-     * Returns the toggle interface for controlling global thread switch.
+     * Returns the interface for controlling global thread switch.
      *
      * @return toggle interface.
      */ 
@@ -199,21 +199,26 @@ namespace system
     /**
      * Constructor.
      *
-     * @param task an interface whose run method is invoked when this thread is started.   
+     * @param task an interface whose run method is invoked 
+     *             when this thread is started.   
      */
     bool Thread::construct(::api::Task* task)
     {
         if(!isConstructed()) return false;  
-        if(scheduler_ == NULL || !scheduler_->isConstructed()) return false;
+        if(scheduler_ == NULL || !scheduler_->isConstructed()) 
+            return false;
         if(idCount_ < 0) return false;
         if(!task->isConstructed()) return false;    
         const Thread* thread = scheduler_->currentTask();
-        priority_ = thread != NULL ? thread->getPriority() : NORM_PRIORITY;
+        priority_ = thread != NULL 
+                  ? thread->getPriority() : NORM_PRIORITY;
         // Set this thread CPU registers context 
         register_ = ::driver::Register::create();
-        if(register_ == NULL || !register_->isConstructed()) return false;
+        if(register_ == NULL || !register_->isConstructed()) 
+            return false;
         // Set this thread stack context 
-        stack_ = new Stack( ::driver::Processor::getStackType(), task->getStackSize() >> 3 );    
+        stack_ = new Stack(::driver::Processor::getStackType(), 
+                           task->getStackSize() >> 3);    
         if(stack_ == NULL || !stack_->isConstructed()) return false;
         task_ = task;
         return true;
@@ -234,7 +239,8 @@ namespace system
             // Stage 1
             stage++;
             scheduler_ = new Scheduler();
-            if(scheduler_ == NULL || !scheduler_->isConstructed()) break;
+            if(scheduler_ == NULL || !scheduler_->isConstructed()) 
+                break;
             // Stage complete
             stage = 0;
         }

@@ -2,8 +2,7 @@
  * Skeleton thread task class with default settings.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_THREAD_TASK_HPP_
 #define SYSTEM_THREAD_TASK_HPP_
@@ -42,7 +41,8 @@ namespace system
         /**
          * Returns size of thread stack.
          *
-         * The method returns size of thread stack in bytes which should be allocated for the task.
+         * The method returns size of thread stack in bytes which 
+         * should be allocated for the task.
          *
          * @return stack size in bytes.
          */  

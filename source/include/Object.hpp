@@ -2,8 +2,7 @@
  * Root class of the system class hierarchy.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef OBJECT_HPP_
 #define OBJECT_HPP_
@@ -92,7 +91,7 @@ public:
     /**
      * Operator delete.
      *
-     * @param ptr address of allocated memory block or a null pointer.
+     * @param ptr allocated memory address or a null pointer.
      */
     void operator delete(void* ptr)
     {
@@ -139,7 +138,7 @@ protected:
     /**
      * Frees an allocated memory.
      *
-     * @param ptr address of allocated memory block or a null pointer.
+     * @param ptr allocated memory address or a null pointer.
      */      
     static void free(void* ptr)
     {
@@ -151,8 +150,9 @@ private:
     /** 
      * Operator delete.
      *
-     * @param ptr   address of allocated memory block or a null pointer.
-     * @param place pointer used as the placement parameter in the matching placement new.
+     * @param ptr   allocated memory address or a null pointer.
+     * @param place pointer used as the placement parameter 
+     *              in the matching placement new.
      */  
     void operator delete(void* ptr, void* place);
     
@@ -167,7 +167,7 @@ private:
     /** 
      * Operator delete.
      *
-     * @param ptr address of allocated memory block or a null pointer.
+     * @param ptr allocated memory address or a null pointer.
      */  
     void operator delete[](void* ptr);
     
@@ -183,8 +183,9 @@ private:
     /** 
      * Operator delete.
      *
-     * @param ptr   address of allocated memory block or a null pointer.
-     * @param place pointer used as the placement parameter in the matching placement new.
+     * @param ptr   allocated memory address or a null pointer.
+     * @param place pointer used as the placement parameter 
+     *              in the matching placement new.
      */  
     void operator delete[](void* ptr, void* place);
     

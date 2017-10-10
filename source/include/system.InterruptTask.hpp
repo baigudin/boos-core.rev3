@@ -2,8 +2,7 @@
  * Skeleton interrupt task class with default settings.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_INTERRUPT_TASK_HPP_
 #define SYSTEM_INTERRUPT_TASK_HPP_
@@ -42,7 +41,8 @@ namespace system
         /**
          * Returns size of interrupt stack.
          *
-         * The method returns size of interrupt stack in bytes which should be allocated for the task.
+         * The method returns size of interrupt stack in bytes 
+         * which should be allocated for the task.
          *
          * @return stack size in bytes.
          */  

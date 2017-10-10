@@ -2,8 +2,7 @@
  * Stack.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef UTILITY_STACK_HPP_
 #define UTILITY_STACK_HPP_
@@ -32,7 +31,8 @@ namespace utility
          * @param type  type of this stack.
          * @param count count of buffer elements.
          */    
-        Stack(typename ::api::Stack<Type>::Operation type, int32 count) : Parent(),
+        Stack(typename ::api::Stack<Type>::Operation type, 
+              int32 count) : Parent(),
             stack_ (count),
             type_  (type){
             this->setConstruct( construct() );
@@ -45,7 +45,9 @@ namespace utility
          * @param count   count of buffer elements.
          * @param illegal illegal value.
          */    
-        Stack(typename ::api::Stack<Type>::Operation type, int32 count, const Type illegal) : Parent(),
+        Stack(typename ::api::Stack<Type>::Operation type, 
+              int32 count, 
+              const Type illegal) : Parent(),
             stack_ (count, illegal),
             type_  (type){
             this->setConstruct( construct() );
@@ -79,11 +81,16 @@ namespace utility
             Type* stack = &stack_[0];
             switch(type_)
             {
-                case StackIntf::FD: return &stack[stack_.getLength()];
-                case StackIntf::ED: return &stack[stack_.getLength() - 1];
-                case StackIntf::FA: return &stack[0] - 1;
-                case StackIntf::EA: return &stack[0];
-                default: return NULL;  
+                case StackIntf::FD: 
+                    return &stack[stack_.getLength()];
+                case StackIntf::ED: 
+                    return &stack[stack_.getLength() - 1];
+                case StackIntf::FA: 
+                    return &stack[0] - 1;
+                case StackIntf::EA: 
+                    return &stack[0];
+                default: 
+                    return NULL;  
             }
         }
         
@@ -108,9 +115,9 @@ namespace utility
         }
       
         /**
-         * Tests if this collection has elements.
+         * Tests if the stack is empty.
          *
-         * @return true if this collection does not contain any elements.
+         * @return true if the stack is empty.
          */
         virtual bool isEmpty() const
         {
@@ -118,9 +125,7 @@ namespace utility
         }
       
         /**
-         * Returns illegal element which will be returned as error value.
-         *
-         * If illegal value is not set method returns uninitialized variable.
+         * Returns illegal element which is returned as error value.
          *
          * @return reference to illegal element.
          */
@@ -130,7 +135,7 @@ namespace utility
         }
       
         /**
-         * Sets illegal element which will be returned as error value.
+         * Sets illegal element which is returned as error value.
          *
          * @param value illegal value.
          */

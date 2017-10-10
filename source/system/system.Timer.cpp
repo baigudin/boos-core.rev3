@@ -2,8 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.Timer.hpp"
 #include "system.System.hpp" 
@@ -84,7 +83,8 @@ namespace system
     /**
      * Sets this timer period.
      *
-     * @param us timer period in microseconds, zero is set period to maxinum value.
+     * @param us timer period in microseconds, zero is set period 
+     *           to maxinum value.
      */      
     void Timer::setPeriod(int64 us)
     {

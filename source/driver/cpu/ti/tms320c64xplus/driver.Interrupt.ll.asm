@@ -1,89 +1,90 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Interrupt low level module.
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2014-2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
+; @copyright 2014-2017, Sergey Baigudin
+; -------------------------------------------------------------------
 
-    ; Set a using ABI which might be EABI if EABI is set to 1, or COFF ABI if EABI is set to 0
-    ; Having version 7.0 or greater C6000 compilers might generate object files compatible with EABI 
-    ; and have __TI_EABI__ predefined symbol is set to 1 if compiling for EABI and is unset to 0 otherwise. 
-    .asg  0, EABI
+  ; Set a using ABI which might be EABI if EABI is set to 1, 
+  ; or COFF ABI if EABI is set to 0. Having version 7.0 or greater 
+  ; C6000 compilers might generate object files compatible with EABI 
+  ; and have __TI_EABI__ predefined symbol is set to 1 
+  ; if compiling for EABI and is unset to 0 otherwise. 
+  .asg  0, EABI
 
-    .ref  _c_int00
-    
-    .asg  b15, sp
-    .asg  b14, dp
-    .asg  a15, fp
-    
-    .asg  0001h, C_REG_GIE
-    .asg  0002h, C_REG_SGIE
+  .ref  _c_int00
+  
+  .asg  b15, sp
+  .asg  b14, dp
+  .asg  a15, fp
+  
+  .asg  0001h, C_REG_GIE
+  .asg  0002h, C_REG_SGIE
 
-    ; EABI
-    .if   EABI
-    
-    ; COFF ABI
-    .else
+  ; EABI
+  .if   EABI
+  
+  ; COFF ABI
+  .else
 
-    .def  _disableAll__Q2_6driver9InterruptSFv
-    .def  _enableAll__Q2_6driver9InterruptSFb
-    .def  _disableLow__Q2_6driver19InterruptControllerSFUi
-    .def  _enableLow__Q2_6driver19InterruptControllerSFUib
-    .def  _setLow__Q2_6driver19InterruptControllerSFUi
-    .def  _clearLow__Q2_6driver19InterruptControllerSFUi
-    .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
-    .def  _initLow__Q2_6driver19InterruptControllerSFv
-   
-    .ref  ___bss__
-    .ref  _handler__Q2_6driver19InterruptControllerSFi
-    .ref  _buffer___Q3_6driver19InterruptController8Contexts
-    
-    .asg  ___bss__,                                           m_bss
-    .asg  _disableAll__Q2_6driver9InterruptSFv,               m_global_disable
-    .asg  _enableAll__Q2_6driver9InterruptSFb,                m_global_enable
-    .asg  _disableLow__Q2_6driver19InterruptControllerSFUi,   m_disable
-    .asg  _enableLow__Q2_6driver19InterruptControllerSFUib,   m_enable
-    .asg  _setLow__Q2_6driver19InterruptControllerSFUi,       m_set
-    .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,     m_clear
-    .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,      m_jump
-    .asg  _initLow__Q2_6driver19InterruptControllerSFv,       m_init
-    .asg  _handler__Q2_6driver19InterruptControllerSFi,       m_handler
-    .asg  _buffer___Q3_6driver19InterruptController8Contexts, v_context
+  .def  _disableAll__Q2_6driver9InterruptSFv
+  .def  _enableAll__Q2_6driver9InterruptSFb
+  .def  _disableLow__Q2_6driver19InterruptControllerSFUi
+  .def  _enableLow__Q2_6driver19InterruptControllerSFUib
+  .def  _setLow__Q2_6driver19InterruptControllerSFUi
+  .def  _clearLow__Q2_6driver19InterruptControllerSFUi
+  .def  _jumpLow__Q2_6driver19InterruptControllerSFUi
+  .def  _initLow__Q2_6driver19InterruptControllerSFv
+  
+  .ref  ___bss__
+  .ref  _handler__Q2_6driver19InterruptControllerSFi
+  .ref  _buffer___Q3_6driver19InterruptController8Contexts
+  
+  .asg  ___bss__,                                  m_bss
+  .asg  _disableAll__Q2_6driver9InterruptSFv,      m_global_disable
+  .asg  _enableAll__Q2_6driver9InterruptSFb,       m_global_enable
+  .asg  _disableLow__Q2_6driver19InterruptControllerSFUi, m_disable
+  .asg  _enableLow__Q2_6driver19InterruptControllerSFUib, m_enable
+  .asg  _setLow__Q2_6driver19InterruptControllerSFUi,     m_set
+  .asg  _clearLow__Q2_6driver19InterruptControllerSFUi,   m_clear
+  .asg  _jumpLow__Q2_6driver19InterruptControllerSFUi,    m_jump
+  .asg  _initLow__Q2_6driver19InterruptControllerSFv,     m_init
+  .asg  _handler__Q2_6driver19InterruptControllerSFi,     m_handler
+  .asg  _buffer___Q3_6driver19InterruptController8Contexts, v_context
 
-    .endif
+  .endif
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt handler.
 ;
 ; This is a macro command for interrupts table 
 ; that is used for reserved vectors.
 ; It has fixed size that equals eight.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 reserve .macro
         .align          20h
 mc_ri?  b               mc_ri?
         nop             5
         .endm
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware nonmaskable interrupt handler.
 ;
 ; This is a macro command for nonmaskable interrupt table.
 ; It has fixed size that equals to eight.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 nmi     .macro
         .align          20h
         b               nrp
         nop             5    
         .endm
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt handler (the execution is 7 cycles).
 ;
 ; This is a macro command for interrupts table.
 ; It has fixed size that equals to eight.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 handler .macro          num
         .align          20h
         stdw            b1:b0, *-sp[3]
@@ -96,9 +97,9 @@ handler .macro          num
         nop             3
         .endm
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupts table.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .sect           ".hwi"
 m_reset:
         ; Reset interrupt vector
@@ -129,7 +130,7 @@ m_reset:
         handler         14
         handler         15
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Nonreset interrupt service routine.
 ;
 ; 07 cycles is vector execution
@@ -137,7 +138,7 @@ m_reset:
 ; 28 cycles is restore time of context and return from interrupt.
 ; 
 ; 57 cycles is total service time.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_isr:
         ; Store the context 
@@ -271,11 +272,11 @@ m_restore?
      || lddw            *b31++[2], b31:b30
         nop             4
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Disables all maskable interrupts.
 ;
-; @return A4 global interrupt enable bit value before method was called.
-; ----------------------------------------------------------------------------
+; @return A4 global interrupt enable bit before method was called.
+; -------------------------------------------------------------------
         .text
 m_global_disable:
         b               b3
@@ -285,11 +286,11 @@ m_global_disable:
         shr             a4, 1, a4 
         nop             1
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Enables all maskable interrupts.
 ;
 ; @param A4 the returned status by disable method.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_global_enable:
         b               b3
@@ -300,12 +301,12 @@ m_global_enable:
         mvc             b0, tsr
         rint
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Locks maskable interrupt source.
 ;
 ; @param A4 hardware interrupt vector number.
 ; @return A4 an interrupt enable source bit before method was called.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_disable:
         b               b3
@@ -320,12 +321,12 @@ m_disable:
      || mvc             a1, ier            
         rint
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Unlocks maskable interrupt source.
 ;
 ; @param A4 hardware interrupt vector number.
 ; @param B4 returned status by m_disable procedure.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_enable:
         b               b3
@@ -338,11 +339,11 @@ m_enable:
         rint
         nop             1        
    
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Sets a maskable interrupt status.
 ;
 ; @param A4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_set:
         b               b3        
@@ -352,11 +353,11 @@ m_set:
         mvk             0, a4         
         nop             1         
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Clears a maskable interrupt status.
 ;
 ; @param A4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_clear:
         b               b3        
@@ -366,7 +367,7 @@ m_clear:
         mvk             0, a4         
         nop             1 
           
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Jumps to interrupt HW vector.
 ;
 ; The method must be executed in Supervisor Mode, as it works 
@@ -375,7 +376,7 @@ m_clear:
 ; the algorithm will be changed when a circumstance is changed.
 ;
 ; @param A4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_jump:
         ; Save TSR to ITSR, disable global interrupts,
@@ -399,9 +400,9 @@ m_jmp?  b               a4
 m_ret?  b               b3
         nop             5
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Initializes the interrupt controller.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 m_init:
         mvk             0, a0
         mvc             a0, irp
@@ -415,4 +416,3 @@ m_init:
         mvkh            m_reset, a0        
         mvc             a0, istp        
         nop             2
-        

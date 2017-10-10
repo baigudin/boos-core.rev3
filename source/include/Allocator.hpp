@@ -2,8 +2,7 @@
  * Memory allocator.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef ALLOCATOR_HPP_
 #define ALLOCATOR_HPP_
@@ -40,7 +39,8 @@ public:
     /**
      * Returns the heap memory.
      *
-     * @return heap memory of the allocator, or NULL if it has not been initialized.
+     * @return heap memory of the allocator, or NULL 
+     *         if it has not been initialized.
      */
     static ::api::Heap* getHeap()
     {
@@ -77,7 +77,8 @@ private:
      */
     static void setHeap(void* addr, int64 size)
     {
-        heap_ = addr != NULL && size > 0 ? new (addr) ::utility::Heap(size) : NULL;
+        heap_ = addr != NULL && size > 0 
+              ? new (addr) ::utility::Heap(size) : NULL;
         if(heap_ == NULL || !heap_->isConstructed()) heap_ = NULL;
     }
   

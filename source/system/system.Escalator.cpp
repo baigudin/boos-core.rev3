@@ -2,8 +2,7 @@
  * Escalator class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.Escalator.hpp"
 #include "system.Thread.hpp"
@@ -30,7 +29,8 @@ namespace system
      * Constructor.
      *
      * @param permits the initial number of permits available.      
-     * @param fair true if this escalator will guarantee FIFO granting of permits under contention.
+     * @param fair true if this escalator will guarantee 
+     *        FIFO granting of permits under contention.
      */      
     Escalator::Escalator(int32 permits, bool fair) : Parent(),
         toggle_  (Interrupt::global()),    
@@ -79,7 +79,8 @@ namespace system
         if(!isConstructed()) return false;
         is = toggle_.disable();
         Node node(Thread::getCurrent(), permits);
-        // Check about available space in the semaphoring critical section
+        // Check about available space in 
+        // the semaphoring critical section
         if( permits_ - permits >= 0 && list_.lock.isEmpty() )
         {
             // Add current thread to the executing queue
@@ -93,9 +94,11 @@ namespace system
         res = list_.lock.add(node);
         if(res == true)
         {
-            // Block current thread on the escalator and switch to another thread
+            // Block current thread on the escalator 
+            // and switch to another thread
             Thread::block(*this);
-            // This thread is unblocked by the scheduler called isBlocked method 
+            // This thread is unblocked by 
+            // the scheduler called isBlocked method 
             res = removeNode(list_.lock, node);
         }
         // Go through the escalator to critical section
@@ -146,10 +149,12 @@ namespace system
         // Test if current thread is the first in FIFO
         if(cur != res) return toggle_.enable(is, true);
         // Check about free permits of escalator
-        if(permits_ - res.permits < 0) return toggle_.enable(is, true);
+        if(permits_ - res.permits < 0) 
+            return toggle_.enable(is, true);
         // Unblock thread
         permits_ -= res.permits;
-        if(isFair_ == true) list_.exec.add( Node(Thread::getCurrent(), res.permits) );
+        if(isFair_ == true) 
+            list_.exec.add( Node(Thread::getCurrent(), res.permits) );
         return toggle_.enable(is, false);    
     }
     

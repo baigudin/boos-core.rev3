@@ -2,8 +2,7 @@
  * Target processor interrupts factory.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_INTERRUPT_HPP_
 #define DRIVER_INTERRUPT_HPP_
@@ -26,7 +25,7 @@ namespace driver
         struct Resource
         {
             /**
-             * A pointer to a class which implements an interrupt handler interface.
+             * A class that implements an interrupt handler interface.
              */
             ::api::Task* handler;
             
@@ -45,11 +44,13 @@ namespace driver
         /**
          * Sets interrupt source handler.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          * @return true if handler is set successfully.
          */      
-        virtual bool setHandler(::api::Task& handler, int32 source) = 0;
+        virtual 
+        bool setHandler(::api::Task& handler, int32 source) = 0;
         
         /**
          * Removes this interrupt source.
@@ -59,9 +60,10 @@ namespace driver
         /**
          * Sets new registers context for storing.
          * 
-         * Method sets a new register context for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * given conxet will be restored by the context restore procedure.
+         * Method sets a new register context for storing 
+         * the CPU registers to it. This method may be called 
+         * in an user interrupt handler, it means given conxet 
+         * will be restored by the context restore procedure.
          *
          * @param reg new registers context.
          */
@@ -70,9 +72,10 @@ namespace driver
         /**
          * Restores registers context for storing to the default.
          * 
-         * Method restores default registers for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * the default conxet will be restored with the context restore procedure.
+         * Method restores default registers for storing 
+         * the CPU registers to it. This method may be called 
+         * in an user interrupt handler, it means the default conxet 
+         * will be restored with the context restore procedure.
          */
         virtual void restoreContext() = 0;        
         
@@ -82,20 +85,23 @@ namespace driver
          * @param res the driver resource creating structure.     
          * @return target processor interrupt interface.
          */
-        static ::driver::Interrupt* create(const ::driver::Interrupt::Resource res);
+        static ::driver::Interrupt* 
+        create(const ::driver::Interrupt::Resource res);
         
         /**
          * Disables all maskable interrupts.
          *
-         * @return global interrupts enable bit value before method was called.
+         * @return global interrupts enable bit value 
+         *         before method was called.
          */
         static bool disableAll();
         
         /**
          * Enables all maskable interrupts.
          *
-         * The true passed argument directly turns all maskable interrupts on, 
-         * and the false does nothing, the interrupts stay in the current state.     
+         * The true passed argument directly turns all maskable 
+         * interrupts on, and the false does nothing, the interrupts 
+         * stay in the current state.     
          *
          * @param status the returned status by disable method.
          */

@@ -2,11 +2,11 @@
  * Target processor timer controller resource. 
  *
  * The class describes a skeleton implementation of a timer resource.
- * It should be inherited by all classes, which aim expanding the implementation. 
+ * It should be inherited by all classes, which aim expanding 
+ * the implementation. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_TIMER_RESOURCE_HPP_
 #define DRIVER_TIMER_RESOURCE_HPP_
@@ -78,7 +78,8 @@ namespace driver
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero value sets a period to maximum value.
+         * @param us timer period in microseconds, zero value sets 
+         *           a period to maximum value.
          */      
         virtual void setPeriod(int64 us=0)
         {
@@ -101,7 +102,8 @@ namespace driver
         /**
          * Returns this timer index.
          *
-         * @return index of this timer, or -1 if error has been occurred.
+         * @return index of this timer, or -1 
+         *         if error has been occurred.
          */
         virtual int32 getIndex() const
         {
@@ -141,7 +143,8 @@ namespace driver
         /**
          * Returns an available interrupt source for this timer.
          *
-         * @return available interrupt source, or -1 if error has been occurred.
+         * @return available interrupt source, or -1 
+         *         if error has been occurred.
          */  
         virtual int32 getInterrupSource() const
         {

@@ -4,8 +4,7 @@
  * The interface of a task that is being executed in self context.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef API_TASK_HPP_
 #define API_TASK_HPP_
@@ -32,7 +31,8 @@ namespace api
         /**
          * Returns size of stack.
          *
-         * The method returns size of stack in bytes which should be allocated for the task.
+         * The method returns size of stack in bytes 
+         * which should be allocated for the task.
          *
          * @return stack size in bytes.
          */  

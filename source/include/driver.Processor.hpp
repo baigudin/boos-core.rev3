@@ -2,8 +2,7 @@
  * Target processor factory. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_PROCESSOR_HPP_
 #define DRIVER_PROCESSOR_HPP_
@@ -27,7 +26,8 @@ namespace driver
         /**
          * Returns the interface of a target processor.
          *
-         * @return target processor hardware interface, or NULL if error has been occurred.
+         * @return target processor hardware interface, or NULL 
+         *         if error has been occurred.
          */
         static ::driver::Processor* create(); 
         

@@ -4,8 +4,7 @@
  * Hardware address for system heap memory has to be aligned to eight.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef UTILITY_HEAP_HPP_
 #define UTILITY_HEAP_HPP_
@@ -34,14 +33,15 @@ namespace utility
         /** 
          * Constructor.
          *
-         * Reference to global interrupt interface pointer is used for
-         * a possibility to change a value of that pointer.
+         * Reference to global interrupt interface pointer is used 
+         * for a possibility to change a value of that pointer.
          * Until that pointer is NULL golobal interrupt is not used.
-         * This gives you a possibility to change using golobal interrupts
-         * on fly.   
+         * This gives you a possibility to change using golobal 
+         * interrupts on fly.   
          *     
          * @param size   total heap size.
-         * @param toggle reference to pointer to global interrupts toggle interface.
+         * @param toggle reference to pointer to global interrupts 
+         *               toggle interface.
          */    
         Heap(int64 size, ::api::Toggle*& toggle) :
             data_  (size, toggle),
@@ -93,7 +93,8 @@ namespace utility
         /**
          * Frees an allocated memory.
          *
-         * @param toggle reference to pointer to global interrupts toggle interface.
+         * @param toggle reference to pointer to global interrupts 
+         *               toggle interface.
          */      
         virtual void setToggle(::api::Toggle*& toggle)
         {
@@ -129,8 +130,9 @@ namespace utility
         /**
          * Operator delete.
          *
-         * @param ptr   address of allocated memory block or a null pointer.
-         * @param place pointer used as the placement parameter in the matching placement new.
+         * @param ptr   address of allocated memory block or NULL.
+         * @param place pointer used as the placement parameter 
+         *              in the matching placement new.
          */
         void operator delete(void*, void*)
         {
@@ -159,22 +161,26 @@ namespace utility
         {
             // Crop a size to multiple of eight
             if(sizeof(HeapBlock) + 16 > data_.size) return false;
-            // Test Heap and HeapBlock structures sizes witch has to be multipled to eight
+            // Test Heap and HeapBlock structures sizes 
+            // witch has to be multipled to eight
             if(sizeof(Heap) & 0x7) return false;
             if(sizeof(HeapBlock) & 0x7) return false;
             // Test memory
-            uint32 addr = reinterpret_cast<uint32>(this) + sizeof(Heap);
+            uint32 addr = reinterpret_cast<uint32>(this) 
+                        + sizeof(Heap);
             void*  ptr  = reinterpret_cast<void*>(addr);
             if( !isMemoryAvailable(ptr, data_.size) ) return false;
             // Alloc first heap block
-            data_.block = new ( firstBlock() ) HeapBlock(this, data_.size);
+            data_.block = new 
+                        ( firstBlock() ) HeapBlock(this, data_.size);
             return data_.block != NULL ? true : false;
         }
         
         /** 
          * Disables a controller.
          *
-         * @return an enable source bit value of a controller before method was called.
+         * @return an enable source bit value of a controller 
+         *         before method was called.
          */ 
         bool disable()
         {
@@ -202,7 +208,8 @@ namespace utility
          */
         HeapBlock* firstBlock()
         {
-            uint32 addr = reinterpret_cast<uint32>(this) + sizeof(Heap);
+            uint32 addr = reinterpret_cast<uint32>(this) 
+                        + sizeof(Heap);
             return reinterpret_cast<HeapBlock*>(addr);
         }
         
@@ -213,7 +220,8 @@ namespace utility
          */
         HeapBlock* heapBlock(void* data)
         {
-            uint32 addr = reinterpret_cast<uint32>(data) - sizeof(HeapBlock);
+            uint32 addr = reinterpret_cast<uint32>(data) 
+                        - sizeof(HeapBlock);
             return reinterpret_cast<HeapBlock*>(addr);
         }
         
@@ -309,8 +317,6 @@ namespace utility
         /**
          * Operator delete.
          *
-         * Method does nothing and is defined for blocking operator delete.
-         *
          * @param ptr address of allocated memory.
          */  
         void operator delete(void*)
@@ -321,14 +327,14 @@ namespace utility
          * Operator new.
          *
          * @param size number of bytes to allocate.
-         * @return allocated memory address or a null pointer.
+         * @return allocated memory address or NULL.
          */  
         void* operator new[](size_t size);
         
         /** 
          * Operator delete.
          *
-         * @param ptr address of allocated memory block or a null pointer.
+         * @param ptr address of allocated memory block or NULL.
          */  
         void operator delete[](void* ptr);
       
@@ -336,16 +342,17 @@ namespace utility
          * Operator new.
          *
          * @param size number of bytes to allocate.
-         * @param ptr  pointer to a memory area to initialize the object
-         * @return allocated memory address or a null pointer.
+         * @param ptr  pointer to a memory area.
+         * @return allocated memory address or NULL.
          */  
         void* operator new[](size_t size, void* ptr);
         
         /** 
          * Operator delete.
          *
-         * @param ptr   address of allocated memory block or a null pointer.
-         * @param place pointer used as the placement parameter in the matching placement new.
+         * @param ptr   address of allocated memory block or NULL.
+         * @param place pointer used as the placement parameter 
+         *              in the matching placement new.
          */  
         void operator delete[](void* ptr, void* place);
         
@@ -399,9 +406,10 @@ namespace utility
          * is not delicate, but it is working for understanding 
          * about size of Heap class Virtual Function Table.
          *
-         * Note: int64 was used because some compilers can put 64 bit variable 
-         * to aligned 8 memory address. Therefore, size of classes 
-         * with 32 bit pointer to virtual table and one 64 bit variable is 16 bytes.
+         * Note: int64 was used because some compilers can put 
+         * 64 bit variable to aligned 8 memory address. Therefore, 
+         * size of classes with 32 bit pointer to virtual table and 
+         * one 64 bit variable is 16 bytes.
          */    
         class VirtualTable : public ::api::Heap{int64 temp;};    
         
@@ -482,7 +490,8 @@ namespace utility
                 // has a need size of memory and new heap block
                 if(curr->size_ >= size + sizeof(HeapBlock))
                 {
-                    HeapBlock* next = new ( curr->next(size) ) HeapBlock(heap_, curr->size_ - size);
+                    HeapBlock* next = new ( curr->next(size) ) 
+                               HeapBlock(heap_, curr->size_ - size);
                     next->next_ = curr->next_;
                     next->prev_ = curr;
                     if(next->next_) next->next_->prev_ = next;        
@@ -502,15 +511,19 @@ namespace utility
             {
                 if(canDelete() == false) return false;
                 int32 sibling = 0;
-                if(prev_ != NULL && !prev_->isUsed()) sibling |= PREV_FREE;
-                if(next_ != NULL && !next_->isUsed()) sibling |= NEXT_FREE;    
+                if(prev_ != NULL && !prev_->isUsed()) 
+                    sibling |= PREV_FREE;
+                if(next_ != NULL && !next_->isUsed()) 
+                    sibling |= NEXT_FREE;    
                 switch(sibling)
                 {
                     case PREV_FREE | NEXT_FREE:
                     {
-                        prev_->size_ += 2 * sizeof(HeapBlock) + size_ + next_->size_;
+                        prev_->size_ += 2 * sizeof(HeapBlock) + size_ 
+                                     +  next_->size_;
                         prev_->next_ = next_->next_;
-                        if(prev_->next_ != NULL) prev_->next_->prev_ = prev_;
+                        if(prev_->next_ != NULL) 
+                            prev_->next_->prev_ = prev_;
                     }
                     break;
                     case PREV_FREE:
@@ -577,7 +590,8 @@ namespace utility
              */
             void* data()
             {
-                uint32 addr = reinterpret_cast<uint32>(this) + sizeof(HeapBlock);
+                uint32 addr = reinterpret_cast<uint32>(this) 
+                            + sizeof(HeapBlock);
                 return reinterpret_cast<void*>(addr);
             }
             
@@ -588,7 +602,8 @@ namespace utility
              */
             void* next(size_t size)
             {
-                uint32 addr = reinterpret_cast<uint32>(this) + sizeof(HeapBlock) + size;
+                uint32 addr = reinterpret_cast<uint32>(this) 
+                            + sizeof(HeapBlock) + size;
                 return reinterpret_cast<void*>(addr);
             }
             
@@ -667,8 +682,9 @@ namespace utility
         /**
          * Heap data.
          *
-         * This structure is needed for aligning heap data or otherwise 
-         * this Heap class can not de aligned because it is incompleted.
+         * This structure is needed for aligning heap data or 
+         * otherwise this Heap class can not de aligned because 
+         * it is incompleted.
          */
         struct HeapData
         {
@@ -688,9 +704,9 @@ namespace utility
             /** 
              * Constructor.
              *
-             * @param ikey    heap key constant.       
-             * @param i1size  total heap size.
-             * @param itoggle reference to pointer to global interrupts interface.       
+             * @param ikey   heap key constant.       
+             * @param isize  total heap size.
+             * @param itoggle global interrupts interface.       
              */
             HeapData(int64 isize, ::api::Toggle*& itoggle) :
                 block  (NULL),
@@ -714,8 +730,8 @@ namespace utility
              *
              * This interface controls a global thread switch off key
              * by toggle interface. That interface has to disable
-             * a changing thread context. The most useful case is to give
-             * a global interrupts toggle interface.
+             * a changing thread context. The most useful case is 
+             * to give a global interrupts toggle interface.
              */
             ::api::Toggle** toggle;       
           
@@ -751,8 +767,10 @@ namespace utility
         /**
          * Size of this Heap class without aligned data.
          */    
-        static const int32 SIZEOF_HEAP = sizeof(HeapData) + sizeof(VirtualTable) - sizeof(int64);        
-        
+        static const int32 SIZEOF_HEAP = sizeof(HeapData) 
+                                       + sizeof(VirtualTable) 
+                                       - sizeof(int64);        
+
         /**
          * Heap page memory definition key.
          */

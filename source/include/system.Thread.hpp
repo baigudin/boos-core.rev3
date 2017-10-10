@@ -2,8 +2,7 @@
  * Thread class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_THREAD_HPP_
 #define SYSTEM_THREAD_HPP_
@@ -46,7 +45,8 @@ namespace system
         /** 
          * Constructor.
          *
-         * @param task an task interface whose main method is invoked when this thread is started.
+         * @param task an task interface whose main method is invoked 
+         *             when this thread is started.
          */
         Thread(::api::Task& task);
         
@@ -82,7 +82,7 @@ namespace system
         /**
          * Sets this thread priority.
          *
-         * @param priority number of priority in range [MIN_PRIORITY, MAX_PRIORITY].
+         * @param priority number of priority in available range.
          */  
         virtual void setPriority(int32 priority);
         
@@ -94,7 +94,7 @@ namespace system
         virtual int64 getId();
         
         /**
-         * The method with self context which will be executed by default.
+         * The method with self context which is executed by default.
          */  
         virtual void main();
       
@@ -126,7 +126,7 @@ namespace system
         static ::system::Thread& getCurrent();
       
         /** 
-         * Returns the toggle interface for controlling global thread switch.
+         * Returns the interface for controlling global thread switch.
          *
          * @return toggle interface.
          */ 
@@ -151,7 +151,8 @@ namespace system
         /**
          * Constructor.
          *
-         * @param task an interface whose run method is invoked when this thread is started.       
+         * @param task an interface whose run method is invoked 
+         *             when this thread is started.       
          */
         bool construct(::api::Task* task);
         

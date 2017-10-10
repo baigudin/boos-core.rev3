@@ -2,8 +2,7 @@
  * System class of the operating system.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_SYSTEM_HPP_
 #define SYSTEM_SYSTEM_HPP_
@@ -24,14 +23,14 @@ namespace system
     public:
       
         /** 
-         * Returns a current value of the running system in milliseconds.
+         * Returns a current value of the running system.
          *
          * @return time in milliseconds.
          */
         static int64 getTimeMs();
         
         /** 
-         * Returns a current value of the running system in nanoseconds.
+         * Returns a current value of the running system.
          *
          * @return time in nanoseconds.
          */      

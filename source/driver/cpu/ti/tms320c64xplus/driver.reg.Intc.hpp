@@ -2,8 +2,7 @@
  * TI TMS320C64x+ Interrupt selector registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_INTC_HPP_
 #define DRIVER_REG_INTC_HPP_

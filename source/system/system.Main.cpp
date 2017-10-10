@@ -2,8 +2,7 @@
  * The operating system main class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #include "system.Main.hpp" 
 #include "system.System.hpp"
@@ -32,7 +31,7 @@ namespace system
             if( not ::Allocator::initialize(config) ) break;        
             // Stage 2 
             stage++;
-            if( not ::driver::Processor::initialize(config) ) break;    
+            if( not ::driver::Processor::initialize(config) ) break;
             // Stage 3
             stage++;
             if( not ::Board::initialize(config) ) break;

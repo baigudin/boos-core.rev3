@@ -2,8 +2,7 @@
  * Iterable interface. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef API_ITERABLE_HPP_
 #define API_ITERABLE_HPP_
@@ -30,8 +29,9 @@ namespace api
         /**
          * Returns an iterator of elements.
          *
-         * You have to call the delete operator for returned iterator when 
-         * it has been used, and you do not need to iterate a collection.
+         * You have to call the delete operator for returned iterator 
+         * when it has been used, and you do not need to iterate 
+         * a collection.
          *
          * @return pointer to new iterator.
          */

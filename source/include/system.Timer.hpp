@@ -2,8 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_TIMER_HPP_
 #define SYSTEM_TIMER_HPP_
@@ -24,7 +23,8 @@ namespace system
         /** 
          * Constructor.
          *
-         * Constructs this object and allocs a first free hardware timer.
+         * Constructs this object and allocs 
+         * a first free hardware timer.
          */      
         Timer();
         
@@ -71,7 +71,8 @@ namespace system
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero sets the period to maxinum value.
+         * @param us timer period in microseconds, zero sets 
+         *           the period to maxinum value.
          */      
         virtual void setPeriod(int64 us=0);
         
@@ -88,7 +89,7 @@ namespace system
         /**
          * Returns this timer index.
          *
-         * @return index of this timer, or -1 if error has been occurred.
+         * @return index of this timer, or -1 if error is occurred.
          */
         virtual int32 getIndex() const;
       

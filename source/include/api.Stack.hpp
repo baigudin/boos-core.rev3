@@ -2,8 +2,7 @@
  * Stack interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef API_STACK_HPP_
 #define API_STACK_HPP_
@@ -25,10 +24,14 @@ namespace api
          * Stack operations.
          *
          * Stack operations:
-         * - Full stacks have stack pointers that point to the last used location.
-         * - Empty stacks have stack pointers that point to the first unused location.
-         * - Descending stacks grow towards decreasing memory addresses.
-         * - Ascending stacks grow towards increasing memory addresses.
+         * - Full stacks have stack pointers that point to 
+         *   the last used location.
+         * - Empty stacks have stack pointers that point to 
+         *   the first unused location.
+         * - Descending stacks grow towards 
+         *   decreasing memory addresses.
+         * - Ascending stacks grow towards 
+         *   increasing memory addresses.
          */
         enum Operation
         {
@@ -62,7 +65,7 @@ namespace api
         /** 
          * Returns an initial top of stack.
          *
-         * @return a memory address to top of this stack when object was built.
+         * @return a memory address to top of this stack.
          */    
         virtual const Type* getTos() = 0;
         

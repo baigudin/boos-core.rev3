@@ -2,8 +2,7 @@
  * Root interface of the system class hierarchy.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2015-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2015-2016, Sergey Baigudin
  */
 #ifndef API_OBJECT_HPP_
 #define API_OBJECT_HPP_

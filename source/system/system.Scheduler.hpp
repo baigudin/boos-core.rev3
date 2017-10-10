@@ -2,8 +2,7 @@
  * Thread tasks scheduler.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_SCHEDULER_HPP_
 #define SYSTEM_SCHEDULER_HPP_
@@ -18,7 +17,9 @@
   
 namespace system
 {
-    class Scheduler : public ::system::TimerInterrupt, public ::api::Task
+    class Scheduler : 
+        public ::system::TimerInterrupt, 
+        public ::api::Task
     {
         typedef ::system::TimerInterrupt Parent;
         typedef ::system::Interrupt      ResInt;    
@@ -138,7 +139,8 @@ namespace system
             // Set default registers value
             int32 entry = reinterpret_cast<int32>(runTask);
             int32 arg = reinterpret_cast<int32>(this);
-            task.register_->setInitialization(*task.stack_, entry, arg, 0);
+            task.register_->setInitialization(*task.stack_, 
+                                              entry, arg, 0);
             // TODO: check that task has not been added to the list
             // ...
             // Link the task
@@ -200,7 +202,8 @@ namespace system
             Task* task = list_.peek();
             if(task == NULL) return global_.enable(is);    
             task->status_ = Task::SLEEPING;            
-            task->sleep_ = System::getTimeNs() + millis * 1000000 + nanos;
+            task->sleep_ = System::getTimeNs() 
+                         + millis * 1000000 + nanos;
             jump();
             global_.enable(is);    
         }
@@ -208,7 +211,8 @@ namespace system
         /**
          * Returns a pointer to the currently executing task.
          *
-         * @return the executable task, or NULL if error has been occurred.
+         * @return the executable task, or NULL 
+         *         if error has been occurred.
          */
         Task* currentTask()
         {

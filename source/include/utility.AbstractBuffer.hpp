@@ -2,8 +2,7 @@
  * Abstract class for some buffers.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef UTILITY_ABSTRACT_BUFFER_HPP_
 #define UTILITY_ABSTRACT_BUFFER_HPP_
@@ -18,7 +17,9 @@ namespace utility
      * @param Alloc heap memory allocator class.
      */ 
     template <typename Type, class Alloc=::Allocator>
-    class AbstractBuffer : public ::Object<Alloc>, public ::api::Collection<Type>
+    class AbstractBuffer : 
+        public ::Object<Alloc>, 
+        public ::api::Collection<Type>
     {
         typedef ::Object<Alloc> Parent;
   
@@ -95,7 +96,8 @@ namespace utility
             if(!this->isConstructed()) return;
             if(index >= count_) return;
             Type* buf = getBuffer();
-            int32 max = (index + count <= count_) ? count + index : count_;
+            int32 max = (index + count <= count_) 
+                      ? count + index : count_;
             for(int32 i=index; i<max; i++) buf[i] = value;
         }
       
@@ -122,7 +124,8 @@ namespace utility
         /**
          * Tests if this collection has elements.
          *
-         * @return true if this collection does not contain any elements.
+         * @return true if this collection does not 
+         *         contain any elements.
          */
         virtual bool isEmpty() const
         {
@@ -130,9 +133,7 @@ namespace utility
         }
       
         /**
-         * Returns illegal element which will be returned as error value.
-         *
-         * If illegal value is not set method returns uninitialized variable.
+         * Returns illegal element which is returned as error value.
          *
          * @return reference to illegal element.
          */
@@ -142,7 +143,7 @@ namespace utility
         }
       
         /**
-         * Sets illegal element which will be returned as error value.
+         * Sets illegal element which is returned as error value.
          *
          * @param value illegal value.
          */
@@ -171,7 +172,8 @@ namespace utility
         Type& operator [](int32 i)
         {
             Type* buf = getBuffer();
-            if(!this->isConstructed() || i >= count_ || buf == NULL) return illegal_;
+            if(!this->isConstructed() || i >= count_ || buf == NULL) 
+                return illegal_;
             return buf[i];
         }    
   

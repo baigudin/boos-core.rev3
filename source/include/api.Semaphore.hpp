@@ -2,8 +2,7 @@
  * Semaphore interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2015-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2015-2016, Sergey Baigudin
  */
 #ifndef API_SEMAPHORE_HPP_
 #define API_SEMAPHORE_HPP_
@@ -46,14 +45,16 @@ namespace api
         /**
          * Releases one permit.
          *
-         * The method releases from one permit and returns this to the semaphore.
+         * The method releases from one permit and 
+         * returns this to the semaphore.
          */
         virtual void release() = 0;
         
         /**
          * Releases the given number of permits.
          *
-         * The method releases from the permits and returns these to the semaphore.     
+         * The method releases from the permits and 
+         * returns these to the semaphore.     
          *
          * @param permits the number of permits to release.
          */  

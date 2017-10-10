@@ -2,8 +2,7 @@
  * The root interface of some collections.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef API_COLLECTION_HPP_
 #define API_COLLECTION_HPP_
@@ -36,7 +35,8 @@ namespace api
         /**
          * Tests if this collection has elements.
          *
-         * @return true if this collection does not contain any elements.
+         * @return true if this collection does not contain 
+         *         any elements.
          */
         virtual bool isEmpty() const = 0;
   

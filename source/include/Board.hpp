@@ -2,8 +2,7 @@
  * Processor board initialization.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef BOARD_HPP_
 #define BOARD_HPP_

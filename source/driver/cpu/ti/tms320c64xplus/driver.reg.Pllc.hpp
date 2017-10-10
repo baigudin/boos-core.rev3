@@ -2,8 +2,7 @@
  * TI TMS320C645x Phase-Locked Loop Controller (PLLC).
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_PLLC_HPP_
 #define DRIVER_REG_PLLC_HPP_

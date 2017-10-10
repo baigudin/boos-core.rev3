@@ -2,8 +2,7 @@
  * List interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef API_LIST_HPP_
 #define API_LIST_HPP_
@@ -36,7 +35,7 @@ namespace api
         virtual bool add(Type element) = 0;
         
         /**
-         * Inserts new element to the specified position in this container.
+         * Inserts new element to specified position.
          *
          * @param index   position in this container.  
          * @param element inserting element.
@@ -45,12 +44,12 @@ namespace api
         virtual bool add(int32 index, Type element) = 0;
         
         /**
-         * Removes all elements from this container.
+         * Removes all elements.
          */  
         virtual void clear() = 0;
         
         /**
-         * Removes the element at the specified position in this container.
+         * Removes the element at specified position.
          *
          * @param index position in this container.
          * @return true if an element is removed successfully.
@@ -58,21 +57,21 @@ namespace api
         virtual bool remove(int32 index) = 0;
         
         /**
-         * Removes the first element from this container.
+         * Removes the first element.
          *
          * @return true if an element is removed successfully.
          */
         virtual bool removeFirst() = 0;
         
         /**
-         * Removes the last element from this container.
+         * Removes the last element.
          *
          * @return true if an element is removed successfully.
          */
         virtual bool removeLast() = 0;
         
         /**
-         * Removes the first occurrence of the specified element from this container.
+         * Removes the first occurrence of specified element
          *
          * @param element reference to element.
          * @return true if an element is removed successfully.
@@ -80,7 +79,7 @@ namespace api
         virtual bool removeElement(const Type& element) = 0;
         
         /**
-         * Returns an element from this container by index.
+         * Returns an element by index.
          *
          * @param index position in this container.  
          * @return indexed element of this container.
@@ -88,35 +87,38 @@ namespace api
         virtual Type get(int32 index) const = 0;
         
         /**
-         * Returns the first element in this container.
+         * Returns the first element.
          *
          * @return the first element in this container.
          */
         virtual Type getFirst() const = 0;
         
         /**
-         * Returns the last element in this container.
+         * Returns the last element.
          *
          * @return the last element in this container.
          */
         virtual Type getLast() const = 0;
         
         /**
-         * Returns a list iterator of this container elements.
+         * Returns a list iterator of elements.
          *
-         * You have to call delete operator for returned iterator after it is used.
-         * Given index must not be out of bounds (index < 0 || index > length()).
+         * You have to call delete operator for returned iterator 
+         * after it is used. Given index must not be out of 
+         * bounds (index < 0 || index > length()).
          *
-         * @param index start position in this container.  
+         * @param index start position.  
          * @return pointer to new list iterator.
          */
-        virtual ::api::ListIterator<Type>* getListIterator(int32 index) = 0;
+        virtual 
+        ::api::ListIterator<Type>* getListIterator(int32 index) = 0;
         
         /**
-         * Returns the index of the first occurrence of the specified element in this container.
+         * Returns the first occurrenced specified element index.
          *
          * @param element reference to the element.
-         * @return index or -1 if this container does not contain the element.
+         * @return index or -1 if this container does not contain 
+         *         the element.
          */
         virtual int32 getIndexOf(const Type& element) const = 0;
         

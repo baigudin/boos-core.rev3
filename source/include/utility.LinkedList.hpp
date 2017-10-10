@@ -2,8 +2,7 @@
  * Doubly linked list.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef UTILITY_LINKED_LIST_HPP_
 #define UTILITY_LINKED_LIST_HPP_
@@ -17,7 +16,8 @@ namespace utility
      * @param Alloc heap memory allocator class.
      */
     template <typename Type, class Alloc=::Allocator>
-    class LinkedList : public ::utility::AbstractLinkedList<Type,Alloc>
+    class LinkedList : 
+        public ::utility::AbstractLinkedList<Type,Alloc>
     {
         typedef ::utility::AbstractLinkedList<Type,Alloc>  Parent;
         typedef ::utility::LinkedNode<Type,Alloc>          Node;
@@ -53,11 +53,13 @@ namespace utility
          * @param index start position in this list.  
          * @return pointer to new list iterator.
          */
-        virtual ::api::ListIterator<Type>* getListIterator(int32 index)
+        virtual 
+        ::api::ListIterator<Type>* getListIterator(int32 index)
         {
             if(!this->isConstructed()) return NULL;
             Iterator* iterator = new Iterator(index, *this);
-            if(iterator != NULL && iterator->isConstructed()) return iterator;
+            if(iterator != NULL && iterator->isConstructed()) 
+                return iterator;
             delete iterator;
             return NULL;
         }
@@ -82,13 +84,14 @@ namespace utility
         /**
          * The list iterator.
          *
-         * This class is implemented in private zone of the list class.
+         * This class is implemented in private zone of the class.
          * For this reason, for fast iteration some tests are skipped.
          * You have to use this class only if it has been constructed.
          */      
-        class Iterator : public ::Object<Alloc>, public ::api::ListIterator<Type>
+        class Iterator : public ::Object<Alloc>, 
+            public ::api::ListIterator<Type>
         {
-            typedef ::Object<Alloc>                 Parent;
+            typedef ::Object<Alloc>                    Parent;
             typedef ::utility::LinkedList<Type,Alloc>  List;
   	  
         public:
@@ -117,7 +120,7 @@ namespace utility
             /**
              * Tests if this object has been constructed.
              *
-             * @return true if object has been constructed successfully.
+             * @return true if object has been constructed.
              */    
             virtual bool isConstructed() const
             {
@@ -133,7 +136,8 @@ namespace utility
             virtual bool add(Type element)
             {
                 if(count_.list != count_.self) return false;
-                if(list_.add(getNextIndex(), element) == false) return false;
+                if(list_.add(getNextIndex(), element) == false) 
+                    return false;
                 count_.self++;
                 rindex_ = ILLEGAL_INDEX;
                 return true;
@@ -159,7 +163,7 @@ namespace utility
             }
           
             /**
-             * Returns previous element and advances the cursor backwards.
+             * Returns prev element and advances the cursor backwards.
              *
              * @return reference to element.
              */      
@@ -172,14 +176,17 @@ namespace utility
             }
           
             /**
-             * Returns the index of the element that would be returned by a subsequent call to getPrevious().
+             * Returns previous index of the element.
              *
-             * @return index of the previous element or -1 if the list iterator is at the beginning of the list.
+             * @return index of the previous element or -1 
+             *  if the list iterator is at the beginning of the list.
              */      
             virtual int32 getPreviousIndex() const
             {
                 if(!hasPrevious()) return -1;
-                return curs_ == NULL ? last_->getIndex() : curs_->getPrevious()->getIndex();
+                return curs_ == NULL 
+                     ? last_->getIndex() 
+                     : curs_->getPrevious()->getIndex();
             }
           
             /**
@@ -210,13 +217,15 @@ namespace utility
             }
           
             /**
-             * Returns the index of the element that would be returned by a subsequent call to getNext().
+             * Returns the next index of the element.
              *
-             * @return index of the next element or list size if the list iterator is at the end of the list.
+             * @return index of the next element or list size 
+             *  if the list iterator is at the end of the list.
              */      
             virtual int32 getNextIndex() const
             {
-                return hasNext() ? curs_->getIndex() : list_.getLength();
+                return hasNext() ? curs_->getIndex() 
+                                 : list_.getLength();
             }
           
             /**
@@ -232,9 +241,7 @@ namespace utility
             }
           
             /**
-             * Returns illegal element which will be returned as error value.
-             *
-             * If illegal value is not set method returns uninitialized variable.
+             * Returns illegal element that is returned as error.
              *
              * @return illegal element.
              */
@@ -244,7 +251,7 @@ namespace utility
             }
           
             /**
-             * Sets illegal element which will be returned as error value.
+             * Sets illegal element which is returned as error.
              *
              * @param value illegal value.
              */
@@ -358,7 +365,7 @@ namespace utility
             Node* curs_;
           
             /**
-             * Index of element of list which can be removed by remove method.
+             * List element index that can be removed by remove().
              */
             int32 rindex_;
       

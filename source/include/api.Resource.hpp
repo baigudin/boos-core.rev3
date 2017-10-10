@@ -2,8 +2,7 @@
  * Resource interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2015, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2015, Sergey Baigudin
  */
 #ifndef API_RESOURCE_HPP_
 #define API_RESOURCE_HPP_

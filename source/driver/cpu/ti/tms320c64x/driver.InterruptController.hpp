@@ -13,7 +13,6 @@
 #include "driver.Register.hpp"
 #include "driver.reg.Intc.hpp"
 #include "utility.Stack.hpp"
-#include "utility.Memory.hpp"
 
 namespace driver
 {
@@ -248,8 +247,8 @@ namespace driver
             isInitialized_ = 0;    
             config_ = config;
             intc_ = new (reg::Intc::ADDRESS) reg::Intc();      
-            utility::Memory::memset(context_, 0x0, sizeof(context_));
-            utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));    
+            setMemory(context_, 0x0, sizeof(context_));
+            setMemory(contextLow_, 0x0, sizeof(contextLow_));    
             isInitialized_ = IS_INITIALIZED;      
             return true;
         }
@@ -260,8 +259,8 @@ namespace driver
         static void deinitialize()
         {
             intc_ = NULL;
-            utility::Memory::memset(context_, 0x0, sizeof(context_));
-            utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));         
+            setMemory(context_, 0x0, sizeof(context_));
+            setMemory(contextLow_, 0x0, sizeof(contextLow_));         
             isInitialized_ = 0;      
         }    
   
@@ -380,7 +379,24 @@ namespace driver
             }
             *intc_ = intc;
             return true;
-        }    
+        } 
+        
+        /** 
+         * Fills a block of memory.
+         *
+         * @param dst pointer to the destination block of memory to fill.
+         * @param val value to be set. The value is passed as an int, but the function fills 
+         *            the block of memory using the unsigned char conversion of this value.
+         * @param len Number of bytes to be set to the value.
+         * @return destination is returned.
+         */
+        static void* setMemory(void* dst, cell val, size_t len)
+        {
+            register cell* dp = static_cast<cell*>(dst);    
+            register const cell uc = val;
+            while(len--) *dp++ = uc;
+            return dst;
+        }           
         
         /**
          * HW interrupt handle routing.

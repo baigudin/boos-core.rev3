@@ -2,8 +2,7 @@
  * Illegal value interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef API_ILLEGAL_VALUE_HPP_
 #define API_ILLEGAL_VALUE_HPP_
@@ -27,14 +26,14 @@ namespace api
         virtual ~IllegalValue(){}
         
         /**
-         * Returns illegal element which will be returned as error value.
+         * Returns illegal element returning as error value.
          *
          * @return illegal element.
          */
         virtual Type getIllegal() const = 0;
         
         /**
-         * Sets illegal element which will be returned as error value.
+         * Sets illegal element returning as error value.
          *
          * @param value illegal value.
          */

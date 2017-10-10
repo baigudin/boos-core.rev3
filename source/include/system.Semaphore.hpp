@@ -2,8 +2,7 @@
  * Semaphore class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_SEMAPHORE_HPP_
 #define SYSTEM_SEMAPHORE_HPP_
@@ -33,7 +32,8 @@ namespace system
          * Constructor.
          *
          * @param permits the initial number of permits available.      
-         * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.
+         * @param isFair  true if this semaphore will guarantee 
+         *                FIFO granting of permits under contention.
          */      
         Semaphore(int32 permits, bool isFair);
 
@@ -93,7 +93,7 @@ namespace system
     private:
   
         /**
-         * Fairly acquires the given number of permits from this semaphore.
+         * Fairly acquires the given number of permits.
          *
          * @param permits the number of permits to acquire.
          * @return true if the semaphore is acquired successfully.
@@ -101,7 +101,7 @@ namespace system
         bool acquireFair(int32 permits);
         
         /**
-         * Unfairly acquires the given number of permits from this semaphore.
+         * Unfairly acquires the given number of permits.
          *
          * @param permits the number of permits to acquire.
          * @return true if the semaphore is acquired successfully.

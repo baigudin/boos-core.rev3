@@ -8,8 +8,7 @@
  * dynamic memory.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2016, Sergey Baigudin
  */
 #ifndef UTILITY_BUFFER_HPP_
 #define UTILITY_BUFFER_HPP_
@@ -146,8 +145,9 @@ namespace utility
         /** 
          * Constructor.
          *
-         * NOTE: Given external buffer has to exist until this object is being lived,
-         * and will NOT be deleted when the buffer is being deleted.
+         * NOTE: Given external buffer has to exist until this object 
+         * is being lived, and will NOT be deleted when the buffer 
+         * is being deleted.
          *
          * @param count number of elements.
          * @param buf   pointer to external buffer.
@@ -164,7 +164,8 @@ namespace utility
          * @param count   count of buffer elements.
          * @param illegal illegal value.
          */    
-        Buffer(int32 count, const Type illegal) : Parent(count, illegal),
+        Buffer(int32 count, const Type illegal) : 
+            Parent(count, illegal),
             buf_      (NULL),
             isDelete_ (true){
             this->setConstruct( construct(count) );
@@ -173,14 +174,16 @@ namespace utility
         /** 
          * Constructor.
          *
-         * NOTE: Given external buffer has to exist until this object is being lived,
-         * and will NOT be deleted when the buffer is being deleted.     
+         * NOTE: Given external buffer has to exist until this object 
+         * is being lived, and will NOT be deleted when the buffer 
+         * is being deleted.    
          *
          * @param count   number of elements.
          * @param illegal illegal value.
          * @param buf     pointer to external buffer.
          */    
-        Buffer(int32 count, const Type illegal, Type* buf) : Parent(count, illegal),
+        Buffer(int32 count, const Type illegal, Type* buf) : 
+            Parent(count, illegal),
             buf_      (buf),
             isDelete_ (false){
             this->setConstruct( construct(count) );
@@ -249,9 +252,13 @@ namespace utility
         bool construct(int32 count)
         {
             if(!this->isConstructed()) return false;
-            // If you have a WTF question looking to the next construction, then look
-            // to description of 'alloc' template method of 'Object' template class.
-            if(buf_ == NULL) buf_ = this->template allocate<Type*>(count * sizeof(Type));
+            // If you have a WTF question looking to 
+            // the next construction, then look
+            // to description of 'alloc' template 
+            // method of 'Object' template class.
+            if(buf_ == NULL) 
+                buf_ = this->template 
+                       allocate<Type*>(count * sizeof(Type));
             return buf_ == NULL ? false : true;
         }
       

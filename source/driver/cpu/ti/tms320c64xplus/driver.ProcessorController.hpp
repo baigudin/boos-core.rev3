@@ -1,9 +1,8 @@
 /** 
- * TI TMS320C64x processor family.
+ * TI TMS320C64x+ processor family.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_PROCESSOR_CONTROLLER_HPP_
 #define DRIVER_PROCESSOR_CONTROLLER_HPP_

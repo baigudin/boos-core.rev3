@@ -2,8 +2,7 @@
  * Escalator class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef SYSTEM_ESCALATOR_HPP_
 #define SYSTEM_ESCALATOR_HPP_
@@ -31,7 +30,8 @@ namespace system
          * Constructor.
          *
          * @param permits the initial number of permits available.      
-         * @param fair true if this escalator will guarantee FIFO granting of permits under contention.
+         * @param fair true if this escalator will guarantee 
+         *             FIFO granting of permits under contention.
          */      
         Escalator(int32 permits, bool fair);
                                 
@@ -158,7 +158,8 @@ namespace system
              * @param obj2 reference second object.
              * @return true if object are equal.
              */
-            friend bool operator ==(const Node& obj1, const Node& obj2);
+            friend bool operator ==(const Node& obj1, 
+                                    const Node& obj2);
             
             /**
              * Inequality operator.
@@ -167,7 +168,8 @@ namespace system
              * @param obj2 reference second object.
              * @return true if object are not equal.
              */      
-            friend bool operator !=(const Node& obj1, const Node& obj2);
+            friend bool operator !=(const Node& obj1, 
+                                    const Node& obj2);
           
             /** 
              * Number of permits to release for this thread.
@@ -208,7 +210,7 @@ namespace system
             /**
              * Tests if this object has been constructed.
              *
-             * @return true if object has been constructed successfully.
+             * @return true if object has been constructed.
              */    
             bool isConstructed() const
             {
@@ -229,14 +231,16 @@ namespace system
             /**
              * List of executing threads for fair escalator.
              *
-             * ::api::Queue interface of the list is only used by the escalator.
+             * ::api::Queue interface of the list is 
+             * only used by the escalator.
              */      
             utility::LinkedList<Node> exec;
             
             /**
              * List of locked threads.
              *
-             * ::api::Queue interface of the list is only used by the escalator.
+             * ::api::Queue interface of the list 
+             * is only used by the escalator.
              */      
             utility::LinkedList<Node> lock;
          
@@ -303,7 +307,8 @@ namespace system
      * @param obj2 reference second object.
      * @return true if object are equal.
      */
-    inline bool operator ==(const Escalator::Node& obj1, const Escalator::Node& obj2)
+    inline bool operator ==(const Escalator::Node& obj1, 
+                            const Escalator::Node& obj2)
     {
         return obj1.thread_ == obj2.thread_ ? true : false;
     }
@@ -315,7 +320,8 @@ namespace system
      * @param obj2 reference second object.
      * @return true if object are not equal.
      */      
-    inline bool operator !=(const Escalator::Node& obj1, const Escalator::Node& obj2)
+    inline bool operator !=(const Escalator::Node& obj1, 
+                            const Escalator::Node& obj2)
     {
         return obj1.thread_ != obj2.thread_ ? true : false;
     }

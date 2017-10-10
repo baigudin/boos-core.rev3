@@ -2,8 +2,7 @@
  * Hardware interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_INTERRUPT_HPP_
 #define SYSTEM_INTERRUPT_HPP_
@@ -34,7 +33,8 @@ namespace system
         /** 
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          */     
         Interrupt(::api::Task& handler, int32 source);
@@ -69,7 +69,8 @@ namespace system
         /**
          * Locks this interrupt source.
          *
-         * @return an interrupt enable source bit value before method was called.
+         * @return an interrupt enable source bit value 
+         *         before method was called.
          */    
         virtual bool disable();
         
@@ -81,7 +82,7 @@ namespace system
         virtual void enable(bool status);
         
         /** 
-         * Returns the toggle interface for controlling global interrupts.
+         * Returns the interface for controlling global interrupts.
          *
          * @return toggle interface.
          */
@@ -101,7 +102,8 @@ namespace system
         /**
          * Constructor.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.   
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.   
          * @param source  available interrupt source.     
          * @return true if object has been constructed successfully.     
          */    
@@ -160,7 +162,7 @@ namespace system
             /**
              * Tests if this object has been constructed.
              *
-             * @return true if object has been constructed successfully.
+             * @return true if object has been constructed.
              */    
             virtual bool isConstructed() const
             {
@@ -170,7 +172,8 @@ namespace system
             /** 
              * Disables all maskable interrupts.
              *
-             * @return global interrupt enable bit value before method was called.
+             * @return global interrupt enable bit value 
+             *         before method was called.
              */ 
             virtual bool disable();
             

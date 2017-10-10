@@ -2,8 +2,7 @@
  * Mutex interface.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2015-2016 Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2015-2016, Sergey Baigudin
  */
 #ifndef API_MUTEX_HPP_
 #define API_MUTEX_HPP_

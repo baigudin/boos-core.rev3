@@ -2,8 +2,7 @@
  * The operating system main class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef SYSTEM_MAIN_HPP_
 #define SYSTEM_MAIN_HPP_

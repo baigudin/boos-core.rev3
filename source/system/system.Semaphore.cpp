@@ -2,8 +2,7 @@
  * Semaphore class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2014-2017, Sergey Baigudin
  */
 #include "system.Semaphore.hpp"
 #include "system.Thread.hpp"
@@ -31,8 +30,9 @@ namespace system
     /** 
      * Constructor.
      *
-     * @param permits the initial number of permits available.      
-     * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.
+     * @param permits the initial number of permits available.
+     * @param isFair  true if this semaphore will guarantee 
+     *                FIFO granting of permits under contention.
      */      
     Semaphore::Semaphore(int32 permits, bool isFair) : Parent(),
         isConstructed_ (getConstruct()),  
@@ -82,7 +82,8 @@ namespace system
         // Acquire fairly
         if(isFair_)
         {
-            // The first checking for acquiring available permits of the semaphore
+            // The first checking for acquiring 
+            // available permits of the semaphore
             if( permits_ - permits >= 0 && fifo_.isEmpty() )
             {
                 // Decrement the number of available permits
@@ -92,14 +93,17 @@ namespace system
             }
             Thread* thread = &Thread::getCurrent();
             // Add current thread to the queue tail
-            if( fifo_.add(thread) == false ) return Int::enableAll(is, false);
+            if( fifo_.add(thread) == false ) 
+                return Int::enableAll(is, false);
             while(true)
             {
-                // Block current thread on the semaphore and switch to another thread
+                // Block current thread on the semaphore 
+                // and switch to another thread
                 Thread::block(*this);
                 // Test if head thread is current thread
                 if(fifo_.peek() != thread) continue;
-                // Test available permits for no breaking the fifo queue by removing
+                // Test available permits for no breaking 
+                // the fifo queue by removing
                 if(permits_ - permits < 0) continue;
                 // Decrement the number of available permits
                 permits_ -= permits;        
@@ -112,7 +116,8 @@ namespace system
         {
             while(true)
             {
-                // Check about available permits in the semaphoring critical section
+                // Check about available permits in 
+                // the semaphoring critical section
                 if( permits_ - permits >= 0 )
                 {
                     // Decrement the number of available permits
@@ -120,7 +125,8 @@ namespace system
                     // Go through the semaphore to critical section
                     return Int::enableAll(is, true);
                 }
-                // Block current thread on the semaphore and switch to another thread
+                // Block current thread on the semaphore 
+                // and switch to another thread
                 Thread::block(*this);      
             }  
         }
