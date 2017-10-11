@@ -1,12 +1,10 @@
 /** 
  * Boot routine.
  *
- * The module performs the tasks to initialize C/C++ run-time environment
- * and calls the operating system main method.
+ * The module initializes C/C++ run-time environment.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016, Sergey Baigudin
  */
 #ifndef DRIVER_BOOT_HPP_
 #define DRIVER_BOOT_HPP_
@@ -31,7 +29,7 @@ namespace driver
             int32 size;
             
             /**
-             * The starting address of the area within the .bss section.
+             * The starting address of the area of the .bss section.
              */
             cell* addr;
             
@@ -78,7 +76,7 @@ namespace driver
         /**
          * Returns the next record adderess.
          * 
-         * @param record the record address for getting next record after this.
+         * @param record the record address for getting next record.
          * @return memory address of the next record or NULL.
          */
         static CRecord* getCRecord(CRecord* record);
@@ -93,7 +91,7 @@ namespace driver
         /**
          * Returns the next record adderess.
          * 
-         * @param record the record address for getting next record after this.
+         * @param record the record address for getting next record.
          * @return memory address of the next record or NULL.
          */
         static PRecord* getPRecord(PRecord* record);

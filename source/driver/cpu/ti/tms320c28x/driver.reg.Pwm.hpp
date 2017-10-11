@@ -1,9 +1,8 @@
 /**
- * TI TMS320F2833x Pulse Width Modulator registers, including High Resolution and Enhanced PWM.
+ * TI TMS320F2833x PWM registers and High Resolution and Enhanced PWM.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_PWM_HPP_
 #define DRIVER_REG_PWM_HPP_
@@ -30,7 +29,7 @@ namespace driver
             static const uint32 ADDRESS5 = 0x00006940;
             
             /**
-             * Remapped configuration addresses in PF3 - DMA-Accessible.
+             * Remapped configuration addresses in PF3-DMA-Accessible.
              */
             static const uint32 REMAP_ADDRESS0 = 0x00005800;
             static const uint32 REMAP_ADDRESS1 = 0x00005840;
@@ -103,7 +102,7 @@ namespace driver
                 struct Val 
                 {
                     // CLKDIV bits
-                    static const uint16 CLKDIV_1   = 0x0000;  // default on reset 
+                    static const uint16 CLKDIV_1   = 0x0000;   
                     static const uint16 CLKDIV_2   = 0x0001;
                     static const uint16 CLKDIV_4   = 0x0002;
                     static const uint16 CLKDIV_8   = 0x0003;
@@ -113,7 +112,7 @@ namespace driver
                     static const uint16 CLKDIV_128 = 0x0007;  
                     // HSPCLKDIV bits
                     static const uint16 HSPCLKDIV_1  = 0x0000;
-                    static const uint16 HSPCLKDIV_2  = 0x0001; // default on reset 
+                    static const uint16 HSPCLKDIV_2  = 0x0001; 
                     static const uint16 HSPCLKDIV_4  = 0x0002;
                     static const uint16 HSPCLKDIV_6  = 0x0003;
                     static const uint16 HSPCLKDIV_8  = 0x0004;
@@ -124,7 +123,7 @@ namespace driver
                     static const uint16 COUNT_UP     = 0x0;
                     static const uint16 COUNT_DOWN   = 0x1;
                     static const uint16 COUNT_UPDOWN = 0x2;
-                    static const uint16 COUNT_FREEZE = 0x3; // default on reset 
+                    static const uint16 COUNT_FREEZE = 0x3; 
                     // PHSEN bits
                     static const uint16 DISABLE = 0x0;
                     static const uint16 ENABLE  = 0x1;
@@ -252,10 +251,11 @@ namespace driver
                 struct Val  
                 {
                     // LOADAMODE and LOADBMODE bits
-                    static const uint16 LOAD_CTR_EQ_ZERO         = 0x0000;
-                    static const uint16 LOAD_CTR_EQ_PRD          = 0x0001;
-                    static const uint16 LOAD_CTR_EQ_ZERO_AND_PRD = 0x0002;
-                    static const uint16 LOAD_FREEZE              = 0x0003;      
+                    static const uint16 LOAD_CTR_EQ_ZERO = 0x0000;
+                    static const uint16 LOAD_CTR_EQ_PRD  = 0x0001;
+                    static const uint16 LOAD_CTR_EQ_ZERO_AND_PRD 
+                        = 0x0002;
+                    static const uint16 LOAD_FREEZE      = 0x0003;      
                     // SHDWBMODE bits
                     static const uint16 SHADOW    = 0x0;
                     static const uint16 IMMEDIATE = 0x1;        

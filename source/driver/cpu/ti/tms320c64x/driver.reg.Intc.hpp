@@ -5,8 +5,7 @@
  * Literature Number: SPRU646A
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_INTC_HPP_
 #define DRIVER_REG_INTC_HPP_
@@ -107,7 +106,8 @@ namespace driver
                 }
               
                 uint32 value;
-                // Read only structure for overlaying the memory mapped register
+                // Read only structure for overlaying 
+                // the memory mapped register
                 struct 
                 {
                     uint32 intsel10 : 5;
@@ -150,7 +150,8 @@ namespace driver
                 }       
               
                 uint32 value;
-                // Read only structure for overlaying the memory mapped register
+                // Read only structure for overlaying 
+                // the memory mapped register
                 struct 
                 {
                     uint32 intsel4 : 5;
@@ -193,7 +194,8 @@ namespace driver
                 }         
               
                 uint32 value;
-                // Read only structure for overlaying the memory mapped register
+                // Read only structure for overlaying 
+                // the memory mapped register
                 struct 
                 {
                     uint32 xip4 : 1;

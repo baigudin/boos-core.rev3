@@ -2,8 +2,7 @@
  * Hardware interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_INTERRUPT_CONTROLLER_HPP_
 #define DRIVER_INTERRUPT_CONTROLLER_HPP_
@@ -144,10 +143,12 @@ namespace driver
         /** 
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          */     
-        InterruptController(::api::Task* handler, int32 source) : Parent(),
+        InterruptController(::api::Task* handler, int32 source) : 
+            Parent(),
             ctx_ (NULL){
             setConstruct( construct(*handler, source) );
         }
@@ -200,7 +201,8 @@ namespace driver
         /**
          * Locks this interrupt source.
          *
-         * @return an interrupt enable source bit value before method was called.
+         * @return an interrupt enable source bit value 
+         *         before method was called.
          */    
         virtual bool disable()
         {
@@ -211,7 +213,8 @@ namespace driver
                 res = disableLow(ctx_->maskCpuIer);
             else
             {
-                res = ctx_->pie->ier.val & ctx_->maskPieIer ? true : false;
+                res = ctx_->pie->ier.val & ctx_->maskPieIer ? true 
+                                                            : false;
                 ctx_->pie->ier.val &= ~ctx_->maskPieIer;      
             }
             return Interrupt::enableAll(is, res);
@@ -236,7 +239,8 @@ namespace driver
         /**
          * Sets interrupt source handler.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          * @return true if handler is set successfully.
          */      
@@ -284,7 +288,8 @@ namespace driver
         /**
          * Disables all maskable interrupts.
          *
-         * @return global interrupts enable bit value before method was called.
+         * @return global interrupts enable bit value 
+         *         before method was called.
          */
         static bool disableAll();
       
@@ -357,7 +362,8 @@ namespace driver
         /** 
          * Constructs the object.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.     
          * @return true if object has been constructed successfully.
          */
@@ -434,7 +440,8 @@ namespace driver
          * Locks maskable interrupt source.
          *
          * @param bit a register bit mask.
-         * @return an interrupt enable source bit in low bit before method was called.
+         * @return an interrupt enable source bit in low bit 
+         *         before method was called.
          */
         static bool disableLow(uint32 bit);
         
@@ -480,7 +487,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        InterruptController& operator =(const InterruptController& obj);
+        InterruptController& 
+        operator =(const InterruptController& obj);
         
         /**
          * Hi level interrupt context.
@@ -544,12 +552,13 @@ namespace driver
             /** 
              * Constructor.
              *
-             * @param handler pointer to user class which implements an interrupt handler interface.
+             * @param handler pointer to user class which implements 
+             *                an interrupt handler interface.
              * @param source  available interrupt source.
              */    
             Context(::api::Task& hndl, Source src) : Parent(),
-                grp        ((static_cast<int32>(src) & 0x0000000f) >> 0),
-                num        ((static_cast<int32>(src) & 0x00000ff0) >> 4),
+                grp        ((static_cast<int32>(src)&0x0000000f)>>0),
+                num        ((static_cast<int32>(src)&0x00000ff0)>>4),
                 source     (src),
                 handler    (hndl),
                 maskPieAck (0x00000000),
@@ -581,7 +590,8 @@ namespace driver
             {
                 if( not isConstructed() ) return false;
                 // Set pointer to group
-                ::driver::reg::Pie* regPie = new (reg::Pie::ADDRESS) reg::Pie();
+                ::driver::reg::Pie* regPie = 
+                    new (reg::Pie::ADDRESS) reg::Pie();
                 // The source is CPU source
                 if(grp == 12)
                 {
@@ -607,8 +617,12 @@ namespace driver
                 reg = ::driver::Register::create();
                 if(reg == NULL) return false;
                 // Create context stack
-                stack = new Stack(::driver::Processor::getStackType(), handler.getStackSize() >> 2);
-                if(stack == NULL || not stack->isConstructed()) return false;
+                stack = new Stack(
+                    ::driver::Processor::getStackType(), 
+                    handler.getStackSize() >> 2
+                );
+                if(stack == NULL || not stack->isConstructed()) 
+                    return false;
                 return true;
             }
       

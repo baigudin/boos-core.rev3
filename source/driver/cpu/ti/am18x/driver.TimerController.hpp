@@ -2,8 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_TIMER_CONTROLLER_HPP_
 #define DRIVER_TIMER_CONTROLLER_HPP_
@@ -37,7 +36,7 @@ namespace driver
         /** 
          * Constructor.
          *
-         * Constructs this object and allocs a first free hardware timer.
+         * Constructs the object and allocs a first free HW timer.
          */      
         TimerController() : Parent(),
             index_  (-1),
@@ -130,14 +129,16 @@ namespace driver
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero sets the period to maxinum value.
+         * @param us timer period in microseconds, zero 
+         *           sets the period to maxinum value.
          */      
         virtual void setPeriod(int64 us=0)
         {
             if(!isConstructed_) return;
             int64 clock = getInternalClock();
             if(clock == 0) return;       
-            uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffffffffffff;
+            uint64 prd = us != 0 ? (us * clock) / 1000000 
+                                 : 0xffffffffffffffff;
             bool is = isStarted();
             if(is) stop();
             regTim_->prd12.value = prd bitand 0xffffffff;
@@ -200,18 +201,21 @@ namespace driver
                 case 0:
                 case 1:        
                 {
-                    // Internal clock for this timers is AUXCLK, which is OSCIN
+                    // Internal clock for this timers is AUXCLK, 
+                    // which is OSCIN
                     return oscin;
                 }
                 case 2:
                 case 3:        
                 {
                     int64 prediv, pllm, postdiv, plldiv2;
-                    reg::Syscfg0* syscfg0 = new (reg::Syscfg0::ADDRESS) reg::Syscfg0();
+                    reg::Syscfg0* syscfg0 = 
+                        new (reg::Syscfg0::ADDRESS) reg::Syscfg0();
                     // Get clocks from PLL0 SYSCLK2
                     if(syscfg0->cfgchip3.bit.async3Clksrc == 0)
                     {
-                        reg::Pllc0* pllc0 = new (reg::Pllc0::ADDRESS) reg::Pllc0();
+                        reg::Pllc0* pllc0 = 
+                            new (reg::Pllc0::ADDRESS) reg::Pllc0();
                         // PLL0 in normal mode
                         if(pllc0->pllctl.bit.pllen == 1)
                         {
@@ -231,7 +235,8 @@ namespace driver
                     // Get clocks from PLL1 SYSCLK2
                     else
                     {
-                        reg::Pllc1* pllc1 = new (reg::Pllc1::ADDRESS) reg::Pllc1();
+                        reg::Pllc1* pllc1 = 
+                            new (reg::Pllc1::ADDRESS) reg::Pllc1();
                         // PLL1 in normal mode
                         if(pllc1->pllctl.bit.pllen == 1)            
                         {
@@ -297,7 +302,8 @@ namespace driver
             isInitialized_ = 0;        
             config_ = config;    
             reg::Timer* timer;    
-            reg::Syscfg0* syscfg0 = new (reg::Syscfg0::ADDRESS) reg::Syscfg0();
+            reg::Syscfg0* syscfg0 = 
+                new (reg::Syscfg0::ADDRESS) reg::Syscfg0();
             // Unlock the SYSCFG module
             syscfg0->kick0r.bit.kick0 = 0x83E70B13;
             syscfg0->kick1r.bit.kick1 = 0x95A4F1E0;
@@ -351,12 +357,14 @@ namespace driver
             uint32 addr = address(index);
             if(addr == 0) return false;
             bool is = Interrupt::disableAll();
-            if(lock_[index] == true) return Interrupt::enableAll(is, false); 
+            if(lock_[index] == true) 
+                return Interrupt::enableAll(is, false); 
             regTim_ = new (addr) reg::Timer();
             lock_[index] = true;
             index_ = index;
             reset(*regTim_);
-            // Set an internal clock as the selected clock source for the timer
+            // Set an internal clock as the selected 
+            // clock source for the timer
             regTim_->tcr.bit.clksrc12 = 0;
             // Enable the 64-Bit mode
             regTim_->tgcr.bit.timmode = 0;

@@ -1,14 +1,15 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Interrupt low level module.
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2014-2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
+; @copyright 2014-2017, Sergey Baigudin
+; -------------------------------------------------------------------
 
-    ; Set a using ABI which might be EABI if EABI is set to 1, or COFF ABI if EABI is set to 0
-    ; Having version 7.0 or greater C6000 compilers might generate object files compatible with EABI 
-    ; and have __TI_EABI__ predefined symbol is set to 1 if compiling for EABI and is unset to 0 otherwise. 
+    ; Set a using ABI which might be EABI if EABI is set to 1, 
+    ; or COFF ABI if EABI is set to 0. Having version 7.0 or 
+    ; greater C6000 compilers might generate object files compatible 
+    ; with EABI and have __TI_EABI__ predefined symbol is set to 1 
+    ; if compiling for EABI and is unset to 0 otherwise. 
     .asg  0, EABI
 
     .ref  _c_int00
@@ -38,9 +39,9 @@
     .ref  _handler__Q2_6driver19InterruptControllerSFi
     .ref  _contextLow___Q2_6driver19InterruptController
     
-    .asg  ___bss__,                                         m_bss
-    .asg  _disableAll__Q2_6driver9InterruptSFv,             m_global_disable
-    .asg  _enableAll__Q2_6driver9InterruptSFb,              m_global_enable
+    .asg  ___bss__,                                  m_bss
+    .asg  _disableAll__Q2_6driver9InterruptSFv,      m_global_disable
+    .asg  _enableAll__Q2_6driver9InterruptSFb,       m_global_enable
     .asg  _disableLow__Q2_6driver19InterruptControllerSFUi, m_disable
     .asg  _enableLow__Q2_6driver19InterruptControllerSFUib, m_enable
     .asg  _setLow__Q2_6driver19InterruptControllerSFUi,     m_set
@@ -51,13 +52,13 @@
 
     .endif
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt handler.
 ;
 ; This is a macro command for interrupts table 
 ; that is used for reserved vectors.
 ; It has fixed size that equals to eight.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 reserve .macro
 mc_ri?  b               mc_ri?
         nop             1
@@ -69,12 +70,12 @@ mc_ri?  b               mc_ri?
         nop             1
         .endm
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware nonmaskable interrupt handler.
 ;
 ; This is a macro command for nonmaskable interrupt table.
 ; It has fixed size that equals to eight.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 nmi     .macro
         b               nrp
         nop             5
@@ -86,12 +87,12 @@ nmi     .macro
         nop             1
         .endm
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt handler (the execution is 7 cycles).
 ;
 ; This is a macro command for interrupts table.
 ; It has fixed size that equals eight.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 handler .macro          num
         stdw            b1:b0, *-sp[3]
      || mvkl            v_context, b1
@@ -103,9 +104,9 @@ handler .macro          num
         nop             3
         .endm
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupts table.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .sect           ".hwi"
 m_reset:
         ; Reset interrupt vector
@@ -135,7 +136,7 @@ m_reset:
         handler         14
         handler         15
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Nonreset interrupt service routine.
 ;
 ; 07 cycles is vector execution
@@ -143,7 +144,7 @@ m_reset:
 ; 27 cycles is restore time of context and return from interrupt.
 ; 
 ; 55 cycles is total service time.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_isr:
         ; Store the context 
@@ -204,7 +205,7 @@ m_isr:
         stdw            a31:a30, *++a0[2]
      || stdw            b31:b30, *++b0[2]
      || mvc             a1, irp
-        ; A10 and B10 registers contain pointers to A29:A28 and B29:B28
+        ; A10 & B10 registers contain pointers to A29:A28 & B29:B28
      || mv              a0, a10
      || mv              b0, b10
         ; Store A2-AMR, A3-IRP, B2-CSR, and B3-backlog to context
@@ -261,11 +262,11 @@ m_restore?
      || lddw            *b31++[2], b31:b30
         nop             4
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Disables all maskable interrupts.
 ;
-; @return A4 global interrupt enable bit value before method was called.
-; ----------------------------------------------------------------------------
+; @return A4 global interrupt enable bit before method was called.
+; -------------------------------------------------------------------
         .text
 m_global_disable:
         b               b3
@@ -275,11 +276,11 @@ m_global_disable:
         mvc             b0, csr
         nop             1
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Enables all maskable interrupts.
 ;
 ; @param A4 the returned status by disable method.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_global_enable:
         b               b3
@@ -289,12 +290,12 @@ m_global_enable:
    [a1] mvc             b0, csr
         nop             1
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Locks maskable interrupt source.
 ;
 ; @param A4 hardware interrupt vector number.
 ; @return A4 an interrupt enable source bit before method was called.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_disable:
         b               m_10?      
@@ -314,12 +315,12 @@ m_10?   b               b3
         mvc             a1, ier    
         mvc             b1, csr
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Unlocks maskable interrupt source.
 ;
 ; @param A4 hardware interrupt vector number.
 ; @param B4 returned status by m_disable procedure.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_enable:
         b               m_20?    
@@ -337,11 +338,11 @@ m_20?   b               b3
         mvc             b1, csr    
         mvk             0, a4 
    
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Sets a maskable interrupt status.
 ;
 ; @param A4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_set:
         b               b3        
@@ -351,11 +352,11 @@ m_set:
         mvk             0, a4         
         nop             1         
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Clears a maskable interrupt status.
 ;
 ; @param A4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_clear:
         b               b3        
@@ -365,11 +366,11 @@ m_clear:
         mvk             0, a4         
         nop             1 
           
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Jumps to interrupt HW vector.
 ;
 ; @param A4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_jump:
         ; Move GIE to PGIE, clear GIE, and

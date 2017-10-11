@@ -2,8 +2,7 @@
  * TI TMS320F28x3x DSC Phase-Locked Loop Controller (PLLC).
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_PLL_CONTROLLER_HPP_
 #define DRIVER_PLL_CONTROLLER_HPP_
@@ -46,23 +45,27 @@ namespace driver
             isInitialized_ = 0;    
             cpuClock_ = config.cpuClock;
             sourceClock_ = config.sourceClock;      
-            reg::System* regSys = new (reg::System::ADDRESS) reg::System();
+            reg::System* regSys = 
+                new (reg::System::ADDRESS) reg::System();
             int32 sel = 0x2;
             // Multiply desired CPU clock by 2, as PLLSTS[DIVSEL] is 2
             int32 mul = ( cpuClock_ * 2 / sourceClock_ ) & 0xffffffff;
-            // Output frequency of the PLL (VCOCLK) does not exceed 300 MHz
+            // Output frequency of the PLL (VCOCLK) 
+            // does not exceed 300 MHz
             if(sourceClock_ * mul > 300000000) return false;
             // Multipliers more than 10 are reserved
             if(mul > 10) return false;
             // Test the oscillator is not off
             if(regSys->pllsts.bit.oscoff == 1) return false;
             // Test the PLL is set correctly
-            if(regSys->pllsts.bit.plloff == 1 && regSys->pllcr.bit.div > 0) return false;
+            if(regSys->pllsts.bit.plloff == 1 
+                && regSys->pllcr.bit.div > 0) return false;
             // Start changing procedure
             if(regSys->pllsts.bit.mclksts == 1) return false;    
             Register::allow();
             // Set division to four
-            if(regSys->pllsts.bit.divsel != 0) regSys->pllsts.bit.divsel = 0;
+            if(regSys->pllsts.bit.divsel != 0) 
+                regSys->pllsts.bit.divsel = 0;
             // Disable failed oscillator detect logic
             regSys->pllsts.bit.mclkoff = 1;
             // Set new PLL

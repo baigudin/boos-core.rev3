@@ -5,8 +5,7 @@
  * Literature Number: SPRU582A
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_TIMER_HPP_
 #define DRIVER_REG_TIMER_HPP_
@@ -109,7 +108,8 @@ namespace driver
                 }
               
                 uint32 value;
-                // Read only structure for overlaying the memory mapped register
+                // Read only structure for overlaying 
+                // the memory mapped register
                 struct 
                 {
                     uint32 func   : 1;
@@ -159,7 +159,8 @@ namespace driver
                 }         
               
                 uint32 value;
-                // Read only structure for overlaying the memory mapped register
+                // Read only structure for overlaying 
+                // the memory mapped register
                 struct 
                 {
                     uint32 prd : 32;
@@ -195,7 +196,8 @@ namespace driver
                 }         
               
                 uint32 value;
-                // Read only structure for overlaying the memory mapped register
+                // Read only structure for overlaying 
+                // the memory mapped register
                 struct 
                 {
                     uint32 cnt : 32;

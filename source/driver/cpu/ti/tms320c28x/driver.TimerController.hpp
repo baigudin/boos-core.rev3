@@ -2,8 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_TIMER_CONTROLLER_HPP_
 #define DRIVER_TIMER_CONTROLLER_HPP_
@@ -119,14 +118,16 @@ namespace driver
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero sets the period to maxinum value.
+         * @param us timer period in microseconds, zero sets 
+         *           the period to maxinum value.
          */      
         virtual void setPeriod(int64 us=0)
         {
             if( not isConstructed_ ) return; 
             int64 clock = getInternalClock();
             if(clock == 0) return; 
-            uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffff;
+            uint64 prd = us != 0 ? (us * clock) / 1000000 
+                                 : 0xffffffff;
             bool is = isStarted();
             if(is) stop();
             regTim_->prd.val = prd & 0xffff;
@@ -156,7 +157,8 @@ namespace driver
         /**
          * Returns this timer number.
          *
-         * @return number of this timer, or -1 if error has been occurred.
+         * @return number of this timer, or -1 
+         *         if error has been occurred.
          */      
         virtual int32 getIndex() const
         {
@@ -181,7 +183,8 @@ namespace driver
         virtual int64 getInternalClock() const
         {
             if( not isConstructed_ ) return 0;    
-            int64 div = (regTim_->tprh.bit.tddrh << 8) | regTim_->tpr.bit.tddr;
+            int64 div = (regTim_->tprh.bit.tddrh << 8) 
+                      | regTim_->tpr.bit.tddr;
             return sysclk_ / (div + 1);
         }    
         
@@ -199,7 +202,8 @@ namespace driver
         /**
          * Returns an available interrupt source for this timer.
          *
-         * @return available interrupt source, or -1 if error has been occurred.
+         * @return available interrupt source, or -1 
+         *         if error has been occurred.
          */  
         virtual int32 getInterrupSource() const
         {
@@ -271,9 +275,20 @@ namespace driver
                 // Set the CPU Timer is clocked
                 switch(index)
                 {
-                    case  0: regSys_->pclkcr3.bit.cputimer0enclk = 1; break;
-                    case  1: regSys_->pclkcr3.bit.cputimer1enclk = 1; break;
-                    case  2: regSys_->pclkcr3.bit.cputimer2enclk = 1; break;               
+                    case  0: 
+                    {
+                        regSys_->pclkcr3.bit.cputimer0enclk = 1; 
+                    }
+                    break;
+                    case  1: 
+                    {
+                        regSys_->pclkcr3.bit.cputimer1enclk = 1; 
+                    }
+                    break;
+                    case  2: 
+                    {
+                        regSys_->pclkcr3.bit.cputimer2enclk = 1; 
+                    }break;               
                     default: break;
                 }
                 Register::protect();      
@@ -316,9 +331,11 @@ namespace driver
             // Test the oscillator is not off
             if(regSys_->pllsts.bit.oscoff == 1) return false;
             // Test the PLL is set correctly
-            if(regSys_->pllsts.bit.plloff == 1 && regSys_->pllcr.bit.div > 0) return false;
+            if(regSys_->pllsts.bit.plloff == 1 
+            && regSys_->pllcr.bit.div > 0) return false;
             // Calculate the CPU frequency
-            m = regSys_->pllcr.bit.div != 0 ? regSys_->pllcr.bit.div : 1;
+            m = regSys_->pllcr.bit.div != 0 
+                ? regSys_->pllcr.bit.div : 1;
             switch(regSys_->pllsts.bit.divsel)
             {
                 case  0: 

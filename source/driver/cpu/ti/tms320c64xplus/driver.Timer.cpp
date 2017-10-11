@@ -13,12 +13,15 @@ namespace driver
      * Returns the timer interface of a target processor.
      *
      * @param res the driver resource creating structure.
-     * @return target processor timer interface, or NULL if error has been occurred.
+     * @return target processor timer interface, or NULL 
+     *         if error has been occurred.
      */
-    ::driver::Timer* Timer::create(const ::driver::Timer::Resource res)
+    ::driver::Timer* 
+    Timer::create(const ::driver::Timer::Resource res)
     {
         ::driver::Timer* resource;  
-        resource = res.index >= 0 ? new TimerController(res.index) : new TimerController();
+        resource = res.index >= 0 ? new TimerController(res.index) 
+                                  : new TimerController();
         if(resource == NULL) return NULL; 
         if(resource->isConstructed()) return resource;       
         delete resource;

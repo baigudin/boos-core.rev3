@@ -1,12 +1,11 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Boot routine.
 ;
-; The module performs the tasks to initialize C/C++ run-time environment.
+; The module initializes C/C++ run-time environment.
 ; 
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
+; @copyright 2017, Sergey Baigudin
+; -------------------------------------------------------------------
         .c28_amode
         .def  _c_int00
 
@@ -31,24 +30,24 @@
 v_stack .usect ".ebss", STACK_SIZE, 8
       
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; The bootstrap routine.        
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_bootstrap:
         dint
-        c28obj                             ; Enable C28x Object Mode
-        c28addr                            ; Enable C28x Address Mode
-        c28map                             ; Enable C28x Mapping Of M0 and M1 blocks
-        mov             sp, #v_stack       ; Set stack pointer
-        clrc            c, tc, ovm, sxm    ; Clear Status Register 0
-        spm             0                  ; Set product shift mode
-        clrc            page0              ; Clear Status Register 1
-        setc            vmap, dbgm, intm   ; Set Status Register 1
-        movw            dp, #0             ; Initialize DP
-        nop             *, arp0            ; Set ARP pointer to XAR0        
-        asp                                ; Ensure SP is aligned
-        mov             acc, #0            ; Set CPU registers to zero
+        c28obj                           ; Enable C28x Object Mode
+        c28addr                          ; Enable C28x Address Mode
+        c28map                           ; Enable C28x M0 & M1 blocks
+        mov             sp, #v_stack     ; Set stack pointer
+        clrc            c, tc, ovm, sxm  ; Clear Status Register 0
+        spm             0                ; Set product shift mode
+        clrc            page0            ; Clear Status Register 1
+        setc            vmap, dbgm, intm ; Set Status Register 1
+        movw            dp, #0           ; Initialize DP
+        nop             *, arp0          ; Set ARP pointer to XAR0        
+        asp                              ; Ensure SP is aligned
+        mov             acc, #0          ; Set CPU registers to zero
         mov             pl, #0
         mov             ph, #0        
         movl            xt, p        
@@ -71,18 +70,18 @@ m_bootstrap:
         ; Call the system main method
         lcr             m_main
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; The termination routine.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_termination:
         b               m_termination, unc
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns the first record adderess.
 ;
 ; @return AR4 memory address of .cinit section or NULL.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_get_cinit:
         mov            al, #v_cinit
@@ -94,11 +93,11 @@ m_get_cinit:
 m_c0?   movl           xar4, #0        
         lretr
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns the first record adderess.
 ;
 ; @return AR4 memory address of .pinit section or NULL.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_get_pinit:
         mov            al, #v_pinit

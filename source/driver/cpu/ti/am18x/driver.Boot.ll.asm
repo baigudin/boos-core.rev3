@@ -1,12 +1,11 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Boot routine.
 ;
-; The module performs the tasks to initialize C/C++ run-time environment.
+; The module initializes C/C++ run-time environment.
 ; 
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2016-2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
+; @copyright 2016-2017, Sergey Baigudin
+; -------------------------------------------------------------------
     .state32
     .copy    "driver.registers.inc"
     .include "driver.constants.inc"    
@@ -53,9 +52,9 @@
     .bss  v_stack_fiq, STACK_SIZE_FIQ, 8
     .bss  v_stack_sys, STACK_SIZE_SYS, 8
    
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; The bootstrap routine.        
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_bootstrap:
     ; Set FIQ mode registers
@@ -121,18 +120,18 @@ a_v_stack_irq   .word v_stack_irq + STACK_SIZE_IRQ
 a_v_stack_fiq   .word v_stack_fiq + STACK_SIZE_FIQ
 a_v_stack_sys   .word v_stack_sys + STACK_SIZE_SYS
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; The termination routine.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_termination:
     b       m_termination    
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns the first record adderess.
 ;
 ; @return R0 memory address of .cinit section or NULL.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_get_cinit:
     ldr     r0, a_v_cinit
@@ -144,11 +143,11 @@ m_get_cinit:
 a_v_cinit     .word v_cinit
 a_v_cinit_err .word 0ffffffffh
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns the first record adderess.
 ;
 ; @return R0 memory address of .pinit section or NULL.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_get_pinit:
     ldr     r0, a_v_pinit

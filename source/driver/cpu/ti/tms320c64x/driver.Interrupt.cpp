@@ -2,8 +2,7 @@
  * Target processor interrupts factory.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #include "driver.Interrupt.hpp" 
 #include "driver.InterruptController.hpp"
@@ -16,10 +15,13 @@ namespace driver
      * @param res the driver resource creating structure.     
      * @return target processor interrupt interface.
      */
-    ::driver::Interrupt* Interrupt::create(const ::driver::Interrupt::Resource res) 
+    ::driver::Interrupt* 
+    Interrupt::create(const ::driver::Interrupt::Resource res) 
     {
         ::driver::Interrupt* resource;
-        resource = res.handler != NULL ? new InterruptController(res.handler, res.source) : new InterruptController();
+        resource = res.handler != NULL
+            ? new InterruptController(res.handler, res.source) 
+            : new InterruptController();
         if(resource == NULL) return NULL; 
         if(resource->isConstructed()) return resource;       
         delete resource;

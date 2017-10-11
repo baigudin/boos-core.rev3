@@ -2,8 +2,7 @@
  * TI TMS320F28x3x processor family.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_PROCESSOR_CONTROLLER_HPP_
 #define DRIVER_PROCESSOR_CONTROLLER_HPP_
@@ -50,19 +49,24 @@ namespace driver
             stage_ = 0;
             // Stage 1 
             stage_++;
-            if( not ::driver::Watchdog::initialize(config) ) return false;    
+            if( not ::driver::Watchdog::initialize(config) ) 
+                return false;    
             // Stage 1 
             stage_++;
-            if( not ::driver::Pll::initialize(config) ) return false;    
+            if( not ::driver::Pll::initialize(config) ) 
+                return false;    
             // Stage 2 
             stage_++;
-            if( not ::driver::Register::initialize(config) ) return false;
+            if( not ::driver::Register::initialize(config) ) 
+                return false;
             // Stage 3 
             stage_++;
-            if( not ::driver::Interrupt::initialize(config) ) return false;
+            if( not ::driver::Interrupt::initialize(config) ) 
+                return false;
             // Stage 4 
             stage_++;
-            if( not ::driver::Timer::initialize(config) ) return false;
+            if( not ::driver::Timer::initialize(config) ) 
+                return false;
             // Stage complete
             stage_ = -1;
             isInitialized_ = IS_INITIALIZED;      
@@ -113,7 +117,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        ProcessorController& operator =(const ProcessorController& obj);
+        ProcessorController& 
+        operator =(const ProcessorController& obj);
         
         /**
          * The driver initialized falg value.
@@ -126,7 +131,7 @@ namespace driver
         static int32 isInitialized_;     
         
         /**
-         * The processor internal module initialization stage (no boot).
+         * The processor module initialization stage (no boot).
          */
         static int32 stage_;
       
@@ -138,7 +143,7 @@ namespace driver
     int32 ProcessorController::isInitialized_;    
     
     /**
-     * The processor internal module initialization stage (no boot).
+     * The processor module initialization stage (no boot).
      */
     int32 ProcessorController::stage_; 
     

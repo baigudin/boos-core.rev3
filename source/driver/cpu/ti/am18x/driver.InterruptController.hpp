@@ -2,8 +2,7 @@
  * Hardware interrupt resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_INTERRUPT_CONTROLLER_HPP_
 #define DRIVER_INTERRUPT_CONTROLLER_HPP_
@@ -26,8 +25,8 @@ namespace driver
         /**
          * Available interrupt sources for all AM18x family.
          *
-         * NOTE: Some sources for some microprocessors can not be used,
-         * because those peripherial might be absented on chips.
+         * NOTE: Some sources for some microprocessors can not be 
+         * used, because those peripherial might be absented on chips.
          */
         enum Source
         {
@@ -144,10 +143,12 @@ namespace driver
         /** 
          * Constructor.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          */     
-        InterruptController(::api::Task* handler, int32 source) : Parent(),
+        InterruptController(::api::Task* handler, int32 source) : 
+            Parent(),
             ctx_ (NULL){
             setConstruct( construct(*handler, source) );
         }  
@@ -189,7 +190,8 @@ namespace driver
         /**
          * Locks this interrupt source.
          *
-         * @return an interrupt enable source bit value before method was called.
+         * @return an interrupt enable source bit value 
+         *         before method was called.
          */    
         virtual bool disable()
         {
@@ -218,22 +220,27 @@ namespace driver
         /**
          * Sets interrupt source handler.
          *
-         * @param handler pointer to user class which implements an interrupt handler interface.
+         * @param handler pointer to user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          * @return true if handler is set successfully.
          */      
         virtual bool setHandler(::api::Task& handler, int32 source)
         {
             bool is = Interrupt::disableAll();
-            if(!isConstructed()) return Interrupt::enableAll(is, false);      
-            if(isAllocated()) return Interrupt::enableAll(is, false);
-            if(!isSource(source)) return Interrupt::enableAll(is, false);
+            if(!isConstructed()) 
+                return Interrupt::enableAll(is, false);      
+            if(isAllocated()) 
+                return Interrupt::enableAll(is, false);
+            if(!isSource(source)) 
+                return Interrupt::enableAll(is, false);
             Source src = static_cast<Source>(source);      
             // Test if interrupt source is alloced
             for(int32 i=0; i<NUMBER_CHANNELS; i++)
                 if(context_[i].source == src)
                     return Interrupt::enableAll(is, false);
-            // Looking for free IRQ channel and alloc that if it is found
+            // Looking for free IRQ channel 
+            // and alloc that if it is found
             int32 channel = -1;      
             for(int32 i=2; i<NUMBER_CHANNELS; i++)
             {
@@ -255,7 +262,10 @@ namespace driver
                 // Stage 2 creates stack
                 stage++;
                 int32 count = handler.getStackSize() >> 3;
-                Stack* stack = new Stack(::driver::Processor::getStackType(), count);
+                Stack* stack = new Stack(
+                    ::driver::Processor::getStackType(), 
+                    count
+                );
                 ctx_->stack = stack;
                 if(stack == NULL || !stack->isConstructed()) break;                    
                 // Stage complete
@@ -320,13 +330,15 @@ namespace driver
          */
         virtual void restoreContext()
         {
-            if(isAllocated()) ctx_->low->reg = ctx_->reg->getRegisters();
+            if(isAllocated()) ctx_->low->reg 
+                = ctx_->reg->getRegisters();
         }
         
         /**
          * Disables all maskable interrupts.
          *
-         * @return global interrupts enable bit value before method was called.
+         * @return global interrupts enable bit value 
+         *         before method was called.
          */
         static bool disableAll();
         
@@ -395,7 +407,8 @@ namespace driver
         /** 
          * Constructs the object.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.     
          * @return true if object has been constructed successfully.
          */
@@ -434,7 +447,7 @@ namespace driver
             for(int32 i=0; i<4; i++) reg.ecr[i].value = 0xffffffff;
             // Set ISR vector addresses
             reg.vbr.value = reinterpret_cast<uint32>(&handlerBaseLow);
-            // Set the individual ISR routines sizes which equal to 32 bytes
+            // Set the individual ISR sizes which equal to 32 bytes
             reg.vsr.bit.size = 3;
             // Set the Null ISR vector
             reg.vnr.value = reinterpret_cast<uint32>(&handlerNullLow);
@@ -449,7 +462,8 @@ namespace driver
             }
             // Here we are trying to do not shoot a leg by mapping
             // the low context structure to individual ISR routines
-            contextLow_ = reinterpret_cast<ContextLow*>(reg.vbr.value);
+            contextLow_ = 
+                reinterpret_cast<ContextLow*>(reg.vbr.value);
             for(int32 i=0; i<NUMBER_SOURCES; i++)
             {
                 contextLow_[i].arg = -1;      
@@ -492,10 +506,26 @@ namespace driver
             int32 i = source >> 2;
             switch(source & 0x3)
             {
-                case  0: reg.cmr[i].bit.channel0 = channel & 0xff; break;
-                case  1: reg.cmr[i].bit.channel1 = channel & 0xff; break;
-                case  2: reg.cmr[i].bit.channel2 = channel & 0xff; break;
-                case  3: reg.cmr[i].bit.channel3 = channel & 0xff; break;
+                case  0: 
+                {
+                    reg.cmr[i].bit.channel0 = channel & 0xff; 
+                }
+                break;
+                case  1: 
+                {
+                    reg.cmr[i].bit.channel1 = channel & 0xff; 
+                }
+                break;
+                case  2: 
+                {
+                    reg.cmr[i].bit.channel2 = channel & 0xff; 
+                }
+                break;
+                case  3: 
+                {
+                    reg.cmr[i].bit.channel3 = channel & 0xff; 
+                }
+                break;
                 default: return false;
             }
             return true;
@@ -538,7 +568,8 @@ namespace driver
          */      
         static bool isChannel(int32 channel)
         {
-            return (0 <= channel && channel < NUMBER_CHANNELS) ? true : false;
+            return (0 <= channel && channel < NUMBER_CHANNELS) 
+                ? true : false;
         }
       
         /**
@@ -559,8 +590,8 @@ namespace driver
         /**
          * HW interrupt handle base routing address.
          *
-         * IMPORTANT: This is not a normal C++ method and MUST NOT be called 
-         * from any other code places!
+         * IMPORTANT: This is not a normal C++ method and 
+         * MUST NOT be called from any other code places!
          */        
         static void handlerBaseLow();
         
@@ -589,16 +620,19 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        InterruptController& operator =(const InterruptController& obj);
+        InterruptController& 
+        operator =(const InterruptController& obj);
       
         /**
          * Low level interrupt context.
          *
-         * NOTE: This struct data is used by low level interrupt routine.
-         *       It maps on assembly source code of an intrrupt routine and
-         *       has to be equal the size which set in AINTC Vector Size Register.
-         *       The order of structure data is important and must not be changed,
-         *       because it is used by low level interrupt routine.
+         * NOTE: This struct data is used by low level interrupt 
+         *       routine. It maps on assembly source code of 
+         *       an intrrupt routine and has to be equal the size 
+         *       which set in AINTC Vector Size Register. The order 
+         *       of structure data is important and must not be 
+         *       changed, because it is used by low level interrupt 
+         *       routine.
          */
         struct ContextLow
         {
@@ -639,7 +673,7 @@ namespace driver
             void* reg;
             
             /**
-             * Top of stack will be loaded to SP for routing an intrrupt.
+             * Top of stack is loaded to SP for routing an intrrupt.
              */        
             const int64* tos;
            
@@ -807,7 +841,9 @@ namespace driver
     /**
      * Hi level interrupt channels (no boot).
      */        
-    InterruptController::Context InterruptController::context_[InterruptController::NUMBER_CHANNELS];      
+    InterruptController::Context InterruptController::context_[
+        InterruptController::NUMBER_CHANNELS
+    ];      
   
     /**
      * Low level interrupts context table (no boot).

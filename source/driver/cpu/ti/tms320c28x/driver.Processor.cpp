@@ -2,8 +2,7 @@
  * Target processor factory. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #include "driver.Processor.hpp" 
 #include "driver.ProcessorController.hpp"
@@ -13,7 +12,8 @@ namespace driver
     /**
      * Returns the register interface of a target processor.
      *
-     * @return target processor register interface, or NULL if error has been occurred.
+     * @return target processor register interface, or NULL 
+     *         if error has been occurred.
      */
     ::driver::Processor* Processor::create()
     {

@@ -119,14 +119,16 @@ namespace driver
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero sets the period to maxinum value.
+         * @param us timer period in microseconds, zero sets 
+         *           the period to maxinum value.
          */      
         virtual void setPeriod(int64 us=0)
         {
             if( not isConstructed_ ) return;
             int64 clock = getInternalClock();
             if(clock == 0) return;       
-            uint64 prd = us != 0 ? (us * clock) / 1000000 : 0xffffffffffffffff;
+            uint64 prd = us != 0 ? (us * clock) / 1000000 
+                                 : 0xffffffffffffffff;
             bool is = isStarted();
             if(is) stop();
             regTim_->prdlo.value = prd & 0xffffffff;
@@ -156,7 +158,8 @@ namespace driver
         /**
          * Returns this timer index.
          *
-         * @return index of this timer, or -1 if error has been occurred.
+         * @return index of this timer, or -1 
+         *         if error has been occurred.
          */      
         virtual int32 getIndex() const
         {
@@ -197,7 +200,8 @@ namespace driver
         /**
          * Returns an available interrupt source for this timer.
          *
-         * @return available interrupt source, or -1 if error has been occurred.
+         * @return available interrupt source, or -1 
+         *         if error has been occurred.
          */  
         virtual int32 getInterrupSource() const
         {
@@ -277,7 +281,9 @@ namespace driver
                 {
                     break;
                 }
-                timerClock_ = cpuClock_ / static_cast<int64>(regTim_->emumgtClkspd.bit.clkdiv);
+                timerClock_ = cpuClock_ / static_cast<int64>(
+                    regTim_->emumgtClkspd.bit.clkdiv
+                );
                 // Set Timer Control Register
                 regTim_->tcr.value = 0;
                 regTim_->tcr.bit.clksrcLo = 0;
@@ -294,7 +300,7 @@ namespace driver
                 setCount(0);        
             }
             while(false);
-            return Interrupt::enableAll(is, index_ >= 0 ? true : false);    
+            return Interrupt::enableAll(is, index_>=0 ? true : false);
         }
         
         /** 
@@ -305,7 +311,8 @@ namespace driver
          */  
         bool isIndex(int32 index)
         {
-            return 0 <= index && index < RESOURCES_NUMBER ? true : false;
+            return 0 <= index && index < RESOURCES_NUMBER ? true 
+                                                          : false;
         }
         
         /**

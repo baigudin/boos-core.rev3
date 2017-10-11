@@ -1,15 +1,14 @@
 /** 
  * TI ARM AM18x Phase-Locked Loop Controller (PLLC).
  *
- * This is a configuration file for configuring the PLL Controller of 
- * TI AM18x chips. As an example, we based on 25 MHz rate of 
+ * This is a configuration file for configuring the PLL Controller
+ * of TI AM18x chips. As an example, we based on 25 MHz rate of 
  * input crystal clock and desire setting 375 MHz for ARM core. 
  * All rates are given as arguments of the init method. 
  * In your ways, you have to pass self rates.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_PLL_CONTROLLER_HPP_
 #define DRIVER_PLL_CONTROLLER_HPP_
@@ -138,12 +137,15 @@ namespace driver
             pllc0_->pllctl.bit.pllrst = 0;
             // Up the power
             if(isPowerDown) pllc0_->pllctl.bit.pllpwrdn = 0;
-            // Set pre-divider value to 1: before 25 MHz, after 25 MHz
+            // Set pre-divider value to 1: 
+            // before 25 MHz, after 25 MHz
             pllc0_->prediv.bit.ratio = 0;  
             pllc0_->prediv.bit.preden = 1;
-            // Set calculated multiplier value to 15: before 25 MHz, after 375 MHz
+            // Set calculated multiplier value to 15: 
+            // before 25 MHz, after 375 MHz
             pllc0_->pllm.bit.pllm = pllm & Pllc0::PLLM_M_PLLM;
-            // Set post-divider value to 1: before 375 MHz, after 375 MHz
+            // Set post-divider value to 1: 
+            // before 375 MHz, after 375 MHz
             pllc0_->postdiv.bit.ratio = 0;  
             pllc0_->postdiv.bit.postden = 1;
             // Set EMIFA clocking to 93.75 MHz
@@ -151,14 +153,15 @@ namespace driver
             plldiv0(pllc0_->plldiv3, 4);
             // Set ARM clocking to 375 MHz
             plldiv0(pllc0_->plldiv6, 1);
-            // TODO: SUPPLEMENT SOME DIVIDER SETS WHEN THOSE ARE NEEDED
+            // TODO: SUPPLEMENT SOME DIVIDER SETS 
+            //       WHEN THOSE ARE NEEDED
             // Set reset is not asserted
             pllc0_->pllctl.bit.pllrst = 1;
             // Wait for the PLL to lock
             for(uint32 i=0; i<200; i++);
             // Switch the PLL to normal mode, not bypassed
             pllc0_->pllctl.bit.pllen = 1;
-            // Set, for an example, ARM clocking for test and debug purposes
+            // Set, as example, ARM clock for test and debug purposes
             pllc0_->ocsel.bit.ocsrc = 0x1c;
             pllc0_->oscdiv.bit.ratio = 0;
             pllc0_->oscdiv.bit.od1en = 1;
@@ -180,24 +183,27 @@ namespace driver
             pllc1_->pllctl.bit.pllrst = 0;
             // Up the power
             if(isPowerDown) pllc1_->pllctl.bit.pllpwrdn = 0;
-            // Set calculated multiplier value to 12: before 25 MHz, after 300 MHz
+            // Set calculated multiplier value to 12: 
+            // before 25 MHz, after 300 MHz
             pllc1_->pllm.bit.pllm = 11;
-            // Set post-divider value to 1: before 300 MHz, after 300 MHz
+            // Set post-divider value to 1: 
+            // before 300 MHz, after 300 MHz
             pllc1_->postdiv.bit.ratio = 0;  
             pllc1_->postdiv.bit.postden = 1;
             // Set DDR clocking to 300 MHz
             plldiv1(pllc1_->plldiv1, 1);
-            // Set TIMER2/3, UART1/2, McBSP, and etc clocking to 100 MHz
+            // Set TIMER2/3, UART1/2, McBSP, and etc to 100 MHz
             syscfg0_->cfgchip3.bit.async3Clksrc = 1;
             plldiv1(pllc1_->plldiv2, 3);
-            // TODO: SUPPLEMENT SOME DIVIDER SETS WHEN THOSE ARE NEEDED
+            // TODO: SUPPLEMENT SOME DIVIDER SETS 
+            //       WHEN THOSE ARE NEEDED
             // Set reset is not asserted
             pllc1_->pllctl.bit.pllrst = 1;
             // Wait for the PLL to lock
             for(uint32 i=0; i<200; i++);
             // Switch the PLL to normal mode, not bypassed
             pllc1_->pllctl.bit.pllen = 1;        
-            // Set, for an example, DDR clocking for test and debug purposes
+            // Set, as example, DDR clock for test and debug purposes
             pllc1_->ocsel.bit.ocsrc = 0x17;
             pllc1_->oscdiv.bit.ratio = 0;
             pllc1_->oscdiv.bit.od1en = 1;

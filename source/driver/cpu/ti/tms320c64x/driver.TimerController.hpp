@@ -2,8 +2,7 @@
  * Hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_TIMER_CONTROLLER_HPP_
 #define DRIVER_TIMER_CONTROLLER_HPP_
@@ -109,7 +108,8 @@ namespace driver
         /**
          * Sets this timer period.
          *
-         * @param us timer period in microseconds, zero sets the period to maxinum value.
+         * @param us timer period in microseconds, zero sets 
+         *           the period to maxinum value.
          */      
         virtual void setPeriod(int64 us=0)
         {
@@ -123,7 +123,8 @@ namespace driver
                 int64 clock = getInternalClock();
                 if(clock == 0) return;      
                 uint64 prd = (us * clock) / 1000000;
-                if( (prd & 0xffffffff00000000) == 0) regTim_->prd.value = prd & 0x00000000ffffffff;
+                if( (prd & 0xffffffff00000000) == 0) 
+                    regTim_->prd.value = prd & 0x00000000ffffffff;
                 else return setPeriod();
             }    
         }
@@ -154,7 +155,8 @@ namespace driver
         /**
          * Returns this timer index.
          *
-         * @return index of this timer, or -1 if error has been occurred.
+         * @return index of this timer, or -1 
+         *         if error has been occurred.
          */      
         virtual int32 getIndex() const
         {
@@ -194,7 +196,8 @@ namespace driver
         /**
          * Returns an available interrupt source for this timer.
          *
-         * @return available interrupt source, or -1 if error has been occurred.
+         * @return available interrupt source, or -1 
+         *         if error has been occurred.
          */  
         virtual int32 getInterrupSource() const
         {
@@ -221,9 +224,21 @@ namespace driver
             {
                 switch(i)
                 {
-                    case  0: new (reg::Timer::ADDRESS0) reg::Timer(); break;
-                    case  1: new (reg::Timer::ADDRESS1) reg::Timer(); break;
-                    case  2: new (reg::Timer::ADDRESS2) reg::Timer(); break;
+                    case  0: 
+                    {
+                        new (reg::Timer::ADDRESS0) reg::Timer();
+                    }
+                    break;
+                    case  1: 
+                    {
+                        new (reg::Timer::ADDRESS1) reg::Timer(); 
+                    }
+                    break;
+                    case  2: 
+                    {
+                        new (reg::Timer::ADDRESS2) reg::Timer(); 
+                    }
+                    break;
                     default: return false;
                 }
                 lock_[i] = false;      
@@ -260,7 +275,8 @@ namespace driver
                 case  2: addr = reg::Timer::ADDRESS2; break;
                 default: return Interrupt::enableAll(is, false);
             }    
-            if(lock_[index] == true) return Interrupt::enableAll(is, false); 
+            if(lock_[index] == true) 
+                return Interrupt::enableAll(is, false); 
             regTim_ = new (addr) reg::Timer();
             lock_[index] = true;
             index_ = index;

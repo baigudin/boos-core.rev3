@@ -63,22 +63,28 @@ namespace driver
          * @param arg1  first router argument.
          * @param arg2  second router argument.     
          */  
-        virtual void setInitialization(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
+        virtual void setInitialization(::api::Stack<int64>& stack, 
+                                       int32 entry, 
+                                       int32 arg1, 
+                                       int32 arg2)
         {
             if(!isConstructed_) return;
             // Initialize Control Status Register (Csr).        
             Csr csr = 0;
-            // Set GIE bit to zero for restoring with out crash, because
-            // this value will be set while the restoring is being executed, and
-            // an enabling of global interrupts is not needed case.
+            // Set GIE bit to zero for restoring with out crash, 
+            // because this value will be set while the restoring 
+            // is being executed, and an enabling of global 
+            // interrupts is not needed case.
             csr.bit.gie = 0;
-            // Set PGIE bit to one for first calling restored context with set GIE bit.
-            // Simply, we need to have enabled global interrupts in a new thread.
+            // Set PGIE bit to one for first calling restored context 
+            // with set GIE bit. Simply, we need to have enabled 
+            // global interrupts in a new thread.
             csr.bit.pgie = 1;
             // Initialize Inrerrupt Task State Register (ITSR).
             Tsr itsr;
-            // PGIE bit of CSR register is mapped to GIE bit of ITSR register.
-            // Thus, we have to set the bit for globally enabling interrupts of a new thread.
+            // PGIE bit of CSR register is mapped to GIE bit 
+            // of ITSR register. Thus, we have to set the bit 
+            // for globally enabling interrupts of a new thread.
             itsr.bit.gie = 1;
             // Initialize self values of registers
             irp_ = entry;
@@ -230,26 +236,44 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        RegisterController(const RegisterController& obj) : //Parent(),
+        RegisterController(const RegisterController& obj) :
             align8_ (obj.align8_),
-            a0_ (obj.a0_),   a1_ (obj.a1_),   b0_ (obj.b0_),   b1_ (obj.b1_),
-            a2_ (obj.a2_),   a3_ (obj.a3_),   b2_ (obj.b2_),   b3_ (obj.b3_),
-            a4_ (obj.a4_),   a5_ (obj.a5_),   b4_ (obj.b4_),   b5_ (obj.b5_),
-            a6_ (obj.a6_),   a7_ (obj.a7_),   b6_ (obj.b6_),   b7_ (obj.b7_),
-            a8_ (obj.a8_),   a9_ (obj.a9_),   b8_ (obj.b8_),   b9_ (obj.b9_),
-            a10_(obj.a10_),  a11_(obj.a11_),  b10_(obj.b10_),  b11_(obj.b11_),
-            a12_(obj.a12_),  a13_(obj.a13_),  b12_(obj.b12_),  b13_(obj.b13_),
-            a14_(obj.a14_),  a15_(obj.a15_),  b14_(obj.b14_),  b15_(obj.b15_),
-            a16_(obj.a16_),  a17_(obj.a17_),  b16_(obj.b16_),  b17_(obj.b17_),
-            a18_(obj.a18_),  a19_(obj.a19_),  b18_(obj.b18_),  b19_(obj.b19_),
-            a20_(obj.a20_),  a21_(obj.a21_),  b20_(obj.b20_),  b21_(obj.b21_),
-            a22_(obj.a22_),  a23_(obj.a23_),  b22_(obj.b22_),  b23_(obj.b23_),
-            a24_(obj.a24_),  a25_(obj.a25_),  b24_(obj.b24_),  b25_(obj.b25_),
-            a26_(obj.a26_),  a27_(obj.a27_),  b26_(obj.b26_),  b27_(obj.b27_),
-            a28_(obj.a28_),  a29_(obj.a29_),  b28_(obj.b28_),  b29_(obj.b29_),
-            a30_(obj.a30_),  a31_(obj.a31_),  b30_(obj.b30_),  b31_(obj.b31_),
-            amr_(obj.amr_),  irp_(obj.irp_),  csr_(obj.csr_), itsr_(obj.itsr_),
-            ilc_(obj.ilc_), rilc_(obj.rilc_),tmp1_(obj.tmp1_),tmp2_(obj.tmp2_){
+            a0_ (obj.a0_),   a1_ (obj.a1_),   
+            b0_ (obj.b0_),   b1_ (obj.b1_),
+            a2_ (obj.a2_),   a3_ (obj.a3_),   
+            b2_ (obj.b2_),   b3_ (obj.b3_),
+            a4_ (obj.a4_),   a5_ (obj.a5_),   
+            b4_ (obj.b4_),   b5_ (obj.b5_),
+            a6_ (obj.a6_),   a7_ (obj.a7_),   
+            b6_ (obj.b6_),   b7_ (obj.b7_),
+            a8_ (obj.a8_),   a9_ (obj.a9_),   
+            b8_ (obj.b8_),   b9_ (obj.b9_),
+            a10_(obj.a10_),  a11_(obj.a11_),  
+            b10_(obj.b10_),  b11_(obj.b11_),
+            a12_(obj.a12_),  a13_(obj.a13_),  
+            b12_(obj.b12_),  b13_(obj.b13_),
+            a14_(obj.a14_),  a15_(obj.a15_),  
+            b14_(obj.b14_),  b15_(obj.b15_),
+            a16_(obj.a16_),  a17_(obj.a17_),  
+            b16_(obj.b16_),  b17_(obj.b17_),
+            a18_(obj.a18_),  a19_(obj.a19_),  
+            b18_(obj.b18_),  b19_(obj.b19_),
+            a20_(obj.a20_),  a21_(obj.a21_),  
+            b20_(obj.b20_),  b21_(obj.b21_),
+            a22_(obj.a22_),  a23_(obj.a23_),  
+            b22_(obj.b22_),  b23_(obj.b23_),
+            a24_(obj.a24_),  a25_(obj.a25_),  
+            b24_(obj.b24_),  b25_(obj.b25_),
+            a26_(obj.a26_),  a27_(obj.a27_),  
+            b26_(obj.b26_),  b27_(obj.b27_),
+            a28_(obj.a28_),  a29_(obj.a29_),  
+            b28_(obj.b28_),  b29_(obj.b29_),
+            a30_(obj.a30_),  a31_(obj.a31_),  
+            b30_(obj.b30_),  b31_(obj.b31_),
+            amr_(obj.amr_),  irp_(obj.irp_),  
+            csr_(obj.csr_), itsr_(obj.itsr_),
+            ilc_(obj.ilc_), rilc_(obj.rilc_),
+            tmp1_(obj.tmp1_),tmp2_(obj.tmp2_){
             setConstruct( copy(obj) );
         }
         

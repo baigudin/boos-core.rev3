@@ -1,10 +1,9 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; ARM architecture constants
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2016, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
+; @copyright 2016, Sergey Baigudin
+; -------------------------------------------------------------------
 
 ; Mode bits of program status registers
 PSR_USR .set 00000010h

@@ -2,8 +2,7 @@
  * TI ARM AM18x Phase-Locked Loop Controller (PLLC).
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_PLLC1_HPP_
 #define DRIVER_REG_PLLC1_HPP_

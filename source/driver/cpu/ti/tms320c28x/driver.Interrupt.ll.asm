@@ -1,41 +1,40 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Interrupt low level module.
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
-        .c28_amode
-        
-        .ref  _c_int00
-        
-        .def  _disableAll__Q2_6driver9InterruptSFv
-        .def  _enableAll__Q2_6driver9InterruptSFb
-        .def  _disableLow__Q2_6driver19InterruptControllerSFUl
-        .def  _enableLow__Q2_6driver19InterruptControllerSFUlb
-        .def  _setLow__Q2_6driver19InterruptControllerSFUl
-        .def  _clearLow__Q2_6driver19InterruptControllerSFUl
-        .def  _jumpLow__Q2_6driver19InterruptControllerSFUl
-        .def  _getVectorsLow__Q2_6driver19InterruptControllerSFv
-       
-        .ref  _handler__Q2_6driver19InterruptControllerSFiT1
-        .ref  _contextLow___Q2_6driver19InterruptController
-        
-        .asg  _c_int00,                                           m_bootstrap
-        .asg  _disableAll__Q2_6driver9InterruptSFv,               m_global_disable
-        .asg  _enableAll__Q2_6driver9InterruptSFb,                m_global_enable
-        .asg  _disableLow__Q2_6driver19InterruptControllerSFUl,   m_disable
-        .asg  _enableLow__Q2_6driver19InterruptControllerSFUlb,   m_enable
-        .asg  _setLow__Q2_6driver19InterruptControllerSFUl,       m_set
-        .asg  _clearLow__Q2_6driver19InterruptControllerSFUl,     m_clear
-        .asg  _jumpLow__Q2_6driver19InterruptControllerSFUl,      m_jump
-        .asg  _getVectorsLow__Q2_6driver19InterruptControllerSFv, m_get_table
-        .asg  _handler__Q2_6driver19InterruptControllerSFiT1,     m_handler
-        .asg  _contextLow___Q2_6driver19InterruptController,      v_context
+; @copyright 2017, Sergey Baigudin
+; -------------------------------------------------------------------
+  .c28_amode
+  
+  .ref  _c_int00
+  
+  .def  _disableAll__Q2_6driver9InterruptSFv
+  .def  _enableAll__Q2_6driver9InterruptSFb
+  .def  _disableLow__Q2_6driver19InterruptControllerSFUl
+  .def  _enableLow__Q2_6driver19InterruptControllerSFUlb
+  .def  _setLow__Q2_6driver19InterruptControllerSFUl
+  .def  _clearLow__Q2_6driver19InterruptControllerSFUl
+  .def  _jumpLow__Q2_6driver19InterruptControllerSFUl
+  .def  _getVectorsLow__Q2_6driver19InterruptControllerSFv
+  
+  .ref  _handler__Q2_6driver19InterruptControllerSFiT1
+  .ref  _contextLow___Q2_6driver19InterruptController
+  
+  .asg  _c_int00,                                    m_bootstrap
+  .asg  _disableAll__Q2_6driver9InterruptSFv,        m_global_disable
+  .asg  _enableAll__Q2_6driver9InterruptSFb,         m_global_enable
+  .asg  _disableLow__Q2_6driver19InterruptControllerSFUl,  m_disable
+  .asg  _enableLow__Q2_6driver19InterruptControllerSFUlb,  m_enable
+  .asg  _setLow__Q2_6driver19InterruptControllerSFUl,      m_set
+  .asg  _clearLow__Q2_6driver19InterruptControllerSFUl,    m_clear
+  .asg  _jumpLow__Q2_6driver19InterruptControllerSFUl,     m_jump
+  .asg  _getVectorsLow__Q2_6driver19InterruptControllerSFv,m_get_table
+  .asg  _handler__Q2_6driver19InterruptControllerSFiT1,    m_handler
+  .asg  _contextLow___Q2_6driver19InterruptController,     v_context
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt vectors
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 
 reset   .macro 
         .ulong          m_bootstrap
@@ -46,9 +45,9 @@ v_ih_n:n:_g:g:
         .ulong          m_ih_n:n:_g:g:
         .endm    
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt handler.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 handler .macro          n, g
 m_ih_n:n:_g:g:
         movb            al, #:n:
@@ -56,13 +55,13 @@ m_ih_n:n:_g:g:
         bf              m_isr, unc
         .endm
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Interrupt vector table section of PIE.
 ;
 ; This section is being loaded and will be alloced by linker.
 ; It is used for user's code initialization of
 ; PIE Vectors memory.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .data
 v_ires:
         reset           
@@ -87,9 +86,9 @@ v_ires:
         .eval           g+1, g
         .endloop
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Interrupt handlers.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
         
         ; 31 CPU Vector
@@ -113,9 +112,9 @@ v_ires:
         .eval           g+1, g
         .endloop                    
                 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Nonreset interrupt service routine.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_isr:
         ; Full context save
@@ -154,20 +153,21 @@ m_isr:
         nasp
         iret
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns address of PIE vectors table copy.
 ;
 ; @return ACC vectors table address.
-; ----------------------------------------------------------------------------       
+; -------------------------------------------------------------------       
 m_get_table:
         movl            xar4, #v_ires  
         lretr
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Disables all maskable interrupts.
 ;
-; @return AL global interrupt enable bit value before method was called.
-; ----------------------------------------------------------------------------
+; @return AL global interrupt enable bit value 
+;         before method was called.
+; -------------------------------------------------------------------
         .text
 m_global_disable:
         push            st1
@@ -177,11 +177,11 @@ m_global_disable:
         xor             al, #1
         lretr
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Enables all maskable interrupts.
 ;
 ; @param AL the returned status by disable method.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_global_enable:
         cmp             al, #0
@@ -189,12 +189,13 @@ m_global_enable:
         eint
 m_ret0? lretr
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Locks maskable interrupt source.
 ;
 ; @param AL a register bit mask.
-; @return AL an interrupt enable source bit in low bit before method was called.
-; ----------------------------------------------------------------------------
+; @return AL an interrupt enable source bit in low bit 
+;            before method was called.
+; -------------------------------------------------------------------
         .text
 m_disable:
         mov             ar0, acc
@@ -210,12 +211,12 @@ m_disable:
 m_ret1? lretr        
 
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Unlocks maskable interrupt source.
 ;
 ; @param ACC a register bit mask.
 ; @param AR4 returned status by m_disable procedure.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_enable:
         banz            m_set0?, ar4--
@@ -225,11 +226,11 @@ m_set0? mov             ar4, ier
         mov             ier, al        
         lretr
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Sets a maskable interrupt status.
 ;
 ; @param ACC a register bit mask.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_set:
         push            ifr
@@ -239,11 +240,11 @@ m_set:
         pop             ifr
         lretr
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Clears a maskable interrupt status.
 ;
 ; @param ACC a register bit mask.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_clear:
         not             acc
@@ -254,11 +255,11 @@ m_clear:
         pop             ifr
         lretr
           
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Jumps to interrupt HW vector.
 ;
 ; @param AR4 hardware interrupt vector number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_jump:
         mov             acc, #0AAAAh << #15

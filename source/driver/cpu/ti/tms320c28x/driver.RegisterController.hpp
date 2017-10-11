@@ -2,8 +2,7 @@
  * TI TMS320F28x3x registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_PROCESSOR_CONTROLLER_HPP_
 #define DRIVER_PROCESSOR_CONTROLLER_HPP_
@@ -41,7 +40,10 @@ namespace driver
          * @param arg1  first router argument.
          * @param arg2  second router argument.     
          */  
-        virtual void setInitialization(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
+        virtual void setInitialization(::api::Stack<int64>& stack, 
+                                       int32 entry, 
+                                       int32 arg1, 
+                                       int32 arg2)
         {
             if(!isConstructed_) return;
         }     
@@ -76,7 +78,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */ 
-        RegisterController(const RegisterController& obj) : //Parent(obj),
+        RegisterController(const RegisterController& obj) :
             align8_ (obj.align8_){
         }    
         

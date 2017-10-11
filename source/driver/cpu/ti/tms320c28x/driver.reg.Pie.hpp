@@ -2,8 +2,7 @@
  * TI TMS320F2833x Peripheral Interrupt Expansion registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2017, Sergey Baigudin
  */
 #ifndef DRIVER_REG_PIE_HPP_
 #define DRIVER_REG_PIE_HPP_

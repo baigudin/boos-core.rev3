@@ -12,7 +12,8 @@ namespace driver
     /**
      * Returns the register interface of a target processor.
      *
-     * @return target processor register interface, or NULL if error has been occurred.
+     * @return target processor register interface, or NULL 
+     *         if error has been occurred.
      */
     ::driver::Register* Register::create()
     {

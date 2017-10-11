@@ -1,16 +1,17 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Boot routine.
 ;
-; The module performs the tasks to initialize C/C++ run-time environment.
+; The module initializes C/C++ run-time environment.
 ; 
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2016-2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
+; @copyright 2016-2017, Sergey Baigudin
+; -------------------------------------------------------------------
 
-    ; Set a using ABI which might be EABI if EABI is set to 1, or COFF ABI if EABI is set to 0
-    ; Having version 7.0 or greater C6000 compilers might generate object files compatible with EABI 
-    ; and have __TI_EABI__ predefined symbol is set to 1 if compiling for EABI and is unset to 0 otherwise. 
+    ; Set a using ABI which might be EABI if EABI is set to 1, 
+    ; or COFF ABI if EABI is set to 0. Having version 7.0 or 
+    ; greater C6000 compilers might generate object files compatible 
+    ; with EABI and have __TI_EABI__ predefined symbol is set to 1 
+    ; if compiling for EABI and is unset to 0 otherwise. 
     .asg  0, EABI
 
     .def  _c_int00
@@ -49,9 +50,9 @@
     .bss  v_stack, STACK_SIZE, 8
     
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; The bootstrap routine.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_bootstrap:
         ; Set CPU register
@@ -90,19 +91,19 @@ mr_0?   addkpc          mr_0?+4, b3, 4
         b               a3
         nop             5
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; The termination routine.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_termination:
         idle
         b               m_termination
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns the first record adderess.
 ;
 ; @return A4 memory address of .cinit section or NULL.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_get_cinit:
         .if             EABI
@@ -120,11 +121,11 @@ m_get_cinit:
         nop             1
         .endif
         
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Returns the first record adderess.
 ;
 ; @return A4 memory address of .pinit section or NULL.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
         .text
 m_get_pinit:
         .if             EABI

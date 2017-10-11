@@ -2,8 +2,7 @@
  * Hardware interrupt controller.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #ifndef DRIVER_INTERRUPT_CONTROLLER_HPP_
 #define DRIVER_INTERRUPT_CONTROLLER_HPP_
@@ -32,11 +31,11 @@ namespace driver
             TINT0      = 0x01, // Timer 0 interrupt
             TINT1      = 0x02, // Timer 1 interrupt
             SD_INTA    = 0x03, // EMIFA SDRAM timer interrupt
-            GPINT4     = 0x04, // GPIO interrupt 4/External interrupt 4
-            GPINT5     = 0x05, // GPIO interrupt 5/External interrupt 5
-            GPINT6     = 0x06, // GPIO interrupt 6/External interrupt 6
-            GPINT7     = 0x07, // GPIO interrupt 7/External interrupt 7
-            EDMA_INT   = 0x08, // EDMA channel (0 through 63) interrupt
+            GPINT4     = 0x04, // GPIO interrupt 4/Ext interrupt 4
+            GPINT5     = 0x05, // GPIO interrupt 5/Ext interrupt 5
+            GPINT6     = 0x06, // GPIO interrupt 6/Ext interrupt 6
+            GPINT7     = 0x07, // GPIO interrupt 7/Ext interrupt 7
+            EDMA_INT   = 0x08, // EDMA channel (0 through 63)
             XINT0      = 0x0c, // McBSP 0 transmit interrupt
             RINT0      = 0x0d, // McBSP 0 receive interrupt
             XINT1      = 0x0e, // McBSP 1 transmit interrupt
@@ -61,10 +60,12 @@ namespace driver
         /** 
          * Constructor.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          */     
-        InterruptController(::api::Task* handler, int32 source) : Parent(),
+        InterruptController(::api::Task* handler, int32 source) : 
+            Parent(),
             ctx_ (NULL){
             setConstruct( construct(*handler, source) );
         }
@@ -107,7 +108,8 @@ namespace driver
         /**
          * Locks this interrupt source.
          *
-         * @return an interrupt enable source bit value before method was called.
+         * @return an interrupt enable source bit value 
+         *         before method was called.
          */    
         virtual bool disable()
         {
@@ -129,7 +131,8 @@ namespace driver
         /**
          * Sets interrupt source handler.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.
          * @return true if handler is set successfully.
          */      
@@ -161,8 +164,10 @@ namespace driver
                 default         : return false;
             }
             bool is = Interrupt::disableAll();
-            if(!isConstructed()) return Interrupt::enableAll(is, false);      
-            if(isAllocated()) return Interrupt::enableAll(is, false);
+            if(!isConstructed()) 
+                return Interrupt::enableAll(is, false);      
+            if(isAllocated()) 
+                return Interrupt::enableAll(is, false);
             // Test if interrupt source is alloced
             for(int32 i=0; i<NUMBER_VECTORS; i++)
                 if(context_[i].source == src) 
@@ -182,12 +187,18 @@ namespace driver
             ctx_->source = src;
             ctx_->handler = &handler;      
             ctx_->reg = ::driver::Register::create();
-            if(ctx_->reg == NULL) return Interrupt::enableAll(is, false);
-            ctx_->stack = new Stack(::driver::Processor::getStackType(), handler.getStackSize() >> 3);
-            if(ctx_->stack == NULL || !ctx_->stack->isConstructed()) return Interrupt::enableAll(is, false);
+            if(ctx_->reg == NULL) 
+                return Interrupt::enableAll(is, false);
+            ctx_->stack = new Stack(
+                ::driver::Processor::getStackType(), 
+                handler.getStackSize() >> 3
+            );
+            if(ctx_->stack == NULL || !ctx_->stack->isConstructed()) 
+                return Interrupt::enableAll(is, false);
             ctx_->low->reg = ctx_->reg->getRegisters();
             ctx_->low->tos = ctx_->stack->getTos();      
-            if(setMux(src, ctx_->number) == false) return Interrupt::enableAll(is, false);        
+            if(setMux(src, ctx_->number) == false) 
+                return Interrupt::enableAll(is, false);        
             risingPolarization();
             return Interrupt::enableAll(is, true);
         }
@@ -280,7 +291,8 @@ namespace driver
         /** 
          * Constructs the object.
          *
-         * @param handler user class which implements an interrupt handler interface.
+         * @param handler user class which implements 
+         *                an interrupt handler interface.
          * @param source  available interrupt source.     
          * @return true if object has been constructed successfully.
          */
@@ -363,18 +375,18 @@ namespace driver
             reg::Intc intc = *intc_;
             switch(vn)
             {
-                case  4: intc.muxl.bit.intsel4  = source & 0x1f; break;
-                case  5: intc.muxl.bit.intsel5  = source & 0x1f; break;
-                case  6: intc.muxl.bit.intsel6  = source & 0x1f; break;
-                case  7: intc.muxl.bit.intsel7  = source & 0x1f; break;
-                case  8: intc.muxl.bit.intsel8  = source & 0x1f; break;
-                case  9: intc.muxl.bit.intsel9  = source & 0x1f; break;
-                case 10: intc.muxh.bit.intsel10 = source & 0x1f; break;
-                case 11: intc.muxh.bit.intsel11 = source & 0x1f; break;
-                case 12: intc.muxh.bit.intsel12 = source & 0x1f; break;
-                case 13: intc.muxh.bit.intsel13 = source & 0x1f; break;
-                case 14: intc.muxh.bit.intsel14 = source & 0x1f; break;
-                case 15: intc.muxh.bit.intsel15 = source & 0x1f; break;
+                case  4: intc.muxl.bit.intsel4  = source&0x1f; break;
+                case  5: intc.muxl.bit.intsel5  = source&0x1f; break;
+                case  6: intc.muxl.bit.intsel6  = source&0x1f; break;
+                case  7: intc.muxl.bit.intsel7  = source&0x1f; break;
+                case  8: intc.muxl.bit.intsel8  = source&0x1f; break;
+                case  9: intc.muxl.bit.intsel9  = source&0x1f; break;
+                case 10: intc.muxh.bit.intsel10 = source&0x1f; break;
+                case 11: intc.muxh.bit.intsel11 = source&0x1f; break;
+                case 12: intc.muxh.bit.intsel12 = source&0x1f; break;
+                case 13: intc.muxh.bit.intsel13 = source&0x1f; break;
+                case 14: intc.muxh.bit.intsel14 = source&0x1f; break;
+                case 15: intc.muxh.bit.intsel15 = source&0x1f; break;
                 default: return false;
             }
             *intc_ = intc;
@@ -384,9 +396,8 @@ namespace driver
         /** 
          * Fills a block of memory.
          *
-         * @param dst pointer to the destination block of memory to fill.
-         * @param val value to be set. The value is passed as an int, but the function fills 
-         *            the block of memory using the unsigned char conversion of this value.
+         * @param dst pointer to the destination block of memory.
+         * @param val value to be set.
          * @param len Number of bytes to be set to the value.
          * @return destination is returned.
          */
@@ -401,7 +412,7 @@ namespace driver
         /**
          * HW interrupt handle routing.
          *
-         * @param index index of HW interrupt vector number in context table
+         * @param index HW interrupt vector number index in context.
          */  
         static void handler(register int32 index);
       
@@ -409,7 +420,8 @@ namespace driver
          * Locks maskable interrupt source.
          *
          * @param vn hardware interrupt vector number.
-         * @return an interrupt enable source bit in low bit before method was called.
+         * @return an interrupt enable source bit in low bit 
+         *            before method was called.
          */
         static bool disableLow(uint32 vn);
         
@@ -455,14 +467,16 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        InterruptController& operator =(const InterruptController& obj);
+        InterruptController& 
+        operator =(const InterruptController& obj);
           
         /**
          * Low level interrupt context.
          *
-         * NOTE: This struct data is used by low level interrupt routine.
-         *       It has to contain two fields and total size has to be eight bytes.
-         *       The address of it has to be aligned to eight.
+         * NOTE: This struct data is used by low level interrupt 
+         *       routine. It has to contain two fields and total size 
+         *       has to be eight bytes. The address of it has to be 
+         *       aligned to eight.
          */
         struct ContextLow
         {
@@ -472,7 +486,7 @@ namespace driver
             void* reg;
             
             /**
-             * Top of stack will be loaded to DSP SP for routing an intrrupt.
+             * Top of stack loads to DSP SP for routing an intrrupt.
              */        
             const int64* tos;
       
@@ -560,7 +574,7 @@ namespace driver
     /**
      * HW interrupt handle routing.
      *
-     * @param index index of HW interrupt vector number in context table
+     * @param index index of HW interrupt vector number in context.
      */  
     void InterruptController::handler(register int32 index)
     {
@@ -589,12 +603,14 @@ namespace driver
     /**
      * Hi level interrupts context table (no boot).
      */        
-    InterruptController::Context InterruptController::context_[NUMBER_VECTORS];  
+    InterruptController::Context 
+    InterruptController::context_[NUMBER_VECTORS];  
   
     /**
      * Low level interrupts context table (no boot).
      */    
-    InterruptController::ContextLow InterruptController::contextLow_[NUMBER_VECTORS];
+    InterruptController::ContextLow 
+    InterruptController::contextLow_[NUMBER_VECTORS];
   
     /**
      * The operating system configuration (no boot).

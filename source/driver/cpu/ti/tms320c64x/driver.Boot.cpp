@@ -1,12 +1,11 @@
 /** 
  * Boot routine.
  *
- * The module performs the tasks to initialize C/C++ run-time environment
- * and calls the operating system main method.
+ * The module performs the tasks to initialize C/C++ run-time 
+ * environment and calls the operating system main method.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
- * @license   http://embedded.team/license/
+ * @copyright 2016-2017, Sergey Baigudin
  */
 #include "driver.Boot.hpp"
 
@@ -51,7 +50,7 @@ namespace driver
     /**
      * Returns the next record adderess.
      * 
-     * @param record the record address for getting next record after this.
+     * @param record the record address for getting next record.
      * @return memory address of the next record or NULL.
      */
     Boot::CRecord* Boot::getCRecord(Boot::CRecord* record)
@@ -65,7 +64,7 @@ namespace driver
     /**
      * Returns the next record adderess.
      * 
-     * @param record the record address for getting next record after this.
+     * @param record the record address for getting next record.
      * @return memory address of the next record or NULL.
      */
     Boot::PRecord* Boot::getPRecord(Boot::PRecord* record)

@@ -1,44 +1,43 @@
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Interrupt low level module.
 ;
 ; @author    Sergey Baigudin, sergey@baigudin.software
-; @copyright 2016-2017, Embedded Team, Sergey Baigudin
-; @license   http://embedded.team/license/
-; ----------------------------------------------------------------------------
-    .state32
-    .include "driver.constants.inc"    
-    
-    .ref  _c_int00
-    
-    ; EABI 
-    .if   __TI_EABI_ASSEMBLER
-
-    ; COFF ABI
-    .else
-    
-    .def  _disableAll__Q2_6driver9InterruptSFv
-    .def  _enableAll__Q2_6driver9InterruptSFb    
-    .def  _handlerBaseLow__Q2_6driver19InterruptControllerSFv
-    .def  _handlerNullLow__Q2_6driver19InterruptControllerSFv
-    .def  _jumpLow__Q2_6driver19InterruptControllerSFi
-    
-    .ref  _handler__Q2_6driver19InterruptControllerSFi
-    .ref  _supervisor__Q2_6driver19InterruptControllerSFi
-    
-    .asg  _handler__Q2_6driver19InterruptControllerSFi,        m_handler
-    .asg  _supervisor__Q2_6driver19InterruptControllerSFi,     m_supervisor
-    .asg  _handlerBaseLow__Q2_6driver19InterruptControllerSFv, m_handler_base
-    .asg  _handlerNullLow__Q2_6driver19InterruptControllerSFv, m_handler_null
-    .asg  _disableAll__Q2_6driver9InterruptSFv,                m_global_disable
-    .asg  _enableAll__Q2_6driver9InterruptSFb,                 m_global_enable
-    .asg  _jumpLow__Q2_6driver19InterruptControllerSFi,        m_jump    
+; @copyright 2016-2017, Sergey Baigudin
+; -------------------------------------------------------------------
+  .state32
+  .include "driver.constants.inc"    
   
-    .endif
+  .ref  _c_int00
+  
+  ; EABI 
+  .if   __TI_EABI_ASSEMBLER
+  
+  ; COFF ABI
+  .else
+  
+  .def  _disableAll__Q2_6driver9InterruptSFv
+  .def  _enableAll__Q2_6driver9InterruptSFb    
+  .def  _handlerBaseLow__Q2_6driver19InterruptControllerSFv
+  .def  _handlerNullLow__Q2_6driver19InterruptControllerSFv
+  .def  _jumpLow__Q2_6driver19InterruptControllerSFi
+  
+  .ref  _handler__Q2_6driver19InterruptControllerSFi
+  .ref  _supervisor__Q2_6driver19InterruptControllerSFi
+  
+  .asg  _handler__Q2_6driver19InterruptControllerSFi,    m_handler
+  .asg  _supervisor__Q2_6driver19InterruptControllerSFi, m_supervisor
+  .asg  _handlerBaseLow__Q2_6driver19InterruptControllerSFv, m_base
+  .asg  _handlerNullLow__Q2_6driver19InterruptControllerSFv, m_null
+  .asg  _disableAll__Q2_6driver9InterruptSFv,        m_global_disable
+  .asg  _enableAll__Q2_6driver9InterruptSFb,         m_global_enable
+  .asg  _jumpLow__Q2_6driver19InterruptControllerSFi,m_jump    
+  
+  .endif
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Hardware interrupt vectors
-; ----------------------------------------------------------------------------
-    .sect   ".hwi"                             ; Priorities
+; -------------------------------------------------------------------
+    .sect   ".hwi"                        ; Priorities
     ldr     pc, a_m_handler_rst           ; 0
     ldr     pc, a_m_handler_und           ; 5
     ldr     pc, a_m_handler_svc           ; 5
@@ -57,27 +56,27 @@ a_m_handler_res          .word m_handler_res
 a_m_handler_irq          .word m_handler_irq
 a_m_handler_fiq          .word m_handler_fiq
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Reset 
-; ----------------------------------------------------------------------------    
+; -------------------------------------------------------------------    
     .text   
 m_handler_rst:
     ldr     pc, a__c_int00
 
 a__c_int00 .word _c_int00   
  
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Undefined instructions
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_und:   
     b       m_handler_und
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Supervisor mode
 ;
 ; @param R0 hardware interrupt source number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_svc:
     push    {lr}
@@ -86,35 +85,35 @@ m_handler_svc:
     pop     {lr}    
     movs    pc, lr
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Prefetch abort
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_abt_prefetch:
     b       m_handler_abt_prefetch
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Data abort
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_abt_data:
     b       m_handler_abt_data
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Reserved
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_res:
     b       m_handler_res
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; IRQ
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_irq:
     sub     lr, lr, #4
     ; Test if no interrupt is pending
-    push    {lr}                      ; Push Interrupt Return Point to stack
+    push    {lr}               ; Push Interrupt Return Point to stack
     ldr     lr, a_r_aintc_gpir
     ldr     lr, [lr]
     subs    lr, lr, #0h
@@ -140,29 +139,30 @@ a_r_aintc_sicr         .word 0fffee024h
 a_r_aintc_gpir         .word 0fffee080h
 a_r_aintc_gpvr         .word 0fffee084h
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; FIQ
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_handler_fiq:
     b       m_handler_fiq
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; HW interrupt service routines.
 ;
-; Interrupt Service Routines contains 101 handlers for each interrupt source. 
-; Stack pointer (for full stacks) has to point to IRP, which points to
-; instruction that will be executed after returning form interrupt, and 
-; CPU registers have to contain a status of interrupted program, 
-; except LR which has to contain a return address of calling handler
-; for returning from these routines. Execution result is current or new, 
-; for example for scheduler interrupt, context and IRP.
+; Interrupt Service Routines contains 101 handlers for each interrupt 
+; source. Stack pointer (for full stacks) has to point to IRP, which 
+; points to instruction that will be executed after returning form 
+; interrupt, and CPU registers have to contain a status of 
+; interrupted program, except LR which has to contain a return 
+; address of calling handler for returning from these routines. 
+; Execution result is current or new, for example for scheduler 
+; interrupt, context and IRP.
 ;
 ; @param stack contains an PC of interrupted user task.
 ; @return stack contains an PC of new or interrupted user task.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
-m_handler_base:
+m_base:
     .eval    0, i
     .loop    101
 
@@ -181,38 +181,38 @@ v_tos_:i: .word 0h
     .endloop
 
 m_handler_general?
-    ldmia   r4, {r0, r1, r2}      ; Load argument, CTX pointer, and user SP
+    ldmia   r4, {r0, r1, r2}      ; Load argument, CTX ptr, & user SP
     stmia   r1!, {r3, r5-r12}     ; Store R3, R5-R12 registers
     pop     {r5, r6, r7, r8, r9}  ; Load R0, R1, R2, R4, and PC(IRP)
     mrs     r10, spsr             ; Move saved PSR to R10
-    stmia   r1, {r5-r10, sp, lr}^ ; Store R0-R2, R4, PC, PSR, SP, and LR
-    mov     r5, lr                ; Move LR to preserved register by ABI
-    mov     r6, sp                ; Move SP to preserved register by ABI
+    stmia   r1, {r5-r10, sp, lr}^ ; Store R0-R2,R4,PC,PSR,SP, and LR
+    mov     r5, lr                ; Move LR to preserved reg by ABI
+    mov     r6, sp                ; Move SP to preserved reg by ABI
     mov     sp, r2                ; Set user handler SP
     bl      m_handler             ; Call C++ handler
     mov     sp, r6                ; Set preserved SP of an exeption
     mov     lr, r5                ; Set preserved LR of an exeption
     ldr     r0, [r4, #+4]         ; Load new CTX pointer
     ldmia   r0!, {r3, r5-r12}     ; Restore R3, R5-R12 registers
-    add     r0, r0, #10h          ; Set CTX pointer to the saved PC(IRP)
-    ldmia   r0, {r1, r2, sp, lr}^ ; Restore SP, LR and load PC(IRP), PSR
+    add     r0, r0, #10h          ; Set CTX ptr to the saved PC(IRP)
+    ldmia   r0, {r1, r2, sp, lr}^ ; Restore SP,LR and load PC(IRP),PSR
     push    {r1}                  ; Push PC(IRP) to stack
     msr     spsr_cxsf, r2         ; Restore PSR
     ldmdb   r0, {r0, r1, r2, r4}  ; Restore R0-R2, R4
     bx      lr
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; HW interrupt handle null routing.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
-m_handler_null:
-    b       m_handler_null
+m_null:
+    b       m_null
     
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Disables all maskable interrupts.
 ;
-; @return R0 global interrupts enable bit value before method was called.
-; ----------------------------------------------------------------------------
+; @return R0 global interrupts enable bit before method was called.
+; -------------------------------------------------------------------
     .text
 m_global_disable:
     mrs     r0, cpsr
@@ -226,11 +226,11 @@ m_global_disable:
 
 a_psr_irq_disable .word PSR_I
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Enables all maskable interrupts.
 ;
 ; @param R0 the returned status by disable method.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_global_enable:
     cmp     r0, #1h
@@ -243,11 +243,11 @@ m_global_enable:
     
 a_psr_irq_enable .word ~PSR_I
 
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
 ; Jumps to interrupt HW vector.
 ;
 ; @param R0 hardware interrupt source number.
-; ----------------------------------------------------------------------------
+; -------------------------------------------------------------------
     .text
 m_jump:
     svc     #0
