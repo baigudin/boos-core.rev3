@@ -112,7 +112,7 @@ namespace system
         static void yield();
       
         /**
-         * Blocks current thread on given resource and yields the task.
+         * Blocks current thread on a resource and yields the task.
          *
          * @param res reference to resource.
          */  
