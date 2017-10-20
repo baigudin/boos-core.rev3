@@ -1,25 +1,23 @@
 /** 
- * System class of the operating system.
+ * System class of the operating system kernel.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_SYSTEM_HPP_
-#define SYSTEM_SYSTEM_HPP_
+#ifndef KERNEL_SYSTEM_HPP_
+#define KERNEL_SYSTEM_HPP_
 
 #include "Types.hpp"
 
 namespace api { class Toggle; }
 
-namespace system
+namespace kernel
 {
-    class Main;
     class SystemTimerInterrupt;
     
     class System
     {
-        friend class ::system::Main;
       
     public:
       
@@ -41,9 +39,7 @@ namespace system
          * Terminates the operating system execution.
          */
         static void terminate();
-  
-    private:
-  
+        
         /**
          * Initializes the resource.
          *
@@ -54,8 +50,32 @@ namespace system
         /**
          * Deinitializes the resource.
          */
-        static void deinitialize();
+        static void deinitialize();        
+  
+    private:
+    
+        /**
+         * Tests if the module has been initialized.
+         *
+         * @return true if the module has been initialized successfully.
+         */    
+        static bool isInitialized();    
+    
+        /**
+         * The module initialized falg value.
+         */
+        static const int32 IS_INITIALIZED = 0x95277129;    
         
+        /**
+         * the module has been initialized successfully (no boot).
+         */
+        static int32 isInitialized_;           
+        
+        /**
+         * The module initialization stage (no boot).
+         */
+        static int32 stage_;
+  
         /**
          * Hardware timer interrupt resource (no boot).
          */
@@ -68,4 +88,4 @@ namespace system
   
     };
 }
-#endif // SYSTEM_SYSTEM_HPP_
+#endif // KERNEL_SYSTEM_HPP_

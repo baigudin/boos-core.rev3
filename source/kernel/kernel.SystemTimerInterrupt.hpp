@@ -12,13 +12,13 @@
 #include "driver.Interrupt.hpp"
 #include "driver.Timer.hpp"
  
-namespace system
+namespace kernel
 {
     class SystemTimerInterrupt : public ::system::TimerInterrupt, public ::api::Task
     {
         typedef ::system::TimerInterrupt Parent;
-        typedef ::system::Interrupt      ResInt;
-        typedef ::system::Timer          ResTim;
+        typedef ::kernel::Interrupt      ResInt;
+        typedef ::kernel::Timer          ResTim;
   
     public:
   

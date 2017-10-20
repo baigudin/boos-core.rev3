@@ -1,31 +1,30 @@
 /**
- * Thread class.
+ * The kernel thread.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_THREAD_HPP_
-#define SYSTEM_THREAD_HPP_
+#ifndef KERNEL_THREAD_HPP_
+#define KERNEL_THREAD_HPP_
 
-#include "system.ThreadTask.hpp"
+#include "Object.hpp"
+#include "api.Task.hpp"
 #include "api.Stack.hpp"
 #include "api.Resource.hpp"
 #include "api.Toggle.hpp"
 
 namespace driver { class Register; }
 
-namespace system
+namespace kernel
 {
-    class Main;
     class Scheduler;
   
-    class Thread : public ::system::ThreadTask
+    class Thread : public ::Object<>
     {
-        friend class ::system::Main;  
-        friend class ::system::Scheduler;
+        friend class ::kernel::Scheduler;
         
-        typedef ::system::ThreadTask Parent;
+        typedef ::Object<> Parent;
       
     public:
   
@@ -35,13 +34,6 @@ namespace system
         static const int32 MAX_PRIORITY  = 10;
         static const int32 MIN_PRIORITY  = 1;
         static const int32 NORM_PRIORITY = 5;
-        
-        /** 
-         * Constructor.
-         *
-         * Constructs this thread as the task for executing.
-         */
-        Thread();
       
         /** 
          * Constructor.
@@ -92,11 +84,6 @@ namespace system
          * @return the thread identifier.
          */
         virtual int64 getId();
-        
-        /**
-         * The method with self context which will be executed by default.
-         */  
-        virtual void main();
       
         /**
          * Causes the currently executing thread to sleep.
@@ -123,7 +110,7 @@ namespace system
          *
          * @return the executable thread.
          */
-        static ::system::Thread& getCurrent();
+        static ::kernel::Thread& getCurrent();
       
         /** 
          * Returns the toggle interface for controlling global thread switch.
@@ -131,6 +118,23 @@ namespace system
          * @return toggle interface.
          */ 
         static ::api::Toggle& toggle();
+        
+        /**
+         * Initializes the resource.
+         *
+         * @return true if no errors have been occurred.
+         */   
+        static bool initialize();
+        
+        /**
+         * Deinitializes the resource.
+         */
+        static void deinitialize();
+        
+        /**
+         * Initiates an execution of threads.
+         */
+        static void execute();        
             
     private:
     
@@ -156,21 +160,26 @@ namespace system
         bool construct(::api::Task* task);
         
         /**
-         * Initializes the resource.
+         * Tests if the module has been initialized.
          *
-         * @return true if no errors have been occurred.
-         */   
-        static bool initialize();
+         * @return true if the module has been initialized successfully.
+         */    
+        static bool isInitialized();    
+    
+        /**
+         * The module initialized falg value.
+         */
+        static const int32 IS_INITIALIZED = 0x75211568;    
         
         /**
-         * Deinitializes the resource.
+         * the module has been initialized successfully (no boot).
          */
-        static void deinitialize();
+        static int32 isInitialized_;           
         
         /**
-         * Initiates an execution of threads.
+         * The module initialization stage (no boot).
          */
-        static void execute();
+        static int32 stage_;        
         
         /**
          * Counter of thread identifiers (no boot).
@@ -239,4 +248,4 @@ namespace system
   
     };
 }
-#endif // SYSTEM_THREAD_HPP_
+#endif // KERNEL_THREAD_HPP_

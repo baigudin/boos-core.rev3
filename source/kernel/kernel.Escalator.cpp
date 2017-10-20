@@ -5,11 +5,11 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.Escalator.hpp"
-#include "system.Thread.hpp"
-#include "system.Interrupt.hpp"
+#include "kernel.Escalator.hpp"
+#include "kernel.Thread.hpp"
+#include "kernel.Interrupt.hpp"
 
-namespace system
+namespace kernel
 {
     /** 
      * Constructor.

@@ -5,11 +5,11 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.Semaphore.hpp"
-#include "system.Thread.hpp"
+#include "kernel.Semaphore.hpp"
+#include "kernel.Thread.hpp"
 #include "driver.Interrupt.hpp"
 
-namespace system
+namespace kernel
 {
     typedef ::driver::Interrupt Int;
   

@@ -5,11 +5,11 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.Mutex.hpp"
-#include "system.Thread.hpp"
+#include "kernel.Mutex.hpp"
+#include "kernel.Thread.hpp"
 #include "driver.Interrupt.hpp"
 
-namespace system
+namespace kernel
 {
     typedef ::driver::Interrupt Int;
   

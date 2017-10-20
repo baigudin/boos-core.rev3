@@ -5,14 +5,14 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_SEMAPHORE_HPP_
-#define SYSTEM_SEMAPHORE_HPP_
+#ifndef KERNEL_SEMAPHORE_HPP_
+#define KERNEL_SEMAPHORE_HPP_
 
 #include "Object.hpp"
 #include "api.Semaphore.hpp"
 #include "utility.LinkedList.hpp"
 
-namespace system
+namespace kernel
 {
     class Thread;
   
@@ -152,4 +152,4 @@ namespace system
   
     };  
 }
-#endif // SYSTEM_SEMAPHORE_HPP_
+#endif // KERNEL_SEMAPHORE_HPP_

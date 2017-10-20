@@ -5,12 +5,12 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.System.hpp"
-#include "system.SystemTimerInterrupt.hpp"
+#include "kernel.System.hpp"
+#include "kernel.SystemTimerInterrupt.hpp"
 #include "driver.Interrupt.hpp"
 #include "api.Toggle.hpp"
 
-namespace system
+namespace kernel
 {
     /**
      * Current value of the running system in milliseconds.
@@ -29,7 +29,7 @@ namespace system
      */  
     int64 System::getTimeNs()
     {
-        return interrupt_ != NULL ? interrupt_->nanoTime() : 0;
+        return isInitialized() ? interrupt_->nanoTime() : 0;
     }
     
     /**
@@ -48,15 +48,22 @@ namespace system
      */
     bool System::initialize()
     {
-        // Create the operating system system tick timer
+        isInitialized_ = 0;
+        stage_ = 0;        
+        // Stage 1: Create the operating system tick timer
+        stage_++;        
         interrupt_ = new SystemTimerInterrupt();
         if(interrupt_ == NULL || !interrupt_->isConstructed()) return false;
-        // Set heap interrupt controller
+        // Stage 2: Set heap interrupt controller
+        stage_++;        
         global_ = NULL;
         ::api::Heap* heap = ::Allocator::getHeap();
         if(heap == NULL || !heap->isConstructed()) return false;
         global_ = &interrupt_->global();
         heap->setToggle(global_);
+        // Stage complete
+        stage_ = -1;
+        isInitialized_ = IS_INITIALIZED;        
         return true;
     }
     
@@ -65,13 +72,43 @@ namespace system
      */
     void System::deinitialize()
     {
-        global_ = NULL;
-        if(interrupt_ != NULL)
+        switch(stage_)
         {
-            delete interrupt_;
-            interrupt_ = NULL;
+            default:
+            case  2:             
+            case  1: 
+            {
+                global_ = NULL;
+                delete interrupt_;
+                interrupt_ = NULL;                
+            }          
+            case  0: 
+            {
+                break;
+            }
         }
+        isInitialized_ = 0;     
     }
+    
+    /**
+     * Tests if the module has been initialized.
+     *
+     * @return true if the module has been initialized successfully.
+     */    
+    bool System::isInitialized()
+    {
+        return isInitialized_ != IS_INITIALIZED ? false : true;
+    }    
+    
+    /**
+     * The module has been initialized successfully (no boot).
+     */
+    int32 System::isInitialized_;    
+    
+    /**
+     * The module initialization stage (no boot).
+     */
+    int32 System::stage_;    
     
     /**
      * Hardware timer interrupt resource (no boot).

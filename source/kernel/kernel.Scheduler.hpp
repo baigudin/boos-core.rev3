@@ -8,22 +8,22 @@
 #ifndef SYSTEM_SCHEDULER_HPP_
 #define SYSTEM_SCHEDULER_HPP_
 
-#include "system.System.hpp"
+#include "kernel.System.hpp"
 #include "system.TimerInterrupt.hpp"
-#include "system.Thread.hpp"
+#include "kernel.Thread.hpp"
 #include "utility.LinkedList.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.Timer.hpp"
 #include "driver.Register.hpp"
   
-namespace system
+namespace kernel
 {
     class Scheduler : public ::system::TimerInterrupt, public ::api::Task
     {
         typedef ::system::TimerInterrupt Parent;
-        typedef ::system::Interrupt      ResInt;    
-        typedef ::system::Timer          ResTim;
-        typedef ::system::Thread         Task;
+        typedef ::kernel::Interrupt      ResInt;    
+        typedef ::kernel::Timer          ResTim;
+        typedef ::kernel::Thread         Task;
         using Parent::start;
   
     public:

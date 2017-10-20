@@ -5,14 +5,14 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_ESCALATOR_HPP_
-#define SYSTEM_ESCALATOR_HPP_
+#ifndef KERNEL_ESCALATOR_HPP_
+#define KERNEL_ESCALATOR_HPP_
 
-#include "system.Thread.hpp"
+#include "kernel.Thread.hpp"
 #include "api.Semaphore.hpp"
 #include "utility.LinkedList.hpp"
 
-namespace system
+namespace kernel
 {
     class Escalator : public ::Object<>, public ::api::Semaphore
     {
@@ -321,4 +321,4 @@ namespace system
     }
     
 }
-#endif // SYSTEM_ESCALATOR_HPP_
+#endif // KERNEL_ESCALATOR_HPP_

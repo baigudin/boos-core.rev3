@@ -42,7 +42,7 @@ namespace driver
          */
         static bool initialize(const ::Configuration& config)
         {
-            isInitialized_ = 0;    
+            isInitialized_ = 0;
             volatile uint32 count;
             cpuClock_ = config.cpuClock;
             sourceClock_ = config.sourceClock;
@@ -86,7 +86,7 @@ namespace driver
             while(count) count--;      
             // Enable PLL mode
             regPll->pllctl.bit.pllen = 1;
-            isInitialized_ = IS_INITIALIZED;                      
+            isInitialized_ = IS_INITIALIZED;
             return true;
         }
       

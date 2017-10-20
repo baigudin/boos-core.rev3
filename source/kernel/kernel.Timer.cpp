@@ -5,11 +5,11 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.Timer.hpp"
-#include "system.System.hpp" 
+#include "kernel.Timer.hpp"
+#include "kernel.System.hpp" 
 #include "driver.Timer.hpp"
 
-namespace system
+namespace kernel
 {
     /** 
      * Constructor.

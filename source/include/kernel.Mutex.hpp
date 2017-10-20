@@ -5,14 +5,14 @@
  * @copyright 2015-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_MUTEX_HPP_
-#define SYSTEM_MUTEX_HPP_
+#ifndef KERNEL_MUTEX_HPP_
+#define KERNEL_MUTEX_HPP_
 
 #include "Object.hpp"
 #include "api.Mutex.hpp"
 #include "utility.LinkedList.hpp"
 
-namespace system
+namespace kernel
 {  
     class Thread;
     
@@ -109,4 +109,4 @@ namespace system
   
     };
 }
-#endif // SYSTEM_MUTEX_HPP_
+#endif // KERNEL_MUTEX_HPP_

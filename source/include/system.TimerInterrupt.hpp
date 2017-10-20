@@ -8,16 +8,16 @@
 #ifndef SYSTEM_TIMER_INTERRUPT_HPP_
 #define SYSTEM_TIMER_INTERRUPT_HPP_
 
-#include "system.Interrupt.hpp"
-#include "system.Timer.hpp"
+#include "kernel.Interrupt.hpp"
+#include "kernel.Timer.hpp"
 
 namespace system
 {
-    class TimerInterrupt : public ::system::Interrupt, public ::system::Timer
+    class TimerInterrupt : public ::kernel::Interrupt, public ::kernel::Timer
     {
-        typedef ::system::Interrupt Parent;
-        typedef ::system::Interrupt ResInt;    
-        typedef ::system::Timer     ResTim;
+        typedef ::kernel::Interrupt Parent;
+        typedef ::kernel::Interrupt ResInt;    
+        typedef ::kernel::Timer     ResTim;
       
     public:
   

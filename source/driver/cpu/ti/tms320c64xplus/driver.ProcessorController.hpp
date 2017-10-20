@@ -75,7 +75,7 @@ namespace driver
                 default:
                 case  4: ::driver::Timer::deinitialize();
                 case  3: ::driver::Interrupt::deinitialize();
-                case  2: ::driver::Register::deinitialize();      
+                case  2: ::driver::Register::deinitialize();
                 case  1: ::driver::Pll::deinitialize();
                 case  0: break;
             }
