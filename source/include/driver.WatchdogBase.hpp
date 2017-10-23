@@ -1,5 +1,5 @@
 /** 
- * Target processor phase-locked loop controller resource. 
+ * Target processor watchdog controller resource. 
  *
  * The class describes a skeleton implementation of a phase-locked loop resource.
  * It should be inherited by all classes, which aim expanding the implementation. 
@@ -8,15 +8,15 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef DRIVER_PLL_RESOURCE_HPP_
-#define DRIVER_PLL_RESOURCE_HPP_
+#ifndef DRIVER_WATCHDOG_BASE_HPP_
+#define DRIVER_WATCHDOG_BASE_HPP_
 
 #include "Object.hpp"
-#include "driver.Pll.hpp"
+#include "driver.Watchdog.hpp"
 
 namespace driver
 {
-    class PllResource : public ::Object<>, public ::driver::Pll
+    class WatchdogBase : public ::Object<>, public ::driver::Watchdog
     {
         typedef ::Object<>  Parent;
       
@@ -25,14 +25,14 @@ namespace driver
         /** 
          * Constructor.
          */     
-        PllResource() : Parent(),
+        WatchdogBase() : Parent(),
             isConstructed_ (getConstruct()){
         }    
-        
+      
         /** 
          * Destructor.
          */                               
-        virtual ~PllResource()
+        virtual ~WatchdogBase()
         {
         }
         
@@ -60,7 +60,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        PllResource(const PllResource& obj);
+        WatchdogBase(const WatchdogBase& obj);
         
         /**
          * Assignment operator.
@@ -68,8 +68,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        PllResource& operator =(const PllResource& obj);      
+        WatchdogBase& operator =(const WatchdogBase& obj);      
   
     };
 }
-#endif // DRIVER_PLL_RESOURCE_HPP_
+#endif // DRIVER_WATCHDOG_BASE_HPP_

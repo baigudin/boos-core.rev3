@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="D:\baigudin\github\baigudin\eoos\projects\eoos.exe.ti.tms320f28x3x.coff.ccstudio33\"
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.exe.ti.tms320f28x3x.coff.ccstudio33\"
 ProjectType=Executable
 CPUFamily=TMS320C28XX
 Tool="Compiler"
@@ -22,18 +22,22 @@ Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.ll.asm"
 Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Timer.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Watchdog.cpp"
+Source="..\..\source\kernel\kernel.Escalator.cpp"
+Source="..\..\source\kernel\kernel.Factory.cpp"
+Source="..\..\source\kernel\kernel.Interrupt.cpp"
+Source="..\..\source\kernel\kernel.Main.cpp"
+Source="..\..\source\kernel\kernel.Mutex.cpp"
+Source="..\..\source\kernel\kernel.Semaphore.cpp"
+Source="..\..\source\kernel\kernel.System.cpp"
+Source="..\..\source\kernel\kernel.Thread.cpp"
+Source="..\..\source\kernel\kernel.Timer.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
-Source="..\..\source\system\system.Mutex.cpp"
-Source="..\..\source\system\system.Semaphore.cpp"
-Source="..\..\source\system\system.System.cpp"
-Source="..\..\source\system\system.Thread.cpp"
-Source="..\..\source\system\system.Timer.cpp"
 Source="..\..\source\system\system.TimerInterrupt.cpp"
 Source="source\Board.cpp"
 Source="source\Configuration.cpp"
-Source="source\Main.cpp"
 Source="source\libraries\rts2800_fpu32.lib"
+Source="source\Main.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd"
 
 ["Compiler" Settings: "Debug"]
@@ -47,12 +51,6 @@ Options=-c -m".\Debug\eoos.tms320f28x3x.debug.map" -o".\Debug\eoos.tms320f28x3x.
 
 ["Linker" Settings: "Release"]
 Options=-c -m".\Release\eoos.tms320f28x3x.map" -o".\Release\eoos.tms320f28x3x.out" -w -x
-
-["Debug\eoos.tms320f28x3x.debug.map" Settings: "Debug"]
-ExcludeFromBuild=true
-
-["Release\eoos.tms320f28x3x.map" Settings: "Release"]
-ExcludeFromBuild=true
 
 ["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]
 LinkOrder=1

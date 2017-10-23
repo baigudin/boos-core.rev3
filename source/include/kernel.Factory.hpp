@@ -8,71 +8,55 @@
 #ifndef KERNEL_FACTORY_HPP_
 #define KERNEL_FACTORY_HPP_
 
-#include "Object.hpp"
-#include "api.Kernel.hpp"
+#include "api.Object.hpp"
+#include "api.Semaphore.hpp"
+#include "api.Interrupt.hpp"
+#include "api.Task.hpp"
 
 namespace kernel
 {
-    class Factory : public ::Object<>, public ::api::Kernel
+    class Factory : public ::api::Object
     {
-        typedef ::Object<> Parent;
-      
+    
     public:
     
         /** 
-         * Constructor.
-         */    
-        Factory();    
-  
-        /** 
          * Destructor.
          */
-        virtual ~Factory();
+        virtual ~Factory(){}
         
-        /**
-         * Tests if this object has been constructed.
+        /** 
+         * Creates new semaphore resource.
          *
-         * @return true if object has been constructed successfully.
-         */    
-        virtual bool isConstructed() const;        
+         * @param permits the initial number of permits available.   
+         * @return new semaphore resource, or NULL if error has been occurred.
+         */      
+        virtual ::api::Semaphore* createSemaphore(int32 permits) = 0;
+        
+        /** 
+         * Creates new semaphore resource.
+         *
+         * @param permits the initial number of permits available.      
+         * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.
+         * @return new semaphore resource, or NULL if error has been occurred.         
+         */      
+        virtual ::api::Semaphore* createSemaphore(int32 permits, bool isFair) = 0;
         
         /**
          * Creates new interrupt resource.
          *
          * @param handler user class which implements an interrupt handler interface.
          * @param source  available interrupt source number.
-         * @return new interrupt resource.
+         * @return new interrupt resource, or NULL if error has been occurred.
          */  
-        virtual ::api::Interrupt* createInterrupt(::api::Task& handler, int32 source);
-    
-    private:
-    
-        /**
-         * Constructor.
-         *
-         * @return true if object has been constructed successfully.     
-         */    
-        bool construct();
+        virtual ::api::Interrupt* createInterrupt(::api::Task& handler, int32 source) = 0;
         
         /**
-         * Copy constructor.
+         * Returns a factory of an operating system kernel.
          *
-         * @param obj reference to source object.
+         * @return a kernel factory, or NULL if error has been occurred.
          */
-        Factory(const Factory& obj);
-      
-        /**
-         * Assignment operator.
-         *
-         * @param obj reference to source object.
-         * @return reference to this object.     
-         */
-        Factory& operator =(const Factory& obj);            
-        
-        /** 
-         * The root object constructed flag.
-         */  
-        const bool& isConstructed_;          
+        static ::kernel::Factory* create();
  
     };
 }

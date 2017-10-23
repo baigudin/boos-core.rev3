@@ -5,13 +5,13 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_TIMER_INTERRUPT_HPP_
-#define SYSTEM_TIMER_INTERRUPT_HPP_
+#ifndef KERNEL_TIMER_INTERRUPT_HPP_
+#define KERNEL_TIMER_INTERRUPT_HPP_
 
 #include "kernel.Interrupt.hpp"
 #include "kernel.Timer.hpp"
 
-namespace system
+namespace kernel
 {
     class TimerInterrupt : public ::kernel::Interrupt, public ::kernel::Timer
     {
@@ -89,4 +89,4 @@ namespace system
   
     };
 }
-#endif // SYSTEM_TIMER_INTERRUPT_HPP_
+#endif // KERNEL_TIMER_INTERRUPT_HPP_

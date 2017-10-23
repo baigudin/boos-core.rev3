@@ -1,22 +1,22 @@
 /** 
- * Target processor resource. 
+ * Target processor phase-locked loop controller resource. 
  *
- * The class describes a skeleton implementation of a processor resource.
+ * The class describes a skeleton implementation of a phase-locked loop resource.
  * It should be inherited by all classes, which aim expanding the implementation. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef DRIVER_PROCESSOR_RESOURCE_HPP_
-#define DRIVER_PROCESSOR_RESOURCE_HPP_
+#ifndef DRIVER_PLL_BASE_HPP_
+#define DRIVER_PLL_BASE_HPP_
 
 #include "Object.hpp"
-#include "driver.Processor.hpp"
+#include "driver.Pll.hpp"
 
 namespace driver
 {
-    class ProcessorResource : public ::Object<>, public ::driver::Processor
+    class PllBase : public ::Object<>, public ::driver::Pll
     {
         typedef ::Object<>  Parent;
       
@@ -25,14 +25,14 @@ namespace driver
         /** 
          * Constructor.
          */     
-        ProcessorResource() : Parent(),
+        PllBase() : Parent(),
             isConstructed_ (getConstruct()){
         }    
         
         /** 
          * Destructor.
          */                               
-        virtual ~ProcessorResource()
+        virtual ~PllBase()
         {
         }
         
@@ -60,7 +60,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        ProcessorResource(const ProcessorResource& obj);
+        PllBase(const PllBase& obj);
         
         /**
          * Assignment operator.
@@ -68,8 +68,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        ProcessorResource& operator =(const ProcessorResource& obj);      
+        PllBase& operator =(const PllBase& obj);      
   
     };
 }
-#endif // DRIVER_PROCESSOR_RESOURCE_HPP_
+#endif // DRIVER_PLL_BASE_HPP_

@@ -5,11 +5,11 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.TimerInterrupt.hpp"
+#include "kernel.TimerInterrupt.hpp"
 #include "driver.Interrupt.hpp" 
 #include "driver.Timer.hpp"
 
-namespace system
+namespace kernel
 {
     /** 
      * Constructor.
@@ -59,7 +59,6 @@ namespace system
     bool TimerInterrupt::construct(::api::Task* handler)
     {
         if(!isConstructed()) return false;
-        if(!ResTim::getDriver().isInterrupting()) return false;
         if(handler == NULL) return true;
         return ResInt::getDriver().setHandler(*handler, ResTim::getDriver().getInterrupSource());
     }

@@ -8,13 +8,13 @@
 #ifndef DRIVER_PROCESSOR_CONTROLLER_HPP_
 #define DRIVER_PROCESSOR_CONTROLLER_HPP_
 
-#include "driver.RegisterResource.hpp"
+#include "driver.RegisterBase.hpp"
 
 namespace driver
 {  
-    class RegisterController : public ::driver::RegisterResource
+    class RegisterController : public ::driver::RegisterBase
     { 
-        typedef ::driver::RegisterResource  Parent;
+        typedef ::driver::RegisterBase  Parent;
     
     public:
     

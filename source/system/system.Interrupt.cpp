@@ -6,18 +6,12 @@
  * @license   http://embedded.team/license/
  */
 #include "system.Interrupt.hpp"
+#include "kernel.Factory.hpp"
+
+using namespace kernel;
 
 namespace system
 {
-    /**
-     * Constructor.
-     */
-    Interrupt::Interrupt() : Parent(),
-        isConstructed_ (getConstruct()),  
-        kernel_        (NULL){
-        setConstruct( construct(NULL, 0) );
-    }  
-    
     /**
      * Constructor.
      *
@@ -27,7 +21,7 @@ namespace system
     Interrupt::Interrupt(::api::Task& handler, int32 source) : Parent(),
         isConstructed_ (getConstruct()),
         kernel_        (NULL){
-        setConstruct( construct(&handler, source) );
+        setConstruct( construct(handler, source) );
     }
     
     /**
@@ -45,9 +39,17 @@ namespace system
      * @param source  available interrupt source.
      * @return true if object has been constructed successfully.
      */
-    bool Interrupt::construct(::api::Task* handler, int32 source)
+    bool Interrupt::construct(::api::Task& handler, int32 source)
     {
-        return false;
+        if( not isConstructed_ ) return false;    
+        Factory* factory = Factory::create();
+        if(factory == NULL) return false;
+        if(factory->isConstructed()) 
+        {
+            kernel_ = factory->createInterrupt(handler, source);
+        }
+        delete factory;
+        return kernel_ != NULL ? kernel_->isConstructed() : false;
     }
   
     /**

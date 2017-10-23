@@ -48,9 +48,11 @@ SECTIONS
                    ./Debug/driver.Pll.obj       (.text)
                    ./Debug/driver.Processor.obj (.text)
                    ./Debug/driver.Watchdog.obj  (.text)
-                   ./Debug/system.Mutex.obj     (.text)
-                   ./Debug/system.Semaphore.obj (.text)
-                   ./Debug/system.Thread.obj (.text)                 
+                   ./Debug/kernel.Interrupt.obj (.text)                   
+                   ./Debug/kernel.Mutex.obj     (.text)
+                   ./Debug/kernel.Semaphore.obj (.text)
+                   ./Debug/kernel.System.obj    (.text)                   
+                   ./Debug/kernel.Thread.obj    (.text)                 
                  } 
                  > FLASHA,  PAGE = 0   
     .cinit     : > FLASHA,  PAGE = 0

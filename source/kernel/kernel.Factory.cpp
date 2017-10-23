@@ -6,54 +6,21 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Factory.hpp"
+#include "kernel.FactoryCreator.hpp"
 
 namespace kernel
 {
-    /** 
-     * Constructor.
-     */    
-    Factory::Factory() : Parent(),
-        isConstructed_ (getConstruct()){    
-        setConstruct( construct() );    
-    }
-  
-    /** 
-     * Destructor.
-     */      
-    Factory::~Factory()
-    {
-    }
-        
     /**
-     * Tests if this object has been constructed.
+     * Returns a factory of an operating system kernel.
      *
-     * @return true if object has been constructed successfully.
-     */    
-    bool Factory::isConstructed() const
-    {
-        return isConstructed_;  
-    }
-    
-    /**
-     * Creates new interrupt resource.
-     *
-     * @param handler user class which implements an interrupt handler interface.
-     * @param source  available interrupt source number.
-     * @return new interrupt resource.
-     */  
-    ::api::Interrupt* Factory::createInterrupt(::api::Task& handler, int32 source)
-    {
-        return NULL;
-    }
-    
-    /**
-     * Constructor.
-     *
-     * @return true if object has been constructed successfully.   
+     * @return a kernel factory, or NULL if error has been occurred.
      */
-    bool Factory::construct()
+    ::kernel::Factory* Factory::create()
     {
-        if( not isConstructed_ ) return false;
-        return true;
+        Factory* factory = new FactoryCreator();
+        if(factory == NULL) return NULL; 
+        if(factory->isConstructed()) return factory;       
+        delete factory;
+        return NULL;       
     }
 }

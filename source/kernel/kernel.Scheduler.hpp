@@ -5,11 +5,11 @@
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_SCHEDULER_HPP_
-#define SYSTEM_SCHEDULER_HPP_
+#ifndef KERNEL_SCHEDULER_HPP_
+#define KERNEL_SCHEDULER_HPP_
 
 #include "kernel.System.hpp"
-#include "system.TimerInterrupt.hpp"
+#include "kernel.TimerInterrupt.hpp"
 #include "kernel.Thread.hpp"
 #include "utility.LinkedList.hpp"
 #include "driver.Interrupt.hpp"
@@ -18,9 +18,9 @@
   
 namespace kernel
 {
-    class Scheduler : public ::system::TimerInterrupt, public ::api::Task
+    class Scheduler : public ::kernel::TimerInterrupt, public ::api::Task
     {
-        typedef ::system::TimerInterrupt Parent;
+        typedef ::kernel::TimerInterrupt Parent;
         typedef ::kernel::Interrupt      ResInt;    
         typedef ::kernel::Timer          ResTim;
         typedef ::kernel::Thread         Task;
@@ -326,4 +326,4 @@ namespace kernel
   
     };
 }
-#endif // SYSTEM_SCHEDULER_HPP_
+#endif // KERNEL_SCHEDULER_HPP_

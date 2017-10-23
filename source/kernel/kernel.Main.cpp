@@ -28,16 +28,16 @@ namespace kernel
         const ::Configuration config = ::Configuration();
         do
         {
-            // Stage 1 
+            // Stage 1
             stage++;
             if( not ::Allocator::initialize(config) ) break;        
-            // Stage 2 
+            // Stage 2
             stage++;
             if( not ::driver::Processor::initialize(config) ) break;    
             // Stage 3
             stage++;
             if( not ::Board::initialize(config) ) break;
-            // Stage 4 
+            // Stage 4
             stage++;
             if( not ::kernel::Interrupt::initialize() ) break;      
             // Stage 5

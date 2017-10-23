@@ -29,12 +29,12 @@ namespace driver
              * A pointer to a class which implements an interrupt handler interface.
              */
             ::api::Task* handler;
-            
+
             /**
              * An available interrupt source.     
              */
             int32 source;
-          
+
         };
         
         /** 
@@ -52,7 +52,7 @@ namespace driver
         virtual bool setHandler(::api::Task& handler, int32 source) = 0;
         
         /**
-         * Removes this interrupt source.
+         * Removes this interrupt source handler.
          */        
         virtual void removeHandler() = 0;
         

@@ -6,8 +6,9 @@
  * @license   http://embedded.team/license/
  */
 #include "system.Main.hpp" 
-#include "kernel.Factory.hpp"
 #include "kernel.Thread.hpp"
+
+using namespace kernel;
 
 namespace system
 {
@@ -18,9 +19,6 @@ namespace system
      */   
     int32 Main::main()
     {
-        // TODO
-        kernel::Factory kernal;
-        
         int32 error = -1;
         Thread main;
         ::kernel::Thread thread(main);

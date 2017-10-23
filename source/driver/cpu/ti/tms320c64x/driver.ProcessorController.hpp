@@ -8,7 +8,7 @@
 #ifndef DRIVER_PROCESSOR_CONTROLLER_HPP_
 #define DRIVER_PROCESSOR_CONTROLLER_HPP_
 
-#include "driver.ProcessorResource.hpp"
+#include "driver.ProcessorBase.hpp"
 #include "driver.Pll.hpp"
 #include "driver.Register.hpp"
 #include "driver.Interrupt.hpp"
@@ -16,9 +16,9 @@
 
 namespace driver
 {
-    class ProcessorController : public ::driver::ProcessorResource
+    class ProcessorController : public ::driver::ProcessorBase
     {
-        typedef ::driver::ProcessorResource  Parent;
+        typedef ::driver::ProcessorBase  Parent;
       
     public:
     

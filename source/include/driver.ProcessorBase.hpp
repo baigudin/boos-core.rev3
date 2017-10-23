@@ -1,22 +1,22 @@
 /** 
- * Target processor watchdog controller resource. 
+ * Target processor resource. 
  *
- * The class describes a skeleton implementation of a phase-locked loop resource.
+ * The class describes a skeleton implementation of a processor resource.
  * It should be inherited by all classes, which aim expanding the implementation. 
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef DRIVER_WATCHDOG_RESOURCE_HPP_
-#define DRIVER_WATCHDOG_RESOURCE_HPP_
+#ifndef DRIVER_PROCESSOR_BASE_HPP_
+#define DRIVER_PROCESSOR_BASE_HPP_
 
 #include "Object.hpp"
-#include "driver.Watchdog.hpp"
+#include "driver.Processor.hpp"
 
 namespace driver
 {
-    class WatchdogResource : public ::Object<>, public ::driver::Watchdog
+    class ProcessorBase : public ::Object<>, public ::driver::Processor
     {
         typedef ::Object<>  Parent;
       
@@ -25,14 +25,14 @@ namespace driver
         /** 
          * Constructor.
          */     
-        WatchdogResource() : Parent(),
+        ProcessorBase() : Parent(),
             isConstructed_ (getConstruct()){
         }    
-      
+        
         /** 
          * Destructor.
          */                               
-        virtual ~WatchdogResource()
+        virtual ~ProcessorBase()
         {
         }
         
@@ -60,7 +60,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        WatchdogResource(const WatchdogResource& obj);
+        ProcessorBase(const ProcessorBase& obj);
         
         /**
          * Assignment operator.
@@ -68,8 +68,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        WatchdogResource& operator =(const WatchdogResource& obj);      
+        ProcessorBase& operator =(const ProcessorBase& obj);      
   
     };
 }
-#endif // DRIVER_WATCHDOG_RESOURCE_HPP_
+#endif // DRIVER_PROCESSOR_BASE_HPP_

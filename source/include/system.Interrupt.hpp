@@ -19,12 +19,7 @@ namespace system
         typedef ::Object<> Parent;
   
     public:
-      
-        /** 
-         * Constructor.
-         */    
-        Interrupt();
-        
+
         /** 
          * Constructor.
          *
@@ -83,7 +78,7 @@ namespace system
          * @param source  available interrupt source.     
          * @return true if object has been constructed successfully.     
          */    
-        bool construct(::api::Task* handler, int32 source);
+        bool construct(::api::Task& handler, int32 source);
 
         /**
          * Copy constructor.

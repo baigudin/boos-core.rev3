@@ -8,13 +8,13 @@
 #ifndef DRIVER_PLL_CONTROLLER_HPP_
 #define DRIVER_PLL_CONTROLLER_HPP_
 
-#include "driver.PllResource.hpp"
+#include "driver.PllBase.hpp"
 
 namespace driver
 {
-    class PllController : public ::driver::PllResource
+    class PllController : public ::driver::PllBase
     {
-        typedef ::driver::PllResource  Parent;
+        typedef ::driver::PllBase  Parent;
       
     public:
     
