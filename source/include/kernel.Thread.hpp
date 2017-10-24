@@ -129,12 +129,7 @@ namespace kernel
         /**
          * Deinitializes the resource.
          */
-        static void deinitialize();
-        
-        /**
-         * Initiates an execution of threads.
-         */
-        static void execute();        
+        static void deinitialize(); 
             
     private:
     

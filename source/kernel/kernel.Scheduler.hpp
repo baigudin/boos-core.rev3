@@ -217,21 +217,6 @@ namespace kernel
             global_.enable(is);
             return task;
         }
-      
-        /**
-         * Initiates an execution of thread tasks.
-         */  
-        void execute()
-        {
-            if(list_.peek() == NULL) return;
-            // Set timer counter to zero and clear interrupt flag,
-            // because the timer might have been worked.
-            tim_.setCount(0);      
-            int_.clear();
-            global_.enable(true);
-            jump();
-            global_.disable();    
-        }
   
     private:
   

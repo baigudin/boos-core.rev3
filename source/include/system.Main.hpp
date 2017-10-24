@@ -9,7 +9,7 @@
 #define SYSTEM_MAIN_HPP_
 
 #include "Main.hpp"
-#include "system.ThreadTask.hpp"
+#include "system.TaskBase.hpp"
 
 namespace system
 {
@@ -30,9 +30,9 @@ namespace system
         /**
          * User main thread.
          */ 
-        class Thread : public ThreadTask
+        class Thread : public TaskBase
         {
-            typedef ThreadTask Parent;
+            typedef TaskBase Parent;
           
         public:
       

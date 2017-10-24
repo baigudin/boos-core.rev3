@@ -1,33 +1,33 @@
 /**
- * Skeleton thread task class with default settings.
+ * Skeleton task class with default settings.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_THREAD_TASK_HPP_
-#define SYSTEM_THREAD_TASK_HPP_
+#ifndef SYSTEM_TASK_BASE_HPP_
+#define SYSTEM_TASK_BASE_HPP_
 
 #include "Object.hpp"
 #include "api.Task.hpp"
 
 namespace system
 {
-    class ThreadTask : public ::Object<>, public ::api::Task  
+    class TaskBase : public ::Object<>, public ::api::Task
     {
-        typedef ::Object<> Parent;    
+        typedef ::Object<> Parent;  
       
     public:
     
         /** 
          * Constructor.
          */    
-        ThreadTask() : Parent(){}
+        TaskBase() : Parent(){}
         
         /** 
          * Destructor.
          */
-        virtual ~ThreadTask(){}
+        virtual ~TaskBase(){}
         
         /**
          * Tests if this object has been constructed.
@@ -40,9 +40,9 @@ namespace system
         }   
         
         /**
-         * Returns size of thread stack.
+         * Returns size of interrupt stack.
          *
-         * The method returns size of thread stack in bytes which should be allocated for the task.
+         * The method returns size of interrupt stack in bytes which should be allocated for the task.
          *
          * @return stack size in bytes.
          */  
@@ -52,22 +52,22 @@ namespace system
         }
       
     private:    
-  
+    
         /**
          * Copy constructor.
          *
          * @param obj reference to source object.
          */
-        ThreadTask(const ThreadTask& obj);
-    
+        TaskBase(const TaskBase& obj);
+        
         /**
          * Assignment operator.
          *
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        ThreadTask& operator =(const ThreadTask& obj);        
-  
+        TaskBase& operator =(const TaskBase& obj);    
+    
     };
 }
-#endif // SYSTEM_THREAD_TASK_HPP_
+#endif // SYSTEM_TASK_BASE_HPP_

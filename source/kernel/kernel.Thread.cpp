@@ -162,15 +162,6 @@ namespace kernel
         if( not isInitialized() ) System::terminate();
         return *scheduler_;
     }
-  
-    /**
-     * Initiates an execution of threads.
-     */  
-    void Thread::execute()
-    {
-        if( not isInitialized() ) return;
-        scheduler_->execute();
-    }
     
     /**
      * Constructor.

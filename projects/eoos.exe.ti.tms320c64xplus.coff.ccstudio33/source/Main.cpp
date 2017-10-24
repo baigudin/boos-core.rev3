@@ -8,19 +8,19 @@
 #include "Main.hpp"
 #include "Object.hpp"
 #include "system.Interrupt.hpp"
-#include "system.InterruptTask.hpp"
+#include "system.TaskBase.hpp"
 
-class InterruptTask : public ::system::InterruptTask
+class TestInterrupt : public ::system::TaskBase
 {
-    typedef ::system::InterruptTask Parent;
+    typedef ::system::TaskBase Parent;
 
 public: 
     
-    InterruptTask() : Parent()
+    TestInterrupt() : Parent()
     {
     }
 
-    virtual ~InterruptTask()
+    virtual ~TestInterrupt()
     {
     }    
     
@@ -41,8 +41,8 @@ public:
 int32 Main::main()
 {
     // Test an interrupt task
-    InterruptTask interruptTask;
-    system::Interrupt inerrupt(interruptTask, 51);
+    TestInterrupt testInterrupt;
+    system::Interrupt inerrupt(testInterrupt, 51);
     inerrupt.jump();
     return 0;
 }

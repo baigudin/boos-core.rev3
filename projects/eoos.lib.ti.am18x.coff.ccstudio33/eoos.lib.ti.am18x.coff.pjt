@@ -1,13 +1,12 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir=""
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.lib.ti.am18x.coff.ccstudio33\"
 ProjectType=Library
 CPUFamily=TMS470R2X
 Tool="Archiver"
 Tool="Compiler"
 Tool="CustomBuilder"
-Tool="XDC"
 Config="Debug"
 Config="Release"
 
@@ -22,12 +21,7 @@ Source="..\..\source\driver\cpu\ti\am18x\driver.Register.cpp"
 Source="..\..\source\driver\cpu\ti\am18x\driver.Timer.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
-Source="..\..\source\system\system.Mutex.cpp"
 Source="..\..\source\system\system.Semaphore.cpp"
-Source="..\..\source\system\system.System.cpp"
-Source="..\..\source\system\system.Thread.cpp"
-Source="..\..\source\system\system.Timer.cpp"
-Source="..\..\source\system\system.TimerInterrupt.cpp"
 
 ["Archiver" Settings: "Debug"]
 Options=-r -o"..\..\libraries\eoos.ti.am18x.coff.debug.lib"
