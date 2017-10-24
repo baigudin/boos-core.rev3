@@ -9,6 +9,7 @@
 #define KERNEL_FACTORY_CREATOR_HPP_
 
 #include "kernel.FactoryBase.hpp"
+#include "kernel.Mutex.hpp"
 #include "kernel.Semaphore.hpp"
 #include "kernel.Interrupt.hpp"
 
@@ -31,6 +32,20 @@ namespace kernel
          * Destructor.
          */
         virtual ~FactoryCreator(){}
+        
+        /** 
+         * Creates new mutex resource.
+         *
+         * @return new mutex resource, or NULL if error has been occurred.
+         */      
+        virtual ::api::Mutex* createMutex()
+        {
+            ::api::Mutex* res = new Mutex();
+            if(res == NULL) return NULL; 
+            if(res->isConstructed()) return res;       
+            delete res;
+            return NULL;   
+        }
         
         
         /** 

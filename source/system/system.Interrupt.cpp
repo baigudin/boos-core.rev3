@@ -6,9 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "system.Interrupt.hpp"
-#include "kernel.Factory.hpp"
-
-using namespace kernel;
+#include "system.System.hpp"
 
 namespace system
 {
@@ -42,13 +40,8 @@ namespace system
     bool Interrupt::construct(::api::Task& handler, int32 source)
     {
         if( not isConstructed_ ) return false;    
-        Factory* factory = Factory::create();
-        if(factory == NULL) return false;
-        if(factory->isConstructed()) 
-        {
-            kernel_ = factory->createInterrupt(handler, source);
-        }
-        delete factory;
+        ::kernel::Factory& factory = System::getKernelFactory();
+        kernel_ = factory.createInterrupt(handler, source);
         return kernel_ != NULL ? kernel_->isConstructed() : false;
     }
   

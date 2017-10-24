@@ -6,7 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "system.Semaphore.hpp"
-#include "kernel.Factory.hpp"
+#include "system.System.hpp"
 
 namespace system
 {
@@ -128,6 +128,15 @@ namespace system
     bool Semaphore::construct(int32 permits, bool* isFair)
     {
         if( not isConstructed_ ) return false;
-        return false;
+        ::kernel::Factory& factory = System::getKernelFactory();
+        if( isFair == NULL )
+        {
+            kernel_ = factory.createSemaphore(permits);
+        }
+        else
+        {
+            kernel_ = factory.createSemaphore(permits, *isFair);
+        }
+        return kernel_ != NULL ? kernel_->isConstructed() : false;        
     }
 }

@@ -9,6 +9,7 @@
 #define KERNEL_FACTORY_HPP_
 
 #include "api.Object.hpp"
+#include "api.Mutex.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Interrupt.hpp"
 #include "api.Task.hpp"
@@ -24,6 +25,13 @@ namespace kernel
          * Destructor.
          */
         virtual ~Factory(){}
+
+        /** 
+         * Creates new mutex resource.
+         *
+         * @return new mutex resource, or NULL if error has been occurred.
+         */      
+        virtual ::api::Mutex* createMutex() = 0;
         
         /** 
          * Creates new semaphore resource.

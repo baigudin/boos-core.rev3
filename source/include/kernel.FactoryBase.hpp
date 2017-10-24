@@ -39,7 +39,17 @@ namespace kernel
         virtual bool isConstructed() const
         {
             return isConstructed_;
-        } 
+        }
+        
+        /** 
+         * Creates new mutex resource.
+         *
+         * @return new mutex resource, or NULL if error has been occurred.
+         */      
+        virtual ::api::Mutex* createMutex()
+        {
+            return NULL;
+        }
         
         /** 
          * Creates new semaphore resource.
