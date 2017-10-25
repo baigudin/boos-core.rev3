@@ -10,7 +10,11 @@
 
 #include "Types.hpp"
 
-namespace api { class Toggle; }
+namespace api 
+{ 
+    class Scheduler;
+    class Toggle; 
+}
 
 namespace kernel
 {
@@ -75,6 +79,11 @@ namespace kernel
          * The module initialization stage (no boot).
          */
         static int32 stage_;
+        
+        /**
+         * Scheduler interrupt resource (no boot).
+         */
+        static ::api::Scheduler* scheduler_;        
   
         /**
          * Hardware timer interrupt resource (no boot).

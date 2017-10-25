@@ -58,15 +58,15 @@ namespace kernel
             // Go through the mutex to critical section
             return Int::enableAll(is, true);      
         }
-        Thread* thread = &Thread::getCurrent();
+        ::api::Thread& thread = Thread::getCurrent();
         // Add current thread to the queue tail
-        if( fifo_.add(thread) == false ) return Int::enableAll(is, false);
+        if( fifo_.add(&thread) == false ) return Int::enableAll(is, false);
         while(true)
         {
             // Block current thread on the mutex and switch to another thread
-            Thread::block(*this);
+            thread.block(*this);
             // Test if head thread is current thread
-            if(fifo_.peek() != thread) continue;
+            if(fifo_.peek() != &thread) continue;
             // Test available permits for no breaking the fifo queue by removing
             if(count_ - 1 < 0) continue;
             // Decrement the number of available permits

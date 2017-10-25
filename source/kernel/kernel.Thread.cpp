@@ -6,31 +6,17 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Thread.hpp"
-#include "kernel.Scheduler.hpp"
-#include "kernel.System.hpp"
-#include "driver.Processor.hpp"
-#include "driver.Register.hpp"
-#include "utility.Stack.hpp"
 
 namespace kernel
 {
-    typedef ::utility::Stack<int64>  Stack;
-    
     /** 
      * Constructor.
      *
      * @param task an task interface whose main method is invoked when this thread is started.
      */
     Thread::Thread(::api::Task& task) : Parent(),
-        task_     (NULL),
-        block_    (NULL),
-        register_ (NULL),
-        stack_    (NULL),
-        id_       (++idCount_),
-        priority_ (0),
-        sleep_    (0),
-        status_   (NEW){
-        setConstruct( construct(&task) );  
+        isConstructed_ (getConstruct()){    
+        setConstruct( construct() );  
     }
     
     /** 
@@ -38,31 +24,23 @@ namespace kernel
      */
     Thread::~Thread()
     {
-        if( not isConstructed() ) return;
-        scheduler_->remove(*this);
-        delete stack_;    
-        stack_ = NULL;
-        delete register_;
-        register_ = NULL;
     }
-    
+
     /**
      * Tests if this object has been constructed.
      *
      * @return true if object has been constructed successfully.
-     */    
+     */   
     bool Thread::isConstructed() const
     {
-        return this->Parent::isConstructed();
-    }
+        return isConstructed_;
+    }    
     
     /**
      * Causes this thread to begin execution.
      */
     void Thread::start()
     {
-        if( not isConstructed() ) return;
-        scheduler_->start(*this);
     }
     
     /**
@@ -70,54 +48,45 @@ namespace kernel
      */  
     void Thread::join()
     {
-        if( not isConstructed() ) return;
-        scheduler_->join(*this);
     }
     
     /**
-     * Causes the currently executing thread to sleep.
+     * Causes this thread to sleep.
      *
      * @param millis a time to sleep in milliseconds.
      * @param nanos  an additional nanoseconds to sleep.
      */  
     void Thread::sleep(int64 millis, int32 nanos)
     {
-        if( not isInitialized() ) return;
-        scheduler_->sleep(millis, nanos);
     }
     
     /**
-     * Blocks current thread on given resource and yields the task.
+     * Blocks this thread on given resource and yields the task.
      *
-     * @param res pointer to resource.
+     * @param res reference to resource.
      */  
     void Thread::block(::api::Resource& res)
     {
-        if( not isInitialized() ) return;
-        scheduler_->block(res);
-    }
-  
+    }        
+    
     /**
-     * Returns a pointer to the currently executing thread.
+     * Returns the identifier of this thread.
      *
-     * @return the executable thread.
+     * @return the thread identifier.
      */
-    Thread& Thread::getCurrent()
+    int64 Thread::getId() const
     {
-        if( not isInitialized() ) System::terminate();
-        Thread* thread = scheduler_->currentTask();
-        if(thread == NULL) System::terminate();
-        return *thread;
     }
-  
+
     /**
-     * Yields to next thread.
-     */
-    void Thread::yield()
+     * Causes the currently executing thread to sleep.
+     *
+     * @param millis a time to sleep in milliseconds.
+     * @param nanos  an additional nanoseconds to sleep.
+     */  
+    ::api::Thread::Status Thread::getStatus() const
     {
-        if( not isInitialized() ) return;
-        scheduler_->jump();
-    }
+    }        
     
     /**
      * Returns this thread priority.
@@ -126,8 +95,7 @@ namespace kernel
      */  
     int32 Thread::getPriority() const
     {
-        return priority_;
-    }  
+    }
     
     /**
      * Sets this thread priority.
@@ -136,125 +104,39 @@ namespace kernel
      */  
     void Thread::setPriority(int32 priority)
     {
-        if( not isConstructed() ) return;
-        if(priority > MAX_PRIORITY) priority = MAX_PRIORITY;
-        else if(priority < MIN_PRIORITY) priority = MIN_PRIORITY;
-        else priority_ = priority;
     }
     
     /**
-     * Returns the identifier of this thread.
+     * Returns currently executing thread.
      *
-     * @return the thread identifier.
+     * @return executing thread.
      */
-    int64 Thread::getId()
+    ::api::Thread& Thread::getCurrent()
     {
-        return id_;
+    }
+    
+    /**
+     * Yields to next thread.
+     */
+    void Thread::yield()
+    {
     }
     
     /** 
-     * Returns the toggle interface for controlling global thread switch.
+     * Returns the toggle interface for controlling global thread switching.
      *
      * @return toggle interface.
      */ 
     ::api::Toggle& Thread::toggle()
     {
-        if( not isInitialized() ) System::terminate();
-        return *scheduler_;
     }
     
     /**
      * Constructor.
-     *
-     * @param task an interface whose run method is invoked when this thread is started.   
      */
-    bool Thread::construct(::api::Task* task)
+    bool Thread::construct()
     {
-        if( not isInitialized() ) return false;    
-        if( not isConstructed() ) return false;  
-        if( idCount_ < 0 ) return false;
-        if( not task->isConstructed() ) return false;    
-        const Thread* thread = scheduler_->currentTask();
-        priority_ = thread != NULL ? thread->getPriority() : NORM_PRIORITY;
-        // Set this thread CPU registers context 
-        register_ = ::driver::Register::create();
-        if(register_ == NULL || !register_->isConstructed()) return false;
-        // Set this thread stack context 
-        stack_ = new Stack( ::driver::Processor::getStackType(), task->getStackSize() >> 3 );    
-        if(stack_ == NULL || !stack_->isConstructed()) return false;
-        task_ = task;
-        return true;
     }
     
-    /**
-     * Initializes the resource.
-     *
-     * @return true if no errors have been occurred.
-     */   
-    bool Thread::initialize()
-    {
-        isInitialized_ = 0;
-        stage_ = 0; 
-        scheduler_ = NULL;
-        idCount_ = 0;               
-        // Stage 1: Create the operating system scheduler
-        stage_++;
-        scheduler_ = new Scheduler();
-        if(scheduler_ == NULL || !scheduler_->isConstructed()) return false;
-        // Stage complete
-        stage_ = -1;
-        isInitialized_ = IS_INITIALIZED;        
-        return true;    
-    }
-    
-    /**
-     * Deinitializes the resource.
-     */
-    void Thread::deinitialize()
-    {
-        switch(stage_)
-        {
-            default:    
-            case  1: 
-            {
-                delete scheduler_;
-                scheduler_ = NULL;
-            }          
-            case  0: 
-            {
-                break;
-            }
-        }
-        isInitialized_ = 0; 
-    }
-    
-    /**
-     * Tests if the module has been initialized.
-     *
-     * @return true if the module has been initialized successfully.
-     */    
-    bool Thread::isInitialized()
-    {
-        return isInitialized_ != IS_INITIALIZED ? false : true;
-    }    
-    
-    /**
-     * The module has been initialized successfully (no boot).
-     */
-    int32 Thread::isInitialized_;    
-    
-    /**
-     * The module initialization stage (no boot).
-     */
-    int32 Thread::stage_;         
-    
-    /**
-     * Thread scheduler (no boot).
-     */
-    Scheduler* Thread::scheduler_;
-    
-    /**
-     * Counter of thread identifiers (no boot).
-     */    
-    int64 Thread::idCount_;  
+
 }

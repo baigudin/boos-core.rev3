@@ -42,9 +42,6 @@ namespace kernel
             if( not ::kernel::Interrupt::initialize() ) break;      
             // Stage 5
             stage++;
-            if( not ::kernel::Thread::initialize() ) break;      
-            // Stage 6
-            stage++;
             if( not ::kernel::System::initialize() ) break;      
             // Stage complete
             stage = -1;
@@ -54,8 +51,7 @@ namespace kernel
         switch(stage)
         {
             default:
-            case  6: ::kernel::System::deinitialize();
-            case  5: ::kernel::Thread::deinitialize();
+            case  5: ::kernel::System::deinitialize();
             case  4: ::kernel::Interrupt::deinitialize();
             case  3: ::Board::deinitialize();      
             case  2: ::driver::Processor::deinitialize();

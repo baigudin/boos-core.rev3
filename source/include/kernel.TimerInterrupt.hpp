@@ -61,6 +61,13 @@ namespace kernel
          * @param flag constructed flag.
          */      
         virtual void setConstruct(bool flag);
+        
+        /**
+         * Returns the object constructed flag.
+         *
+         * @return reference to the constructed flag.
+         */      
+        virtual const bool& getConstruct();     
       
     private:
   

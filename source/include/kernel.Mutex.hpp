@@ -10,12 +10,11 @@
 
 #include "Object.hpp"
 #include "api.Mutex.hpp"
+#include "api.Thread.hpp"
 #include "utility.LinkedList.hpp"
 
 namespace kernel
 {  
-    class Thread;
-    
     class Mutex : public ::Object<>, public ::api::Mutex
     {
         typedef ::Object<> Parent;    
@@ -105,7 +104,7 @@ namespace kernel
         /** 
          * Queue of locked threads.
          */     
-        ::utility::LinkedList<Thread*> fifo_;    
+        ::utility::LinkedList< ::api::Thread* > fifo_;    
   
     };
 }

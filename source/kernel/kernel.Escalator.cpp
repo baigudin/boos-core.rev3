@@ -78,7 +78,8 @@ namespace kernel
         bool res, is;  
         if(!isConstructed()) return false;
         is = toggle_.disable();
-        Node node(Thread::getCurrent(), permits);
+        ::api::Thread& thread = Thread::getCurrent();
+        Node node(thread, permits);
         // Check about available space in the semaphoring critical section
         if( permits_ - permits >= 0 && list_.lock.isEmpty() )
         {
@@ -94,7 +95,7 @@ namespace kernel
         if(res == true)
         {
             // Block current thread on the escalator and switch to another thread
-            Thread::block(*this);
+            thread.block(*this);
             // This thread is unblocked by the scheduler called isBlocked method 
             res = removeNode(list_.lock, node);
         }

@@ -6,6 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.System.hpp"
+#include "kernel.Scheduler.hpp"
 #include "kernel.SystemTimerInterrupt.hpp"
 #include "driver.Interrupt.hpp"
 #include "api.Toggle.hpp"
@@ -49,16 +50,22 @@ namespace kernel
     bool System::initialize()
     {
         isInitialized_ = 0;
-        stage_ = 0;        
+        stage_ = 0;
+        scheduler_ = NULL;
+        interrupt_ = NULL;
+        global_ = NULL;        
         // Stage 1: Create the operating system tick timer
         stage_++;        
-        interrupt_ = new SystemTimerInterrupt();
-        if(interrupt_ == NULL || !interrupt_->isConstructed()) return false;
-        // Stage 2: Set heap interrupt controller
+        scheduler_ = new Scheduler();
+        if(scheduler_ == NULL || not scheduler_->isConstructed()) return false;        
+        // Stage 2: Create the operating system tick timer
         stage_++;        
-        global_ = NULL;
+        interrupt_ = new SystemTimerInterrupt();
+        if(interrupt_ == NULL || not interrupt_->isConstructed()) return false;
+        // Stage 3: Set heap interrupt controller
+        stage_++;        
         ::api::Heap* heap = ::Allocator::getHeap();
-        if(heap == NULL || !heap->isConstructed()) return false;
+        if(heap == NULL || not heap->isConstructed()) return false;
         global_ = &interrupt_->global();
         heap->setToggle(global_);
         // Stage complete
@@ -75,14 +82,21 @@ namespace kernel
         switch(stage_)
         {
             default:
-            case  2:             
-            case  1: 
+            case 3:             
             {
-                global_ = NULL;
+                global_ = NULL;            
+            }
+            case 2: 
+            {
                 delete interrupt_;
                 interrupt_ = NULL;                
             }          
-            case  0: 
+            case 1: 
+            {
+                delete scheduler_;
+                scheduler_ = NULL;                
+            }          
+            case 0: 
             {
                 break;
             }
@@ -109,6 +123,11 @@ namespace kernel
      * The module initialization stage (no boot).
      */
     int32 System::stage_;    
+    
+    /**
+     * Scheduler interrupt resource (no boot).
+     */
+    ::api::Scheduler* System::scheduler_;
     
     /**
      * Hardware timer interrupt resource (no boot).

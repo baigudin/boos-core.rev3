@@ -8,8 +8,9 @@
 #ifndef KERNEL_ESCALATOR_HPP_
 #define KERNEL_ESCALATOR_HPP_
 
-#include "kernel.Thread.hpp"
+#include "Object.hpp"
 #include "api.Semaphore.hpp"
+#include "api.Thread.hpp"
 #include "utility.LinkedList.hpp"
 
 namespace kernel
@@ -105,7 +106,7 @@ namespace kernel
              * @param thread   current executing thread.
              * @return true if the escalator is release successfully.
              */
-            Node(Thread& thread, int32 ipermits) :
+            Node(::api::Thread& thread, int32 ipermits) :
                 permits (ipermits),
                 thread_ (&thread){
             }
@@ -179,7 +180,7 @@ namespace kernel
             /** 
              * Executing thread.
              */
-            Thread* thread_;
+            ::api::Thread* thread_;
         
         };
         

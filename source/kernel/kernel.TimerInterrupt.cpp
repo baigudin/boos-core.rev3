@@ -58,7 +58,7 @@ namespace kernel
      */     
     bool TimerInterrupt::construct(::api::Task* handler)
     {
-        if(!isConstructed()) return false;
+        if( not isConstructed() ) return false;
         if(handler == NULL) return true;
         return ResInt::getDriver().setHandler(*handler, ResTim::getDriver().getInterrupSource());
     }
@@ -70,8 +70,8 @@ namespace kernel
      */    
     bool TimerInterrupt::isConstructed() const  
     {
-        if(!ResInt::isConstructed()) return false;
-        if(!ResTim::isConstructed()) return false;    
+        if( not ResInt::isConstructed() ) return false;
+        if( not ResTim::isConstructed() ) return false;    
         return true;
     }
     
@@ -85,4 +85,14 @@ namespace kernel
         ResInt::setConstruct(flag);
         ResTim::setConstruct(flag);    
     }  
+    
+    /**
+     * Sets the object constructed flag.
+     *
+     * @param flag constructed flag.
+     */      
+    const bool& TimerInterrupt::getConstruct()  
+    {
+        return ResInt::getConstruct();  
+    }    
 }
