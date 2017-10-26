@@ -10,10 +10,9 @@
 #include "kernel.System.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.Timer.hpp"
-/*
 
-#include "driver.Register.hpp"
-*/  
+typedef ::driver::Interrupt Int;
+
 namespace kernel
 {
     /** 
@@ -21,10 +20,10 @@ namespace kernel
      */
     Scheduler::Scheduler() :
         isConstructed_ (getConstruct()),      
-        global_    (global()),
-        int_       (ResInt::getDriver()),
-        tim_       (ResTim::getDriver()),
-        list_      (NULL){
+        int_           (ResInt::getDriver()),
+        tim_           (ResTim::getDriver()),
+        list_          (NULL),
+        idCount_       (0){
         setConstruct( construct() );
     }
   
@@ -50,8 +49,7 @@ namespace kernel
      */      
     void Scheduler::main()
     {
-/*    
-        Task* task;
+        SchedulerThread* thread;
         // Test for completing execution
         if( list_.isEmpty() )
         {
@@ -64,44 +62,52 @@ namespace kernel
         // Select next thread for executing
         while(true)
         {
-            task = list_.peek();
-            switch(task->status_)
+            thread = list_.peek();
+            switch( thread->getStatus() )
             {
-                case Task::BLOCKED: 
+                case ::api::Thread::BLOCKED: 
                 {
-                    if(!task->block_->isBlocked())
-                        task->status_ = Task::RUNNABLE;
+                    if( not thread->getBlock()->isBlocked() )
+                        thread->setStatus( ::api::Thread::RUNNABLE );
                 }
                 break;
-                case Task::SLEEPING: 
+                case ::api::Thread::SLEEPING: 
                 {
-                    if(System::getTimeNs() >= task->sleep_)
+                    if( System::getTimeNs() >= thread->getSleep() )
                     {
-                        task->sleep_ = 0;
-                        task->status_ = Task::RUNNABLE;
+                        thread->setSleep(0);
+                        thread->setStatus( ::api::Thread::RUNNABLE );
                     }
                 }
                 break;             
-                case Task::RUNNING: 
+                case ::api::Thread::RUNNING: 
                 {
-                    task->status_ = Task::RUNNABLE;
+                    thread->setStatus( ::api::Thread::RUNNABLE );
                 }
                 break;
-                case Task::RUNNABLE: 
+                case ::api::Thread::RUNNABLE: 
                 {
-                    task->status_ = Task::RUNNING;
+                    thread->setStatus( ::api::Thread::RUNNING );
                     // Switch to the task
-                    int_.setContext(*task->register_);
+                    int32 priority = thread->getPriority();
+                    int_.setContext( *thread->getRegister() );                    
+                    if(priority == ::api::Thread::LOCK_PRIORITY)
+                    {
+                        tim_.stop();        
+                    }
+                    else
+                    {
+                        tim_.start();
+                    }
                     tim_.setCount(0);
-                    tim_.setPeriod(task->priority_ * QUANT);
+                    tim_.setPeriod(priority * QUANT);
                     return;
                 }
                 default: break;
             }
             list_.remove();
-            list_.add(task);
-        }
-*/            
+            list_.add(thread);
+        }    
     }
     
     /**
@@ -120,17 +126,14 @@ namespace kernel
      * @param task an user task which main method will be invoked when created thread is started.
      * @return a new thread.
      */
-    ::api::Thread& Scheduler::createThread(::api::Task& task)
+    ::api::Thread* Scheduler::createThread(::api::Task& task)
     {
-    }
-    
-    /**
-     * Removes the first occurrence of the specified thread.
-     *
-     * @param thread removing thread.
-     */
-    void Scheduler::removeThread(::api::Thread& thread)
-    {
+        if( not isConstructed_ ) return NULL;
+        SchedulerThread* thread = new SchedulerThread(task, ++idCount_, &mainThread, this);
+        if(thread == NULL) return NULL; 
+        if(thread->isConstructed()) return thread;  
+        delete thread;
+        return NULL;
     }
     
     /**
@@ -141,9 +144,9 @@ namespace kernel
     ::api::Thread& Scheduler::getCurrentThread()
     {
         if( not isConstructed_ ) System::terminate();
-        bool is = global_.disable();
+        bool is = Int::disableAll();
         ::api::Thread* thread = list_.peek();
-        global_.enable(is);
+        Int::enableAll(is);
         if(thread == NULL) System::terminate();
         return *thread;
     }
@@ -179,7 +182,7 @@ namespace kernel
     bool Scheduler::construct()
     {
         if( not isConstructed() ) return false;
-        if( not list_.isConstructed() ) return false;      
+        if( not list_.isConstructed() ) return false;
         int32 source = tim_.getInterrupSource();
         if( not int_.setHandler(*this, source) ) return false;
         setCount(0);
@@ -190,34 +193,58 @@ namespace kernel
     }
     
     /**
+     * Adds a thread to execution list
+     *
+     * @return true if thread has been added successfully.
+     */
+    bool Scheduler::addThread(SchedulerThread* thread)
+    {
+        if( not isConstructed_ ) return false;
+        bool is = Int::disableAll();
+        bool res = list_.add(thread);
+        Int::enableAll(is);    
+        return res;
+    }    
+    
+    /**
+     * Removes the first occurrence of the specified thread.
+     *
+     * @param thread removing thread.
+     */
+    void Scheduler::removeThread(SchedulerThread* thread)
+    {
+        if( not isConstructed_ ) return;
+        bool is = Int::disableAll();
+        list_.removeElement(thread);
+        Int::enableAll(is);
+    }
+   
+    
+    /**
      * Runs a method of Runnable interface start vector.
      */  
     void Scheduler::run()
     {
-/*
-        Task* current = list_.peek();
+        SchedulerThread* current = list_.peek();
         // Start main method of user thread task
-        current->task_->main();
-        global_.disable();
-        current->status_ = Task::DEAD;
-        // Remova this executed task
+        current->getTask()->main();
+        Int::disableAll();
+        current->setStatus( ::api::Thread::DEAD );
+        // Remove this executed task
         list_.remove();
-        jump();
-*/
+        yield();
     }        
     
     /**
      * Runs a method of Runnable interface start vector.
      */  
-    void Scheduler::runTask(Scheduler* scheduler)
+    void Scheduler::mainThread(Scheduler* scheduler)
     {
-/*    
         // Invoke the member function through the pointer
         void(Scheduler::*run)() = &Scheduler::run;
         (scheduler->*run)();
         // This PC is not allowable
         while(true);
-*/        
     }
 
 }

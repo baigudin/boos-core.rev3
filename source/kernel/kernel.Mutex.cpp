@@ -6,7 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Mutex.hpp"
-#include "kernel.Thread.hpp"
+#include "system.Thread.hpp"
 #include "driver.Interrupt.hpp"
 
 namespace kernel
@@ -58,7 +58,7 @@ namespace kernel
             // Go through the mutex to critical section
             return Int::enableAll(is, true);      
         }
-        ::api::Thread& thread = Thread::getCurrent();
+        ::api::Thread& thread = ::system::Thread::getCurrent();
         // Add current thread to the queue tail
         if( fifo_.add(&thread) == false ) return Int::enableAll(is, false);
         while(true)

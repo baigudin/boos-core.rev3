@@ -33,6 +33,17 @@ namespace kernel
         return isInitialized() ? interrupt_->nanoTime() : 0;
     }
     
+    /** 
+     * Returns a kernel scheduler.
+     *
+     * @return a kernel scheduler.
+     */      
+    ::api::Scheduler& System::getScheduler()
+    {
+        if( not isInitialized() ) terminate();
+        return *scheduler_;
+    }
+    
     /**
      * Terminates the operating system execution.
      */

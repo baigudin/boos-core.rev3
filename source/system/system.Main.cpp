@@ -7,9 +7,7 @@
  */
 #include "system.Main.hpp" 
 #include "system.System.hpp" 
-#include "kernel.Thread.hpp"
-
-using namespace kernel;
+#include "system.Thread.hpp"
 
 namespace system
 {
@@ -27,16 +25,18 @@ namespace system
             // Stage 1
             stage++;
             if( not ::system::System::initialize() ) break;      
+            // Stage 2
+            stage++;
+            if( not ::system::Thread::initialize() ) break;              
             // Stage complete
             stage = -1;
             {
-                Thread main;
-                ::kernel::Thread thread(main);
+                MainThread thread;
                 if( thread.isConstructed() )
                 {
                     thread.start();
-                    thread.join();
-                    error = main.error();            
+                    thread.yield();
+                    error = thread.error();            
                 }
             }
 
@@ -45,6 +45,7 @@ namespace system
         switch(stage)
         {
             default:
+            case  2: ::system::Thread::deinitialize();            
             case  1: ::system::System::deinitialize();
             case  0: break;
         }

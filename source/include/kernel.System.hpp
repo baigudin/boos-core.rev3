@@ -39,6 +39,13 @@ namespace kernel
          */      
         static int64 getTimeNs();
         
+        /** 
+         * Returns a kernel scheduler.
+         *
+         * @return a kernel scheduler.
+         */      
+        static ::api::Scheduler& getScheduler();
+        
         /**
          * Terminates the operating system execution.
          */
@@ -71,7 +78,7 @@ namespace kernel
         static const int32 IS_INITIALIZED = 0x95277129;    
         
         /**
-         * the module has been initialized successfully (no boot).
+         * The module has been initialized successfully (no boot).
          */
         static int32 isInitialized_;           
         

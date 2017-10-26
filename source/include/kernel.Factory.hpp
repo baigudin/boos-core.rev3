@@ -9,6 +9,7 @@
 #define KERNEL_FACTORY_HPP_
 
 #include "api.Object.hpp"
+#include "api.Scheduler.hpp"
 #include "api.Mutex.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Interrupt.hpp"
@@ -25,6 +26,13 @@ namespace kernel
          * Destructor.
          */
         virtual ~Factory(){}
+        
+        /** 
+         * Returns a kernel scheduler.
+         *
+         * @return a kernel scheduler.
+         */      
+        virtual ::api::Scheduler& getScheduler() = 0;        
 
         /** 
          * Creates new mutex resource.

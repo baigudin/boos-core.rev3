@@ -6,7 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Semaphore.hpp"
-#include "kernel.Thread.hpp"
+#include "system.Thread.hpp"
 #include "driver.Interrupt.hpp"
 
 namespace kernel
@@ -79,7 +79,7 @@ namespace kernel
     {
         if(!isConstructed_) return false;
         bool is = Int::disableAll();
-        ::api::Thread& thread = Thread::getCurrent();        
+        ::api::Thread& thread = ::system::Thread::getCurrent();        
         // Acquire fairly
         if(isFair_)
         {

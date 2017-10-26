@@ -1,24 +1,30 @@
 /**
- * The kernel thread.
+ * The operating system thread.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef KERNEL_THREAD_HPP_
-#define KERNEL_THREAD_HPP_
+#ifndef SYSTEM_THREAD_HPP_
+#define SYSTEM_THREAD_HPP_
 
-#include "Object.hpp"
+#include "system.TaskBase.hpp"
 #include "api.Thread.hpp"
-#include "api.Task.hpp"
 
-namespace kernel
+namespace api { class Scheduler; }
+
+namespace system
 {
-    class Thread : public ::Object<>, public ::api::Thread
+    class Thread : public ::system::TaskBase, public ::api::Thread
     {
-        typedef ::Object<> Parent;
+        typedef ::system::TaskBase Parent;
       
     public:
+    
+        /** 
+         * Constructor.
+         */
+        Thread();    
   
         /** 
          * Constructor.
@@ -37,7 +43,12 @@ namespace kernel
          *
          * @return true if object has been constructed successfully.
          */    
-        virtual bool isConstructed() const;        
+        virtual bool isConstructed() const; 
+        
+        /**
+         * The method with self context which will be executed by default.
+         */  
+        virtual void main();               
         
         /**
          * Causes this thread to begin execution.
@@ -60,7 +71,7 @@ namespace kernel
         /**
          * Blocks this thread on given resource and yields the task.
          *
-         * @param res reference to resource.
+         * @param res a resource.
          */  
         virtual void block(::api::Resource& res);        
         
@@ -72,12 +83,11 @@ namespace kernel
         virtual int64 getId() const;
 
         /**
-         * Causes the currently executing thread to sleep.
+         * Returns a status of this thread.
          *
-         * @param millis a time to sleep in milliseconds.
-         * @param nanos  an additional nanoseconds to sleep.
+         * @return this thread status.
          */  
-        virtual ::api::Thread::Status getStatus() const;        
+        virtual ::api::Thread::Status getStatus() const;       
       
         /**
          * Returns this thread priority.
@@ -89,7 +99,7 @@ namespace kernel
         /**
          * Sets this thread priority.
          *
-         * @param priority number of priority in range [MIN_PRIORITY, MAX_PRIORITY].
+         * @param priority number of priority in range [MIN_PRIORITY, MAX_PRIORITY], or LOCK_PRIORITY.
          */  
         virtual void setPriority(int32 priority);
       
@@ -111,13 +121,35 @@ namespace kernel
          * @return toggle interface.
          */ 
         static ::api::Toggle& toggle();
+        
+        /**
+         * Initializes the resource.
+         *
+         * @return true if no errors have been occurred.
+         */   
+        static bool initialize();
+        
+        /**
+         * Deinitializes the resource.
+         */
+        static void deinitialize();        
             
     private:
         
         /**
          * Constructor.
+         *
+         * @param task an task interface whose main method is invoked when this thread is started.     
+         * @return true if object has been constructed successfully.   
          */
-        bool construct();
+        bool construct(::api::Task& task);
+        
+        /**
+         * Tests if the module has been initialized.
+         *
+         * @return true if the module has been initialized successfully.
+         */    
+        static bool isInitialized();        
         
         /**
          * Copy constructor.
@@ -134,11 +166,36 @@ namespace kernel
          */
         Thread& operator =(const Thread& obj);
         
+        /**
+         * The module initialized falg value.
+         */
+        static const int32 IS_INITIALIZED = 0x54298742;
+        
+        /**
+         * The module has been initialized successfully (no boot).
+         */
+        static int32 isInitialized_;
+                  
+        /**
+         * The module initialization stage (no boot).
+         */
+        static int32 stage_;                
+        
+        /** 
+         * A kernel scheduler (no boot).
+         */          
+        static ::api::Scheduler* scheduler_;
+        
         /** 
          * The root object constructed flag.
          */  
-        const bool& isConstructed_;        
+        const bool& isConstructed_;
+        
+        /** 
+         * A kernel scheduler thread.
+         */          
+        ::api::Thread* thread_;
   
     };
 }
-#endif // KERNEL_THREAD_HPP_
+#endif // SYSTEM_THREAD_HPP_

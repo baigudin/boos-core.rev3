@@ -6,8 +6,8 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Escalator.hpp"
-#include "kernel.Thread.hpp"
 #include "kernel.Interrupt.hpp"
+#include "system.Thread.hpp"
 
 namespace kernel
 {
@@ -78,7 +78,7 @@ namespace kernel
         bool res, is;  
         if(!isConstructed()) return false;
         is = toggle_.disable();
-        ::api::Thread& thread = Thread::getCurrent();
+        ::api::Thread& thread = ::system::Thread::getCurrent();
         Node node(thread, permits);
         // Check about available space in the semaphoring critical section
         if( permits_ - permits >= 0 && list_.lock.isEmpty() )
@@ -124,7 +124,7 @@ namespace kernel
         bool res, is;
         if(!isConstructed()) return;
         is = toggle_.disable();
-        Node node(Thread::getCurrent(), permits);
+        Node node(::system::Thread::getCurrent(), permits);
         // Remove current thread from executing list    
         res = isFair_ ? removeNode(list_.exec, node) : true;
         // Increment the number of available permits    
@@ -142,7 +142,7 @@ namespace kernel
     {
         if(!isConstructed()) return false;
         bool is = toggle_.disable();
-        Node cur(Thread::getCurrent(), 0);
+        Node cur(::system::Thread::getCurrent(), 0);
         Node res = list_.lock.peek();
         // Test if current thread is the first in FIFO
         if(cur != res) return toggle_.enable(is, true);
@@ -150,7 +150,7 @@ namespace kernel
         if(permits_ - res.permits < 0) return toggle_.enable(is, true);
         // Unblock thread
         permits_ -= res.permits;
-        if(isFair_ == true) list_.exec.add( Node(Thread::getCurrent(), res.permits) );
+        if(isFair_ == true) list_.exec.add( Node(::system::Thread::getCurrent(), res.permits) );
         return toggle_.enable(is, false);    
     }
     
@@ -176,7 +176,7 @@ namespace kernel
         {
             // Remove the head thread if it given thread of the node
             if(list.peek() == node) return list.remove();
-            Thread::yield();
+            ::system::Thread::yield();
         }      
     }      
     

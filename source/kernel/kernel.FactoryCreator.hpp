@@ -8,16 +8,17 @@
 #ifndef KERNEL_FACTORY_CREATOR_HPP_
 #define KERNEL_FACTORY_CREATOR_HPP_
 
-#include "kernel.FactoryBase.hpp"
+#include "kernel.AbstractFactory.hpp"
+#include "kernel.System.hpp"
 #include "kernel.Mutex.hpp"
 #include "kernel.Semaphore.hpp"
 #include "kernel.Interrupt.hpp"
 
 namespace kernel
 {
-    class FactoryCreator : public ::kernel::FactoryBase
+    class FactoryCreator : public ::kernel::AbstractFactory
     {
-        typedef ::kernel::FactoryBase Parent;
+        typedef ::kernel::AbstractFactory Parent;
       
     public:
     
@@ -32,6 +33,16 @@ namespace kernel
          * Destructor.
          */
         virtual ~FactoryCreator(){}
+        
+        /** 
+         * Returns a kernel scheduler.
+         *
+         * @return a kernel scheduler.
+         */      
+        virtual ::api::Scheduler& getScheduler()
+        {
+            return System::getScheduler();
+        }
         
         /** 
          * Creates new mutex resource.

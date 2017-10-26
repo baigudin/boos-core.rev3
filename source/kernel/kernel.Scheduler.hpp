@@ -60,14 +60,7 @@ namespace kernel
          * @param task an user task which main method will be invoked when created thread is started.
          * @return a new thread.
          */
-        virtual ::api::Thread& createThread(::api::Task& task);
-        
-        /**
-         * Removes the first occurrence of the specified thread.
-         *
-         * @param thread removing thread.
-         */
-        virtual void removeThread(::api::Thread& thread);
+        virtual ::api::Thread* createThread(::api::Task& task);
         
         /**
          * Returns currently executing thread.
@@ -87,6 +80,20 @@ namespace kernel
          * @return toggle interface.
          */ 
         virtual ::api::Toggle& toggle();
+        
+        /**
+         * Adds a thread to execution list
+         *
+         * @return true if thread has been added successfully.
+         */
+        bool addThread(SchedulerThread* thread);
+        
+        /**
+         * Removes the first occurrence of the specified thread.
+         *
+         * @param thread removing thread.
+         */
+        void removeThread(SchedulerThread* thread);        
   
     private:
   
@@ -101,7 +108,6 @@ namespace kernel
          */
         bool construct();
 
-        
         /**
          * Runs a method of Runnable interface start vector.
          */  
@@ -110,7 +116,7 @@ namespace kernel
         /**
          * Runs a method of Runnable interface start vector.
          */  
-        static void runTask(Scheduler* scheduler);
+        static void mainThread(Scheduler* scheduler);
         
         /**
          * Copy constructor.
@@ -136,11 +142,6 @@ namespace kernel
          * The root object constructed flag.
          */  
         const bool& isConstructed_;        
-        
-        /**
-         * Global interrupt controller.
-         */
-        ::api::Toggle& global_;
       
         /**
          * Driver interrupt controller.
@@ -154,8 +155,13 @@ namespace kernel
         
         /**
          * The tasks list.
-         */    
+         */
         ::utility::LinkedList< SchedulerThread* > list_;
+        
+        /**
+         * Counter of thread identifiers.
+         */    
+        int64 idCount_;
   
     };
 }

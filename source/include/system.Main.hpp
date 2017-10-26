@@ -9,7 +9,7 @@
 #define SYSTEM_MAIN_HPP_
 
 #include "Main.hpp"
-#include "system.TaskBase.hpp"
+#include "system.Thread.hpp"
 
 namespace system
 {
@@ -30,23 +30,23 @@ namespace system
         /**
          * User main thread.
          */ 
-        class Thread : public TaskBase
+        class MainThread : public ::system::Thread
         {
-            typedef TaskBase Parent;
+            typedef ::system::Thread Parent;
           
         public:
       
             /** 
              * Constructor.
              */
-            Thread() : Parent(),
+            MainThread() : Parent(),
                 error_ (-1){
             }
             
             /** 
              * Destructor.
              */
-            virtual ~Thread()
+            virtual ~MainThread()
             {
             }
             
@@ -61,7 +61,7 @@ namespace system
             /**
              * Returns execution error.
              */  
-            virtual int32 error()
+            int32 error()
             {
                 return error_;
             }    
@@ -73,7 +73,7 @@ namespace system
              *
              * @param obj reference to source object.
              */
-            Thread(const Thread& obj);
+            MainThread(const MainThread& obj);
             
             /**
              * Assignment operator.
@@ -81,7 +81,7 @@ namespace system
              * @param obj reference to source object.
              * @return reference to this object.     
              */
-            Thread& operator =(const Thread& obj);      
+            MainThread& operator =(const MainThread& obj);      
             
             /**
              * Execution error.

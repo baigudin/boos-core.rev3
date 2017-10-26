@@ -27,7 +27,7 @@ namespace system
      */  
     int64 System::getTimeNs()
     {
-        return 0; //isInitialized() ? interrupt_->nanoTime() : 0;
+        return 0; // TODO isInitialized() ? interrupt_->nanoTime() : 0;
     }
     
     /**

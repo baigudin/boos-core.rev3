@@ -28,7 +28,6 @@ Source="..\..\source\kernel\kernel.Mutex.cpp"
 Source="..\..\source\kernel\kernel.Scheduler.cpp"
 Source="..\..\source\kernel\kernel.Semaphore.cpp"
 Source="..\..\source\kernel\kernel.System.cpp"
-Source="..\..\source\kernel\kernel.Thread.cpp"
 Source="..\..\source\kernel\kernel.Timer.cpp"
 Source="..\..\source\kernel\kernel.TimerInterrupt.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
@@ -36,6 +35,8 @@ Source="..\..\source\system\system.Main.cpp"
 Source="..\..\source\system\system.Mutex.cpp"
 Source="..\..\source\system\system.Semaphore.cpp"
 Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
+Source="..\..\source\tests\Main.thread.cpp"
 Source="Debug\eoos.tms320c64xplus.debug.map"
 Source="Release\eoos.tms320c64xplus.map"
 Source="source\Board.cpp"
@@ -66,6 +67,9 @@ ExcludeFromBuild=true
 ExcludeFromBuild=true
 
 ["Release\eoos.tms320c64xplus.map" Settings: "Release"]
+ExcludeFromBuild=true
+
+["source\Main.cpp" Settings: "Debug"]
 ExcludeFromBuild=true
 
 ["..\..\source\driver\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Debug"]

@@ -8,7 +8,6 @@
 #include "kernel.Main.hpp" 
 #include "kernel.System.hpp"
 #include "kernel.Interrupt.hpp"
-#include "kernel.Thread.hpp"
 #include "driver.Processor.hpp"
 #include "Allocator.hpp"
 #include "Board.hpp"

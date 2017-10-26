@@ -5,15 +5,15 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef KERNEL_FACTORY_BASE_HPP_
-#define KERNEL_FACTORY_BASE_HPP_
+#ifndef KERNEL_ABSTRACT_FACTORY_HPP_
+#define KERNEL_ABSTRACT_FACTORY_HPP_
 
 #include "Object.hpp"
 #include "kernel.Factory.hpp"
 
 namespace kernel
 {
-    class FactoryBase : public ::Object<>, public ::kernel::Factory
+    class AbstractFactory : public ::Object<>, public ::kernel::Factory
     {
         typedef ::Object<> Parent;
       
@@ -22,14 +22,14 @@ namespace kernel
         /** 
          * Constructor.
          */    
-        FactoryBase() : Parent(),
+        AbstractFactory() : Parent(),
             isConstructed_ (getConstruct()){
         }        
   
         /** 
          * Destructor.
          */
-        virtual ~FactoryBase(){}
+        virtual ~AbstractFactory(){}
         
         /**
          * Tests if this object has been constructed.
@@ -100,7 +100,7 @@ namespace kernel
          *
          * @param obj reference to source object.
          */
-        FactoryBase(const FactoryBase& obj);
+        AbstractFactory(const AbstractFactory& obj);
       
         /**
          * Assignment operator.
@@ -108,8 +108,8 @@ namespace kernel
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        FactoryBase& operator =(const FactoryBase& obj);            
+        AbstractFactory& operator =(const AbstractFactory& obj);            
         
     };
 }
-#endif // KERNEL_FACTORY_BASE_HPP_
+#endif // KERNEL_ABSTRACT_FACTORY_HPP_

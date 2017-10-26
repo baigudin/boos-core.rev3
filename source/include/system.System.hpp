@@ -71,7 +71,7 @@ namespace system
         static const int32 IS_INITIALIZED = 0x95277129;    
         
         /**
-         * the module has been initialized successfully (no boot).
+         * The module has been initialized successfully (no boot).
          */
         static int32 isInitialized_;           
         

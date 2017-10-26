@@ -199,7 +199,7 @@ namespace kernel
         static const int32 IS_INITIALIZED = 0x15798351;    
         
         /**
-         * the module has been initialized successfully (no boot).
+         * The module has been initialized successfully (no boot).
          */
         static int32 isInitialized_;           
         

@@ -22,12 +22,14 @@ namespace system
         /** 
          * Constructor.
          */    
-        TaskBase() : Parent(){}
+        TaskBase() : Parent(){        
+        }
         
         /** 
          * Destructor.
          */
-        virtual ~TaskBase(){}
+        virtual ~TaskBase(){
+        }
         
         /**
          * Tests if this object has been constructed.

@@ -78,38 +78,37 @@ namespace api
         /**
          * Blocks this thread on given resource and yields the task.
          *
-         * @param res reference to resource.
+         * @param res a resource.
          */  
         virtual void block(::api::Resource& res) = 0;        
         
         /**
          * Returns the identifier of this thread.
          *
-         * @return the thread identifier.
+         * @return the thread identifier, or -1 if error has been occurred.
          */
         virtual int64 getId() const = 0;
-
-        /**
-         * Causes the currently executing thread to sleep.
-         *
-         * @param millis a time to sleep in milliseconds.
-         * @param nanos  an additional nanoseconds to sleep.
-         */  
-        virtual Status getStatus() const = 0;        
       
         /**
          * Returns this thread priority.
          *
-         * @return priority value.
+         * @return priority value, or -1 if error has been occurred.
          */  
         virtual int32 getPriority() const = 0;
       
         /**
          * Sets this thread priority.
          *
-         * @param priority number of priority in range [MIN_PRIORITY, MAX_PRIORITY].
+         * @param priority number of priority in range [MIN_PRIORITY, MAX_PRIORITY], or LOCK_PRIORITY.
          */  
         virtual void setPriority(int32 priority) = 0;
+        
+        /**
+         * Returns a status of this thread.
+         *
+         * @return this thread status.
+         */  
+        virtual Status getStatus() const = 0;          
          
     };
 }

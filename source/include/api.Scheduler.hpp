@@ -31,14 +31,7 @@ namespace api
          * @param task an user task which main method will be invoked when created thread is started.
          * @return a new thread.
          */
-        virtual ::api::Thread& createThread(::api::Task& task) = 0;
-        
-        /**
-         * Removes the first occurrence of the specified thread.
-         *
-         * @param thread removing thread.
-         */
-        virtual void removeThread(::api::Thread& thread) = 0;
+        virtual ::api::Thread* createThread(::api::Task& task) = 0;
         
         /**
          * Returns currently executing thread.
