@@ -8,15 +8,15 @@
 #ifndef DRIVER_TIMER_CONTROLLER_HPP_
 #define DRIVER_TIMER_CONTROLLER_HPP_
 
-#include "driver.TimerResource.hpp"
+#include "driver.TimerBase.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.reg.Timer.hpp"
 
 namespace driver
 {
-    class TimerController : public ::driver::TimerResource
+    class TimerController : public ::driver::TimerBase
     {
-        typedef ::driver::TimerResource  Parent;
+        typedef ::driver::TimerBase  Parent;
         
     public:
       
@@ -184,16 +184,6 @@ namespace driver
             if( not isConstructed_ ) return 0; 
             return timerClock_;
         }    
-        
-        /**
-         * Tests if this timer can interrupt a CPU.
-         *
-         * @return true if this source is polarizing.
-         */  
-        virtual bool isInterrupting() const
-        {
-            return true;
-        }
         
         /**
          * Returns an available interrupt source for this timer.

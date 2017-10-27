@@ -5,10 +5,13 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "system.System.hpp"
-#include "kernel.Factory.hpp"
+#include "kernel.System.hpp"
+#include "kernel.Scheduler.hpp"
+#include "kernel.SystemTimerInterrupt.hpp"
+#include "driver.Interrupt.hpp"
+#include "api.Toggle.hpp"
 
-namespace system
+namespace kernel
 {
     /**
      * Current value of the running system in milliseconds.
@@ -27,18 +30,18 @@ namespace system
      */  
     int64 System::getTimeNs()
     {
-        return 0; // TODO isInitialized() ? interrupt_->nanoTime() : 0;
+        return isInitialized() ? interrupt_->nanoTime() : 0;
     }
     
-    /**
-     * Returns an kernel factory of the operating system.
+    /** 
+     * Returns a kernel scheduler.
      *
-     * @return a kernel factory.
-     */
-    ::kernel::Factory& System::getKernelFactory()
+     * @return a kernel scheduler.
+     */      
+    ::api::Scheduler& System::getScheduler()
     {
         if( not isInitialized() ) terminate();
-        return *factory_;
+        return *scheduler_;
     }
     
     /**
@@ -46,7 +49,7 @@ namespace system
      */
     void System::terminate()
     {
-        // ::driver::Interrupt::disableAll();
+        ::driver::Interrupt::disableAll();
         while(true);  
     }
     
@@ -58,11 +61,24 @@ namespace system
     bool System::initialize()
     {
         isInitialized_ = 0;
-        stage_ = 0;        
+        stage_ = 0;
+        scheduler_ = NULL;
+        interrupt_ = NULL;
+        global_ = NULL;        
         // Stage 1: Create the operating system tick timer
         stage_++;        
-        factory_ = ::kernel::Factory::create();
-        if(factory_ == NULL || not factory_->isConstructed() )  return false;
+        scheduler_ = new Scheduler();
+        if(scheduler_ == NULL || not scheduler_->isConstructed()) return false;        
+        // Stage 2: Create the operating system tick timer
+        stage_++;        
+        interrupt_ = new SystemTimerInterrupt();
+        if(interrupt_ == NULL || not interrupt_->isConstructed()) return false;
+        // Stage 3: Set heap interrupt controller
+        stage_++;        
+        ::api::Heap* heap = ::Allocator::getHeap();
+        if(heap == NULL || not heap->isConstructed()) return false;
+        global_ = &interrupt_->global();
+        heap->setToggle(global_);
         // Stage complete
         stage_ = -1;
         isInitialized_ = IS_INITIALIZED;        
@@ -77,11 +93,21 @@ namespace system
         switch(stage_)
         {
             default:
-            case  1: 
+            case 3:             
             {
-                delete factory_;
+                global_ = NULL;            
+            }
+            case 2: 
+            {
+                delete interrupt_;
+                interrupt_ = NULL;                
             }          
-            case  0: 
+            case 1: 
+            {
+                delete scheduler_;
+                scheduler_ = NULL;                
+            }          
+            case 0: 
             {
                 break;
             }
@@ -110,8 +136,17 @@ namespace system
     int32 System::stage_;    
     
     /**
-     * A kernel factory of the operating system (no boot).
+     * Scheduler interrupt resource (no boot).
      */
-    ::kernel::Factory* System::factory_;
+    ::api::Scheduler* System::scheduler_;
     
+    /**
+     * Hardware timer interrupt resource (no boot).
+     */
+    SystemTimerInterrupt* System::interrupt_;  
+  
+    /**
+     * Global interrupt resource (no boot).
+     */
+    ::api::Toggle* System::global_;  
 }

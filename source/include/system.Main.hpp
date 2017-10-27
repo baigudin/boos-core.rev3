@@ -30,8 +30,7 @@ namespace system
         /**
          * User main thread.
          */ 
-      
-        class Thread : public ::system::Thread
+        class MainThread : public ::system::Thread
         {
             typedef ::system::Thread Parent;
           
@@ -40,14 +39,14 @@ namespace system
             /** 
              * Constructor.
              */
-            Thread() : Parent(),
+            MainThread() : Parent(),
                 error_ (-1){
             }
             
             /** 
              * Destructor.
              */
-            virtual ~Thread()
+            virtual ~MainThread()
             {
             }
             
@@ -62,7 +61,7 @@ namespace system
             /**
              * Returns execution error.
              */  
-            virtual int32 error()
+            int32 error()
             {
                 return error_;
             }    
@@ -74,7 +73,7 @@ namespace system
              *
              * @param obj reference to source object.
              */
-            Thread(const Thread& obj);
+            MainThread(const MainThread& obj);
             
             /**
              * Assignment operator.
@@ -82,7 +81,7 @@ namespace system
              * @param obj reference to source object.
              * @return reference to this object.     
              */
-            Thread& operator =(const Thread& obj);      
+            MainThread& operator =(const MainThread& obj);      
             
             /**
              * Execution error.

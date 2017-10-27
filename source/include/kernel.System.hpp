@@ -1,18 +1,25 @@
 /** 
- * System class of the operating system.
+ * System class of the operating system kernel.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_SYSTEM_HPP_
-#define SYSTEM_SYSTEM_HPP_
+#ifndef KERNEL_SYSTEM_HPP_
+#define KERNEL_SYSTEM_HPP_
 
 #include "Types.hpp"
-#include "kernel.Factory.hpp"
 
-namespace system
+namespace api 
+{ 
+    class Scheduler;
+    class Toggle; 
+}
+
+namespace kernel
 {
+    class SystemTimerInterrupt;
+    
     class System
     {
       
@@ -32,12 +39,12 @@ namespace system
          */      
         static int64 getTimeNs();
         
-        /**
-         * Returns an kernel factory of the operating system.
+        /** 
+         * Returns a kernel scheduler.
          *
-         * @return a kernel factory.
-         */
-        static ::kernel::Factory& getKernelFactory();
+         * @return a kernel scheduler.
+         */      
+        static ::api::Scheduler& getScheduler();
         
         /**
          * Terminates the operating system execution.
@@ -79,12 +86,22 @@ namespace system
          * The module initialization stage (no boot).
          */
         static int32 stage_;
+        
+        /**
+         * Scheduler interrupt resource (no boot).
+         */
+        static ::api::Scheduler* scheduler_;        
   
         /**
-         * A kernel factory of the operating system (no boot).
+         * Hardware timer interrupt resource (no boot).
          */
-        static ::kernel::Factory* factory_;
+        static SystemTimerInterrupt* interrupt_;
+        
+        /**
+         * Global interrupt resource (no boot).
+         */
+        static ::api::Toggle* global_;    
   
     };
 }
-#endif // SYSTEM_SYSTEM_HPP_
+#endif // KERNEL_SYSTEM_HPP_

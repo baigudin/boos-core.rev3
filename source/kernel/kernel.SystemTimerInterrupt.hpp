@@ -5,20 +5,20 @@
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_SYSTEM_TIMER_INTERRUPT_HPP_
-#define SYSTEM_SYSTEM_TIMER_INTERRUPT_HPP_
+#ifndef KERNEL_SYSTEM_TIMER_INTERRUPT_HPP_
+#define KERNEL_SYSTEM_TIMER_INTERRUPT_HPP_
 
-#include "system.TimerInterrupt.hpp"
+#include "kernel.TimerInterrupt.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.Timer.hpp"
  
-namespace system
+namespace kernel
 {
-    class SystemTimerInterrupt : public ::system::TimerInterrupt, public ::api::Task
+    class SystemTimerInterrupt : public ::kernel::TimerInterrupt, public ::api::Task
     {
-        typedef ::system::TimerInterrupt Parent;
-        typedef ::system::Interrupt      ResInt;
-        typedef ::system::Timer          ResTim;
+        typedef ::kernel::TimerInterrupt Parent;
+        typedef ::kernel::Interrupt      ResInt;
+        typedef ::kernel::Timer          ResTim;
   
     public:
   
@@ -177,4 +177,5 @@ namespace system
   
     };
 }
-#endif // SYSTEM_SYSTEM_TIMER_INTERRUPT_HPP_
+#endif // KERNEL_SYSTEM_TIMER_INTERRUPT_HPP_
+

@@ -5,19 +5,19 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_TIMER_INTERRUPT_HPP_
-#define SYSTEM_TIMER_INTERRUPT_HPP_
+#ifndef KERNEL_TIMER_INTERRUPT_HPP_
+#define KERNEL_TIMER_INTERRUPT_HPP_
 
-#include "system.Interrupt.hpp"
-#include "system.Timer.hpp"
+#include "kernel.Interrupt.hpp"
+#include "kernel.Timer.hpp"
 
-namespace system
+namespace kernel
 {
-    class TimerInterrupt : public ::system::Interrupt, public ::system::Timer
+    class TimerInterrupt : public ::kernel::Interrupt, public ::kernel::Timer
     {
-        typedef ::system::Interrupt Parent;
-        typedef ::system::Interrupt ResInt;    
-        typedef ::system::Timer     ResTim;
+        typedef ::kernel::Interrupt Parent;
+        typedef ::kernel::Interrupt ResInt;    
+        typedef ::kernel::Timer     ResTim;
       
     public:
   
@@ -61,6 +61,13 @@ namespace system
          * @param flag constructed flag.
          */      
         virtual void setConstruct(bool flag);
+        
+        /**
+         * Returns the object constructed flag.
+         *
+         * @return reference to the constructed flag.
+         */      
+        virtual const bool& getConstruct();     
       
     private:
   
@@ -89,4 +96,4 @@ namespace system
   
     };
 }
-#endif // SYSTEM_TIMER_INTERRUPT_HPP_
+#endif // KERNEL_TIMER_INTERRUPT_HPP_

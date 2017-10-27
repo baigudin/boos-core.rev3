@@ -8,15 +8,15 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef DRIVER_INTERRUPT_RESOURCE_HPP_
-#define DRIVER_INTERRUPT_RESOURCE_HPP_
+#ifndef DRIVER_INTERRUPT_BASE_HPP_
+#define DRIVER_INTERRUPT_BASE_HPP_
 
 #include "Object.hpp"
 #include "driver.Interrupt.hpp"
 
 namespace driver
 {
-    class InterruptResource : public ::Object<>, public ::driver::Interrupt
+    class InterruptBase : public ::Object<>, public ::driver::Interrupt
     {
         typedef ::Object<>  Parent;  
   
@@ -25,14 +25,14 @@ namespace driver
         /** 
          * Constructor.
          */    
-        InterruptResource() : Parent(),
+        InterruptBase() : Parent(),
             isConstructed_ (getConstruct()){
         }    
         
         /** 
          * Destructor.
          */                               
-        virtual ~InterruptResource()
+        virtual ~InterruptBase()
         {
         }
         
@@ -133,7 +133,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        InterruptResource(const InterruptResource& obj);
+        InterruptBase(const InterruptBase& obj);
         
         /**
          * Assignment operator.
@@ -141,8 +141,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        InterruptResource& operator =(const InterruptResource& obj);  
+        InterruptBase& operator =(const InterruptBase& obj);  
         
     };
 }
-#endif // DRIVER_INTERRUPT_RESOURCE_HPP_
+#endif // DRIVER_INTERRUPT_BASE_HPP_

@@ -7,19 +7,9 @@
  */
 #include "system.Interrupt.hpp"
 #include "system.System.hpp"
-#include "driver.Interrupt.hpp"
- 
+
 namespace system
 {
-    /**
-     * Constructor.
-     */
-    Interrupt::Interrupt() : Parent(),
-        isConstructed_ (getConstruct()),  
-        driver_        (NULL){
-        setConstruct( construct(NULL, 0) );
-    }  
-    
     /**
      * Constructor.
      *
@@ -28,8 +18,8 @@ namespace system
      */
     Interrupt::Interrupt(::api::Task& handler, int32 source) : Parent(),
         isConstructed_ (getConstruct()),
-        driver_        (NULL){
-        setConstruct( construct(&handler, source) );
+        kernel_        (NULL){
+        setConstruct( construct(handler, source) );
     }
     
     /**
@@ -37,7 +27,7 @@ namespace system
      */
     Interrupt::~Interrupt()
     {
-        delete driver_;
+        delete kernel_;
     }
     
     /**
@@ -47,22 +37,12 @@ namespace system
      * @param source  available interrupt source.
      * @return true if object has been constructed successfully.
      */
-    bool Interrupt::construct(::api::Task* handler, int32 source)
+    bool Interrupt::construct(::api::Task& handler, int32 source)
     {
-        if(!isConstructed_) return false;
-        ::driver::Interrupt::Resource res;
-        if(handler != NULL) 
-        {
-            res.handler = handler;
-            res.source = source;    
-        }
-        else 
-        {
-            res.handler = NULL;
-            res.source = 0;
-        }
-        driver_ = ::driver::Interrupt::create(res);    
-        return driver_ != NULL ? driver_->isConstructed() : false;
+        if( not isConstructed_ ) return false;    
+        ::kernel::Factory& factory = System::getKernelFactory();
+        kernel_ = factory.createInterrupt(handler, source);
+        return kernel_ != NULL ? kernel_->isConstructed() : false;
     }
   
     /**
@@ -80,8 +60,8 @@ namespace system
      */  
     void Interrupt::jump()
     {
-        if(!isConstructed_) return;
-        driver_->jump();
+        if( not isConstructed_ ) return;
+        kernel_->jump();
     }
     
     /**
@@ -89,8 +69,8 @@ namespace system
      */  
     void Interrupt::clear()
     {
-        if(!isConstructed_) return;
-        driver_->clear();  
+        if( not isConstructed_ ) return;
+        kernel_->clear();  
     }
     
     /**
@@ -98,8 +78,8 @@ namespace system
      */  
     void Interrupt::set()
     {
-        if(!isConstructed_) return;
-        driver_->set();  
+        if( not isConstructed_ ) return;
+        kernel_->set();  
     }  
     
     /**
@@ -109,8 +89,8 @@ namespace system
      */    
     bool Interrupt::disable()
     {
-        if(!isConstructed_) return false;  
-        return driver_->disable();
+        if( not isConstructed_ ) return false;  
+        return kernel_->disable();
     }
     
     /**
@@ -120,93 +100,8 @@ namespace system
      */
     void Interrupt::enable(bool status)
     {
-        if(!isConstructed_) return;
-        driver_->enable(status);  
+        if( not isConstructed_ ) return;
+        kernel_->enable(status);  
     }
-  
-    /**
-     * Initialization.
-     *
-     * @return true if no errors.
-     */
-    bool Interrupt::initialize()
-    {
-        int32 stage = 0;
-        while(true)
-        {
-            // Stage 1 creates global interrupt class switching
-            stage++;
-            global_ = new Global();
-            if( global_ == NULL || !global_->isConstructed() ) break;
-            // Stage complete
-            stage = 0;
-            break;
-        }
-        switch(stage)
-        {
-            case 1: delete global_; global_ = NULL;      
-            default: return false;
-            case 0: return true;
-        }  
-    }
-  
-    /**
-     * Deinitialization.
-     */
-    void Interrupt::deinitialize()
-    {
-        if(global_ != NULL)
-        {
-            delete global_; 
-            global_ = NULL;
-        }
-    }
-  
-    /** 
-     * Returns the toggle interface for controlling global interrupts.
-     *
-     * @return toggle interface.
-     */ 
-    ::api::Toggle& Interrupt::global()
-    {
-        if(global_ == NULL) System::terminate();
-        return *global_;
-    }
-    
-    /** 
-     * Returns interrupt developing interface.
-     *
-     * @return interrupt developing interface.
-     */  
-    ::driver::Interrupt& Interrupt::getDriver()
-    {
-        if(!isConstructed_) System::terminate();
-        return *driver_;
-    }
-    
-    
-    /** 
-     * Disables all maskable interrupts.
-     *
-     * @return global interrupt enable bit value before method was called.
-     */ 
-    bool Interrupt::Global::disable()
-    {
-        return ::driver::Interrupt::disableAll();
-    }
-    
-    /** 
-     * Enables all maskable interrupts.
-     *
-     * @param status returned status by disable method.
-     */    
-    void Interrupt::Global::enable(bool status)
-    {
-        ::driver::Interrupt::enableAll(status);  
-    }
-    
-    /**    
-     * Hardware global interrupt controller (no boot).
-     */
-    Interrupt::Global* Interrupt::global_;
+
 }

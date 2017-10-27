@@ -2,35 +2,31 @@
  * Mutex class.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017, Embedded Team, Sergey Baigudin
+ * @copyright 2015-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
 #include "system.Mutex.hpp"
-#include "system.Thread.hpp"
-#include "driver.Interrupt.hpp"
+#include "system.System.hpp"
 
 namespace system
 {
-    typedef ::driver::Interrupt Int;
-  
     /** 
      * Constructor.
-     */    
+     */      
     Mutex::Mutex() : Parent(),
         isConstructed_ (getConstruct()),
-        id_            (UNLOCKED_ID),
-        count_         (1),
-        fifo_          (NULL){    
-        setConstruct( construct() );    
-    }
+        kernel_        (NULL){
+        setConstruct( construct() ); 
+    }    
   
     /** 
      * Destructor.
-     */      
+     */
     Mutex::~Mutex()
     {
+        delete kernel_;
     }
-        
+  
     /**
      * Tests if this object has been constructed.
      *
@@ -48,32 +44,8 @@ namespace system
      */      
     bool Mutex::lock()
     {
-        if(!isConstructed_) return false;
-        bool is = Int::disableAll();
-        // The first checking for acquiring available permits of the mutex
-        if( count_ - 1 >= 0 && fifo_.isEmpty() )
-        {
-            // Decrement the number of available permits
-            count_ -= 1;
-            // Go through the mutex to critical section
-            return Int::enableAll(is, true);      
-        }
-        Thread* thread = &Thread::getCurrent();
-        // Add current thread to the queue tail
-        if( fifo_.add(thread) == false ) return Int::enableAll(is, false);
-        while(true)
-        {
-            // Block current thread on the mutex and switch to another thread
-            Thread::block(*this);
-            // Test if head thread is current thread
-            if(fifo_.peek() != thread) continue;
-            // Test available permits for no breaking the fifo queue by removing
-            if(count_ - 1 < 0) continue;
-            // Decrement the number of available permits
-            count_ -= 1;        
-            // Remove head thread
-            return Int::enableAll( is, fifo_.remove() );
-        }    
+        if( not isConstructed_ ) return false;
+        return kernel_->lock();
     }
     
     /**
@@ -81,10 +53,8 @@ namespace system
      */      
     void Mutex::unlock()
     {
-        if(!isConstructed_) return;
-        bool is = Int::disableAll();
-        count_ += 1;
-        Int::enableAll(is);  
+        if( not isConstructed_ ) return ;
+        kernel_->unlock();
     }
   
     /** 
@@ -94,10 +64,8 @@ namespace system
      */ 
     bool Mutex::isBlocked()
     {
-        if(!isConstructed_) return false;
-        bool is = Int::disableAll();
-        bool res = count_ > 0 ? false : true;
-        return Int::enableAll(is, res);  
+        if( not isConstructed_ ) return false;
+        return kernel_->isBlocked();
     }
     
     /**
@@ -107,7 +75,9 @@ namespace system
      */
     bool Mutex::construct()
     {
-        if(!isConstructed_) return false;
-        return true;
+        if( not isConstructed_ ) return false;
+        ::kernel::Factory& factory = System::getKernelFactory();
+        kernel_ = factory.createMutex();
+        return kernel_ != NULL ? kernel_->isConstructed() : false;        
     }
 }

@@ -8,15 +8,15 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef DRIVER_REGISTER_RESOURCE_HPP_
-#define DRIVER_REGISTER_RESOURCE_HPP_
+#ifndef DRIVER_REGISTER_BASE_HPP_
+#define DRIVER_REGISTER_BASE_HPP_
 
 #include "Object.hpp"
 #include "driver.Register.hpp"
 
 namespace driver
 {
-    class RegisterResource : public ::Object<>, public ::driver::Register
+    class RegisterBase : public ::Object<>, public ::driver::Register
     {
         typedef ::Object<>  Parent;
       
@@ -25,14 +25,14 @@ namespace driver
         /** 
          * Constructor.
          */     
-        RegisterResource() : Parent(),
+        RegisterBase() : Parent(),
             isConstructed_ (getConstruct()){
         }    
         
         /** 
          * Destructor.
          */                               
-        virtual ~RegisterResource()
+        virtual ~RegisterBase()
         {
         }
         
@@ -85,7 +85,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        RegisterResource(const RegisterResource& obj);
+        RegisterBase(const RegisterBase& obj);
         
         /**
          * Assignment operator.
@@ -93,8 +93,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        RegisterResource& operator =(const RegisterResource& obj);      
+        RegisterBase& operator =(const RegisterBase& obj);      
   
     };
 }
-#endif // DRIVER_REGISTER_RESOURCE_HPP_
+#endif // DRIVER_REGISTER_BASE_HPP_

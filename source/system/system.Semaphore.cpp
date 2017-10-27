@@ -6,13 +6,10 @@
  * @license   http://embedded.team/license/
  */
 #include "system.Semaphore.hpp"
-#include "system.Thread.hpp"
-#include "driver.Interrupt.hpp"
+#include "system.System.hpp"
 
 namespace system
 {
-    typedef ::driver::Interrupt Int;
-  
     /** 
      * Constructor.
      *
@@ -22,10 +19,8 @@ namespace system
      */      
     Semaphore::Semaphore(int32 permits) : Parent(),
         isConstructed_ (getConstruct()),
-        permits_       (permits),
-        isFair_        (false),    
-        fifo_          (NULL){
-        setConstruct( construct() );  
+        kernel_        (NULL){
+        setConstruct( construct(permits, NULL) ); 
     }    
     
     /** 
@@ -35,11 +30,9 @@ namespace system
      * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.
      */      
     Semaphore::Semaphore(int32 permits, bool isFair) : Parent(),
-        isConstructed_ (getConstruct()),  
-        permits_ (permits),
-        isFair_  (isFair),
-        fifo_    (NULL){
-        setConstruct( construct() );  
+        isConstructed_ (getConstruct()),
+        kernel_        (NULL){
+        setConstruct( construct(permits, &isFair) );   
     }
   
     /** 
@@ -47,6 +40,7 @@ namespace system
      */
     Semaphore::~Semaphore()
     {
+        delete kernel_;
     }
     
     /**
@@ -66,7 +60,8 @@ namespace system
      */
     bool Semaphore::acquire()
     {
-        return acquire(1);
+        if( not isConstructed_ ) return false;
+        return kernel_->acquire();    
     }
   
     /**
@@ -77,53 +72,8 @@ namespace system
      */   
     bool Semaphore::acquire(int32 permits)
     {
-        if(!isConstructed_) return false;
-        bool is = Int::disableAll();
-        // Acquire fairly
-        if(isFair_)
-        {
-            // The first checking for acquiring available permits of the semaphore
-            if( permits_ - permits >= 0 && fifo_.isEmpty() )
-            {
-                // Decrement the number of available permits
-                permits_ -= permits;
-                // Go through the semaphore to critical section
-                return Int::enableAll(is, true);      
-            }
-            Thread* thread = &Thread::getCurrent();
-            // Add current thread to the queue tail
-            if( fifo_.add(thread) == false ) return Int::enableAll(is, false);
-            while(true)
-            {
-                // Block current thread on the semaphore and switch to another thread
-                Thread::block(*this);
-                // Test if head thread is current thread
-                if(fifo_.peek() != thread) continue;
-                // Test available permits for no breaking the fifo queue by removing
-                if(permits_ - permits < 0) continue;
-                // Decrement the number of available permits
-                permits_ -= permits;        
-                // Remove head thread
-                return Int::enableAll( is, fifo_.remove() );
-            }    
-        }
-        // Acquire unfairly
-        else
-        {
-            while(true)
-            {
-                // Check about available permits in the semaphoring critical section
-                if( permits_ - permits >= 0 )
-                {
-                    // Decrement the number of available permits
-                    permits_ -= permits;
-                    // Go through the semaphore to critical section
-                    return Int::enableAll(is, true);
-                }
-                // Block current thread on the semaphore and switch to another thread
-                Thread::block(*this);      
-            }  
-        }
+        if( not isConstructed_ ) return false;
+        return kernel_->acquire(permits);        
     }
   
     /**
@@ -131,7 +81,8 @@ namespace system
      */
     void Semaphore::release()
     {
-        release(1);
+        if( not isConstructed_ ) return;
+        kernel_->release();        
     }    
   
     /**
@@ -141,10 +92,8 @@ namespace system
      */  
     void Semaphore::release(int32 permits)
     {
-        if(!isConstructed_) return;
-        bool is = Int::disableAll();
-        permits_ += permits;
-        Int::enableAll(is);
+        if( not isConstructed_ ) return;
+        kernel_->release(permits);            
     }  
     
     /** 
@@ -154,10 +103,8 @@ namespace system
      */ 
     bool Semaphore::isBlocked()
     {
-        if(!isConstructed_) return false;
-        bool is = Int::disableAll();
-        bool res = permits_ > 0 ? false : true;
-        return Int::enableAll(is, res);
+        if( not isConstructed_ ) return false;
+        return kernel_->isBlocked();        
     }
     
     /**
@@ -167,18 +114,29 @@ namespace system
      */  
     bool Semaphore::isFair() const
     {
-        return isFair_;
+        if( not isConstructed_ ) return false;    
+        return kernel_->isFair(); 
     }
     
     /**
      * Constructor.
      *
+     * @param permits the initial number of permits available.      
+     * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.     
      * @return true if object has been constructed successfully.   
      */
-    bool Semaphore::construct()
+    bool Semaphore::construct(int32 permits, bool* isFair)
     {
-        if(!isConstructed_) return false;
-        if(!fifo_.isConstructed()) return false;      
-        return true;
+        if( not isConstructed_ ) return false;
+        ::kernel::Factory& factory = System::getKernelFactory();
+        if( isFair == NULL )
+        {
+            kernel_ = factory.createSemaphore(permits);
+        }
+        else
+        {
+            kernel_ = factory.createSemaphore(permits, *isFair);
+        }
+        return kernel_ != NULL ? kernel_->isConstructed() : false;        
     }
 }

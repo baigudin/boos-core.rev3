@@ -1,19 +1,19 @@
 /** 
- * Hardware timer resource.
+ * The kernel hardware timer resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_TIMER_HPP_
-#define SYSTEM_TIMER_HPP_
+#ifndef KERNEL_TIMER_HPP_
+#define KERNEL_TIMER_HPP_
 
 #include "Object.hpp" 
 #include "api.Timer.hpp" 
 
 namespace driver { class Timer; }
 
-namespace system
+namespace kernel
 {
     class Timer : public ::Object<>, public ::api::Timer
     {
@@ -133,4 +133,4 @@ namespace system
       
     };
 }
-#endif // SYSTEM_TIMER_HPP_
+#endif // KERNEL_TIMER_HPP_

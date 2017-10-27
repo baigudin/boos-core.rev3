@@ -8,7 +8,7 @@
 #ifndef DRIVER_INTERRUPT_CONTROLLER_HPP_
 #define DRIVER_INTERRUPT_CONTROLLER_HPP_
 
-#include "driver.InterruptResource.hpp"
+#include "driver.InterruptBase.hpp"
 #include "driver.Processor.hpp"
 #include "driver.Register.hpp"
 #include "driver.reg.Aintc.hpp"
@@ -16,9 +16,9 @@
 
 namespace driver
 {
-    class InterruptController : public ::driver::InterruptResource
+    class InterruptController : public ::driver::InterruptBase
     {
-        typedef ::driver::InterruptResource     Parent;
+        typedef ::driver::InterruptBase            Parent;
         typedef ::utility::Stack<int64,Allocator>  Stack;
   
     public:

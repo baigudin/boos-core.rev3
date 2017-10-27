@@ -1,14 +1,13 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir=""
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.lib.ti.tms320c64x.coff.ccstudio33\"
 ProjectType=Library
 CPUFamily=TMS320C64XX
 Tool="Archiver"
 Tool="Compiler"
 Tool="CustomBuilder"
 Tool="DspBiosBuilder"
-Tool="XDC"
 Config="Debug"
 Config="Release"
 
@@ -21,15 +20,9 @@ Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Pll.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Processor.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Register.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c64x\driver.Timer.cpp"
-Source="..\..\source\system\system.Escalator.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
-Source="..\..\source\system\system.Mutex.cpp"
 Source="..\..\source\system\system.Semaphore.cpp"
-Source="..\..\source\system\system.System.cpp"
-Source="..\..\source\system\system.Thread.cpp"
-Source="..\..\source\system\system.Timer.cpp"
-Source="..\..\source\system\system.TimerInterrupt.cpp"
 
 ["Archiver" Settings: "Debug"]
 Options=-r -o"..\..\libraries\eoos.ti.tms320c64x.coff.debug.lib"

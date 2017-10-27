@@ -65,7 +65,7 @@ namespace api
          *
          * @return index of this timer, or -1 if error has been occurred.
          */
-        virtual int32 getIndex() const = 0;    
+        virtual int32 getIndex() const = 0; 
       
     };
 }

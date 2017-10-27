@@ -5,14 +5,15 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef SYSTEM_ESCALATOR_HPP_
-#define SYSTEM_ESCALATOR_HPP_
+#ifndef KERNEL_ESCALATOR_HPP_
+#define KERNEL_ESCALATOR_HPP_
 
-#include "system.Thread.hpp"
+#include "Object.hpp"
 #include "api.Semaphore.hpp"
+#include "api.Thread.hpp"
 #include "utility.LinkedList.hpp"
 
-namespace system
+namespace kernel
 {
     class Escalator : public ::Object<>, public ::api::Semaphore
     {
@@ -105,7 +106,7 @@ namespace system
              * @param thread   current executing thread.
              * @return true if the escalator is release successfully.
              */
-            Node(Thread& thread, int32 ipermits) :
+            Node(::api::Thread& thread, int32 ipermits) :
                 permits (ipermits),
                 thread_ (&thread){
             }
@@ -179,7 +180,7 @@ namespace system
             /** 
              * Executing thread.
              */
-            Thread* thread_;
+            ::api::Thread* thread_;
         
         };
         
@@ -321,4 +322,4 @@ namespace system
     }
     
 }
-#endif // SYSTEM_ESCALATOR_HPP_
+#endif // KERNEL_ESCALATOR_HPP_

@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="D:\baigudin\github\baigudin\eoos\projects\eoos.exe.ti.am18x.coff.ccstudio33\"
+ProjectDir="D:\baigudin\git\baigudin\eoos\projects\eoos.exe.ti.am18x.coff.ccstudio33\"
 ProjectType=Executable
 CPUFamily=TMS470R2X
 Tool="Compiler"
@@ -19,18 +19,21 @@ Source="..\..\source\driver\cpu\ti\am18x\driver.Pll.cpp"
 Source="..\..\source\driver\cpu\ti\am18x\driver.Processor.cpp"
 Source="..\..\source\driver\cpu\ti\am18x\driver.Register.cpp"
 Source="..\..\source\driver\cpu\ti\am18x\driver.Timer.cpp"
+Source="..\..\source\kernel\kernel.Escalator.cpp"
+Source="..\..\source\kernel\kernel.Factory.cpp"
+Source="..\..\source\kernel\kernel.Interrupt.cpp"
+Source="..\..\source\kernel\kernel.Main.cpp"
+Source="..\..\source\kernel\kernel.Mutex.cpp"
+Source="..\..\source\kernel\kernel.Semaphore.cpp"
+Source="..\..\source\kernel\kernel.System.cpp"
+Source="..\..\source\kernel\kernel.Thread.cpp"
+Source="..\..\source\kernel\kernel.Timer.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
-Source="..\..\source\system\system.Mutex.cpp"
-Source="..\..\source\system\system.Semaphore.cpp"
-Source="..\..\source\system\system.System.cpp"
-Source="..\..\source\system\system.Thread.cpp"
-Source="..\..\source\system\system.Timer.cpp"
-Source="..\..\source\system\system.TimerInterrupt.cpp"
 Source="source\Board.cpp"
 Source="source\Configuration.cpp"
-Source="source\Main.cpp"
 Source="source\libraries\rts32e.lib"
+Source="source\Main.cpp"
 Source="..\..\source\driver\cpu\ti\am18x\memory\memory.am18x.coff.cmd"
 
 ["Compiler" Settings: "Debug"]

@@ -8,15 +8,15 @@
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef DRIVER_TIMER_RESOURCE_HPP_
-#define DRIVER_TIMER_RESOURCE_HPP_
+#ifndef DRIVER_TIMER_BASE_HPP_
+#define DRIVER_TIMER_BASE_HPP_
 
 #include "Object.hpp"
 #include "driver.Timer.hpp"
 
 namespace driver
 {
-    class TimerResource : public ::Object<>, public ::driver::Timer
+    class TimerBase : public ::Object<>, public ::driver::Timer
     {
         typedef ::Object<>  Parent;
       
@@ -25,14 +25,14 @@ namespace driver
         /** 
          * Constructor.
          */     
-        TimerResource() : Parent(),
+        TimerBase() : Parent(),
             isConstructed_ ( getConstruct() ){
         }    
         
         /** 
          * Destructor.
          */                               
-        virtual ~TimerResource()
+        virtual ~TimerBase()
         {
         }
         
@@ -129,16 +129,6 @@ namespace driver
         }    
         
         /**
-         * Tests if this timer can interrupt a CPU.
-         *
-         * @return true if this source is polarizing.
-         */  
-        virtual bool isInterrupting() const
-        {
-            return false;
-        }
-        
-        /**
          * Returns an available interrupt source for this timer.
          *
          * @return available interrupt source, or -1 if error has been occurred.
@@ -162,7 +152,7 @@ namespace driver
          *
          * @param obj reference to source object.
          */
-        TimerResource(const TimerResource& obj);
+        TimerBase(const TimerBase& obj);
         
         /**
          * Assignment operator.
@@ -170,8 +160,8 @@ namespace driver
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        TimerResource& operator =(const TimerResource& obj);      
+        TimerBase& operator =(const TimerBase& obj);      
   
     };
 }
-#endif // DRIVER_TIMER_RESOURCE_HPP_
+#endif // DRIVER_TIMER_BASE_HPP_

@@ -8,14 +8,14 @@
 #ifndef DRIVER_PLL_CONTROLLER_HPP_
 #define DRIVER_PLL_CONTROLLER_HPP_
 
-#include "driver.PllResource.hpp"
+#include "driver.PllBase.hpp"
 #include "driver.reg.Pllc.hpp"
 
 namespace driver
 {
-    class PllController : public ::driver::PllResource
+    class PllController : public ::driver::PllBase
     {
-        typedef ::driver::PllResource  Parent;
+        typedef ::driver::PllBase  Parent;
       
     public:
     
@@ -42,7 +42,7 @@ namespace driver
          */
         static bool initialize(const ::Configuration& config)
         {
-            isInitialized_ = 0;    
+            isInitialized_ = 0;
             volatile uint32 count;
             cpuClock_ = config.cpuClock;
             sourceClock_ = config.sourceClock;
@@ -86,7 +86,7 @@ namespace driver
             while(count) count--;      
             // Enable PLL mode
             regPll->pllctl.bit.pllen = 1;
-            isInitialized_ = IS_INITIALIZED;                      
+            isInitialized_ = IS_INITIALIZED;
             return true;
         }
       

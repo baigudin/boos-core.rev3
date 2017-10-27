@@ -8,15 +8,15 @@
 #ifndef DRIVER_REGISTER_CONTROLLER_HPP_
 #define DRIVER_REGISTER_CONTROLLER_HPP_
 
-#include "driver.RegisterResource.hpp"
+#include "driver.RegisterBase.hpp"
 
 extern void* __bss__;
 
 namespace driver
 {
-    class RegisterController : public ::driver::RegisterResource
+    class RegisterController : public ::driver::RegisterBase
     { 
-        typedef ::driver::RegisterResource  Parent;
+        typedef ::driver::RegisterBase  Parent;
       
       public:
       
