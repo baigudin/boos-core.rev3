@@ -1,20 +1,22 @@
 /** 
- * Hardware timer interrupt resource.
+ * The kernel time resource.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef KERNEL_SYSTEM_TIMER_INTERRUPT_HPP_
-#define KERNEL_SYSTEM_TIMER_INTERRUPT_HPP_
+#ifndef KERNEL_TIME_HPP_
+#define KERNEL_TIME_HPP_
 
 #include "kernel.TimerInterrupt.hpp"
+#include "api.Task.hpp"
+#include "api.Value.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.Timer.hpp"
  
 namespace kernel
 {
-    class SystemTimerInterrupt : public ::kernel::TimerInterrupt, public ::api::Task
+    class Time : public ::kernel::TimerInterrupt, public ::api::Task, public ::api::Value<int64>
     {
         typedef ::kernel::TimerInterrupt Parent;
         typedef ::kernel::Interrupt      ResInt;
@@ -24,10 +26,9 @@ namespace kernel
   
         /** 
          * Constructor.
-         *
-         * @param handler pointer to user class which implements an interrupt handler interface.
          */     
-        SystemTimerInterrupt() : Parent(),
+        Time() : Parent(),
+            isConstructed_ (getConstruct()),
             cnt_   (0),
             acc_   (0),
             time_  (0){
@@ -37,7 +38,7 @@ namespace kernel
         /** 
          * Destructor.
          */
-        virtual ~SystemTimerInterrupt()
+        virtual ~Time()
         {
         }
         
@@ -48,7 +49,7 @@ namespace kernel
          */    
         virtual bool isConstructed() const
         {
-            return this->Parent::isConstructed();
+            return isConstructed_;
         }   
         
         /**
@@ -68,31 +69,71 @@ namespace kernel
         {
             return 0x200;
         }
-      
+        
+        
         /**
-         * Current value of the running system.
+         * Sets a value.
          *
-         * @return time in nanoseconds.
-         */  
-        int64 nanoTime()
+         * @param value a value for setting.
+         */    
+        virtual void setValue(int64 value)
         {
-            return isConstructed() ? updateTime(getCount()) : 0;
+        }
+          
+        /**
+         * Returns set value.
+         *
+         * @return the set value.
+         */      
+        virtual int64 getValue() const
+        {
+            return isConstructed_ ? updateTime( getCount() ) : 0;        
+        }
+        
+        /**
+         * Returns illegal element which will be returned as error value.
+         *
+         * @return illegal element.
+         */
+        virtual int64 getIllegal() const
+        {
+            return ILLEGAL_VALUE;
+        }
+        
+        /**
+         * Sets illegal element which will be returned as error value.
+         *
+         * @param value illegal value.
+         */
+        virtual void setIllegal(int64 value)
+        {
+        }
+        
+        /**
+         * Tests if given value is an illegal.
+         *
+         * @param value testing value.
+         * @param true if value is an illegal.
+         */
+        virtual bool isIllegal(const int64& value) const
+        {
+            return value == ILLEGAL_VALUE ? true : false;
         }
   
     private:
   
         /**
-         * Update system time.
+         * Update kernel time.
          *
          * @param cnt the timer counter value.
          * @return updated current time in nanoseconds.
          */    
-        int64 updateTime(uint64 cnt)
+        int64 updateTime(uint64 cnt) const
         {
             int64 time, dc, dt;
             int64 timerFrequency = Timer::getDriver().getInternalClock();
             if(timerFrequency == 0) return time_;
-            bool is = global().disable();
+            bool is = ::driver::Interrupt::disableAll();
             // Set delta count it the value in timer clocks
             // which equals a time from previous updating.
             // This time in nanoseconds is a multiplying of
@@ -103,13 +144,13 @@ namespace kernel
             acc_ = dc * 1000000000 + acc_;
             // The nanoseconds left time after previous updating
             dt = acc_ / timerFrequency;
-            // Increment operating system working time in nsec
+            // Increment operating system kernel working time in nsec
             time = time_ += dt;
             // Store the remainder for next updating
             acc_ = acc_ - dt * timerFrequency;
             // Store the timer counter value
             cnt_ = cnt;
-            global().enable(is);               
+            ::driver::Interrupt::enableAll(is);               
             return time;
         } 
       
@@ -120,7 +161,7 @@ namespace kernel
          */
         bool construct()
         {
-            if(!isConstructed()) return false;
+            if( not isConstructed_ ) return false;
             ::api::Task& handler = reinterpret(this);
             int32 source = ResTim::getDriver().getInterrupSource();
             if(!ResInt::getDriver().setHandler(handler, source)) return false;
@@ -140,7 +181,7 @@ namespace kernel
          * @param cls pointer to this class.
          * @return the reference to InterruptHandler interface of given class.
          */
-        static ::api::Task& reinterpret(SystemTimerInterrupt* cls)
+        static ::api::Task& reinterpret(Time* cls)
         {
             return *cls;
         }
@@ -150,7 +191,7 @@ namespace kernel
          *
          * @param obj reference to source object.
          */
-        SystemTimerInterrupt(const SystemTimerInterrupt& obj);
+        Time(const Time& obj);
       
         /**
          * Assignment operator.
@@ -158,24 +199,34 @@ namespace kernel
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        SystemTimerInterrupt& operator =(const SystemTimerInterrupt& obj);    
+        Time& operator =(const Time& obj); 
+        
+        /** 
+         * Illegal value of counting time.
+         */
+        static const int64 ILLEGAL_VALUE = -1;
+        
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;
         
         /**
          * Previous counter value.
          */    
-        uint64 cnt_;
+        mutable uint64 cnt_;
       
         /**
          * Accumulator.
          */    
-        uint64 acc_;
+        mutable uint64 acc_;
         
         /**
-         * The operating system working time in nsec.
+         * The operating system kernel working time in nsec.
          */        
-        uint64 time_;
+        mutable uint64 time_;
   
     };
 }
-#endif // KERNEL_SYSTEM_TIMER_INTERRUPT_HPP_
+#endif // KERNEL_TIME_HPP_
 

@@ -197,7 +197,7 @@ namespace system
         stage_ = 0;
         // Stage 1: Create global interrupt class switching
         stage_++;
-        ::api::Scheduler& scheduler = System::getKernelFactory().getScheduler();
+        ::api::Scheduler& scheduler = System::getKernel().getScheduler();
         if( not scheduler.isConstructed() ) return false;
         scheduler_ = &scheduler;
         // Stage complete

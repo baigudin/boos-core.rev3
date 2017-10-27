@@ -25,12 +25,12 @@
     .def  _getPRecord__Q2_6driver4BootSFv
 
     .ref  _initialize__Q2_6driver4BootSFv
-    .ref  _main__Q2_6system4MainSFv    
+    .ref  _main__Q2_6kernel4MainSFv    
     .ref  ___cinit__
     .ref  ___pinit__
     .ref  ___bss__
 
-    .asg  _main__Q2_6system4MainSFv,       m_main    
+    .asg  _main__Q2_6kernel4MainSFv,       m_main    
     .asg  _getCRecord__Q2_6driver4BootSFv, m_get_cinit
     .asg  _getPRecord__Q2_6driver4BootSFv, m_get_pinit
     .asg  _initialize__Q2_6driver4BootSFv, m_boot_init    

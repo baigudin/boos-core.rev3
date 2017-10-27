@@ -85,16 +85,7 @@ int32 Main::main()
     thr1.start();  
     thr2.start();
     thr3.start();
-    {
-        volatile uint32 v = 0;  
-        volatile bool exe = true;
-        while(exe) 
-        {
-            v = v + 1;
-        }
-    }
-    Thread::getCurrent().setPriority(1);
-    Thread::yield();
+    Thread::getCurrent().sleep(3000);
     // Wait the threads will be completed
     thr1.join();
     thr2.join();  

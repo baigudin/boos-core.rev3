@@ -55,7 +55,12 @@ public:
      */   
     static bool initialize(const ::Configuration config)
     {
-        setHeap(config.heapAddr, config.heapSize);
+        heap_ = NULL;
+        void* addr = config.heapAddr;
+        int64 size = config.heapSize;
+        if(addr == NULL || size <= 0) return false;
+        heap_ = new (addr) ::utility::Heap(size);
+        if(heap_ == NULL || not heap_->isConstructed()) heap_ = NULL;        
         return heap_ != NULL ? true : false;
     }
     
@@ -67,19 +72,6 @@ public:
     }
   
 private:
-
-    /**
-     * Sets heap memory.
-     *
-     * @param add  address of heap memory.
-     * @param size number of bytes of heap memory.   
-     * @return true if no errors.
-     */
-    static void setHeap(void* addr, int64 size)
-    {
-        heap_ = addr != NULL && size > 0 ? new (addr) ::utility::Heap(size) : NULL;
-        if(heap_ == NULL || !heap_->isConstructed()) heap_ = NULL;
-    }
   
     /**
      * Pointer to constructed heap memory (no boot).

@@ -9,11 +9,11 @@
 #define KERNEL_ABSTRACT_FACTORY_HPP_
 
 #include "Object.hpp"
-#include "kernel.Factory.hpp"
+#include "api.Kernel.hpp"
 
 namespace kernel
 {
-    class AbstractFactory : public ::Object<>, public ::kernel::Factory
+    class AbstractFactory : public ::Object<>, public ::api::Kernel
     {
         typedef ::Object<> Parent;
       

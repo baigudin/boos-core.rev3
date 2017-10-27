@@ -76,8 +76,8 @@ namespace system
     bool Mutex::construct()
     {
         if( not isConstructed_ ) return false;
-        ::kernel::Factory& factory = System::getKernelFactory();
-        kernel_ = factory.createMutex();
+        ::api::Kernel& kernel = System::getKernel();
+        kernel_ = kernel.createMutex();
         return kernel_ != NULL ? kernel_->isConstructed() : false;        
     }
 }

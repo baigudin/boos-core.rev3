@@ -22,22 +22,26 @@ Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.ll.asm"
 Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Timer.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Watchdog.cpp"
-Source="..\..\source\kernel\kernel.Escalator.cpp"
-Source="..\..\source\kernel\kernel.Factory.cpp"
 Source="..\..\source\kernel\kernel.Interrupt.cpp"
+Source="..\..\source\kernel\kernel.Kernel.cpp"
 Source="..\..\source\kernel\kernel.Main.cpp"
 Source="..\..\source\kernel\kernel.Mutex.cpp"
+Source="..\..\source\kernel\kernel.Scheduler.cpp"
 Source="..\..\source\kernel\kernel.Semaphore.cpp"
-Source="..\..\source\kernel\kernel.System.cpp"
-Source="..\..\source\kernel\kernel.Thread.cpp"
 Source="..\..\source\kernel\kernel.Timer.cpp"
+Source="..\..\source\kernel\kernel.TimerInterrupt.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
+Source="..\..\source\system\system.Mutex.cpp"
+Source="..\..\source\system\system.Semaphore.cpp"
+Source="..\..\source\system\system.System.cpp"
+Source="..\..\source\system\system.Thread.cpp"
 Source="source\Board.cpp"
 Source="source\Configuration.cpp"
 Source="source\libraries\rts2800_fpu32.lib"
 Source="source\Main.cpp"
 Source="..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd"
+Source="..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd"
 
 ["Compiler" Settings: "Debug"]
 Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
@@ -52,8 +56,16 @@ Options=-c -m".\Debug\eoos.tms320f28x3x.debug.map" -o".\Debug\eoos.tms320f28x3x.
 Options=-c -m".\Release\eoos.tms320f28x3x.map" -o".\Release\eoos.tms320f28x3x.out" -w -x
 
 ["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]
+ExcludeFromBuild=true
 LinkOrder=1
 
 ["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Release"]
+LinkOrder=1
+
+["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd" Settings: "Release"]
+ExcludeFromBuild=true
 LinkOrder=1
 

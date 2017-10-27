@@ -11,7 +11,7 @@
 #include "Object.hpp"
 #include "api.Thread.hpp"
 #include "api.Task.hpp"
-#include "kernel.System.hpp"
+#include "kernel.Kernel.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.Processor.hpp"
 #include "driver.Register.hpp"
@@ -126,7 +126,7 @@ namespace kernel
         {
             bool is = Int::disableAll();
             status_ = SLEEPING;            
-            sleep_ = System::getTimeNs() + millis * 1000000 + nanos;
+            sleep_ = Kernel::getKernel().getExecutionTime().getValue() + millis * 1000000 + nanos;
             scheduler_->yield();
             Int::enableAll(is);        
         }

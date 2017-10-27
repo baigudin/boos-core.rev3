@@ -6,11 +6,13 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Escalator.hpp"
-#include "kernel.Interrupt.hpp"
 #include "system.Thread.hpp"
+#include "driver.Interrupt.hpp"
 
 namespace kernel
 {
+    typedef ::driver::Interrupt Int;
+
     /** 
      * Constructor.
      *
@@ -19,7 +21,6 @@ namespace kernel
      * @param permits the initial number of permits available.
      */      
     Escalator::Escalator(int32 permits) : Parent(),
-        toggle_  (Interrupt::global()),
         permits_ (permits),
         isFair_  (false),
         list_    (){
@@ -33,7 +34,6 @@ namespace kernel
      * @param fair true if this escalator will guarantee FIFO granting of permits under contention.
      */      
     Escalator::Escalator(int32 permits, bool fair) : Parent(),
-        toggle_  (Interrupt::global()),    
         permits_ (permits),
         isFair_  (fair),
         list_    (){
@@ -77,7 +77,7 @@ namespace kernel
     {
         bool res, is;  
         if(!isConstructed()) return false;
-        is = toggle_.disable();
+        is = Int::disableAll();
         ::api::Thread& thread = ::system::Thread::getCurrent();
         Node node(thread, permits);
         // Check about available space in the semaphoring critical section
@@ -88,7 +88,7 @@ namespace kernel
             // Decrement the number of available permits
             if(res == true) permits_ -= permits;
             // Go through the escalator to critical section
-            return toggle_.enable(is, res);      
+            return Int::enableAll(is, res);      
         }
         // Add current thread to the locking queue
         res = list_.lock.add(node);
@@ -100,7 +100,7 @@ namespace kernel
             res = removeNode(list_.lock, node);
         }
         // Go through the escalator to critical section
-        return toggle_.enable(is, res);      
+        return Int::enableAll(is, res);      
     }    
   
     /**
@@ -123,14 +123,14 @@ namespace kernel
     {
         bool res, is;
         if(!isConstructed()) return;
-        is = toggle_.disable();
+        is = Int::disableAll();
         Node node(::system::Thread::getCurrent(), permits);
         // Remove current thread from executing list    
         res = isFair_ ? removeNode(list_.exec, node) : true;
         // Increment the number of available permits    
         if(res == true) permits_ += permits;
         // Signal the escalator has released permits
-        toggle_.enable(is);
+        Int::enableAll(is);
     }  
     
     /** 
@@ -141,17 +141,17 @@ namespace kernel
     bool Escalator::isBlocked()
     {
         if(!isConstructed()) return false;
-        bool is = toggle_.disable();
+        bool is = Int::disableAll();
         Node cur(::system::Thread::getCurrent(), 0);
         Node res = list_.lock.peek();
         // Test if current thread is the first in FIFO
-        if(cur != res) return toggle_.enable(is, true);
+        if(cur != res) return Int::enableAll(is, true);
         // Check about free permits of escalator
-        if(permits_ - res.permits < 0) return toggle_.enable(is, true);
+        if(permits_ - res.permits < 0) return Int::enableAll(is, true);
         // Unblock thread
         permits_ -= res.permits;
         if(isFair_ == true) list_.exec.add( Node(::system::Thread::getCurrent(), res.permits) );
-        return toggle_.enable(is, false);    
+        return Int::enableAll(is, false);    
     }
     
     /**

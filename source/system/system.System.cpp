@@ -6,7 +6,6 @@
  * @license   http://embedded.team/license/
  */
 #include "system.System.hpp"
-#include "kernel.Factory.hpp"
 
 namespace system
 {
@@ -27,7 +26,7 @@ namespace system
      */  
     int64 System::getTimeNs()
     {
-        return 0; // TODO isInitialized() ? interrupt_->nanoTime() : 0;
+        return isInitialized() ? kernel_->getExecutionTime().getValue() : 0;
     }
     
     /**
@@ -35,10 +34,10 @@ namespace system
      *
      * @return a kernel factory.
      */
-    ::kernel::Factory& System::getKernelFactory()
+    ::api::Kernel& System::getKernel()
     {
         if( not isInitialized() ) terminate();
-        return *factory_;
+        return *kernel_;
     }
     
     /**
@@ -46,23 +45,23 @@ namespace system
      */
     void System::terminate()
     {
-        // ::driver::Interrupt::disableAll();
-        while(true);  
+        kernel_->getRuntime().terminate(-1);
     }
     
     /**
      * Initialization.
      *
+     * @param kernel a kernel resources factory.     
      * @return true if no errors.
      */
-    bool System::initialize()
+    bool System::initialize(::api::Kernel& kernel)
     {
         isInitialized_ = 0;
         stage_ = 0;        
         // Stage 1: Create the operating system tick timer
         stage_++;        
-        factory_ = ::kernel::Factory::create();
-        if(factory_ == NULL || not factory_->isConstructed() )  return false;
+        kernel_ = &kernel;
+        if(kernel_ == NULL || not kernel_->isConstructed() )  return false;
         // Stage complete
         stage_ = -1;
         isInitialized_ = IS_INITIALIZED;        
@@ -79,7 +78,6 @@ namespace system
             default:
             case  1: 
             {
-                delete factory_;
             }          
             case  0: 
             {
@@ -112,6 +110,6 @@ namespace system
     /**
      * A kernel factory of the operating system (no boot).
      */
-    ::kernel::Factory* System::factory_;
+    ::api::Kernel* System::kernel_;
     
 }

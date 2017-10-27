@@ -1,38 +1,79 @@
 /**
- * the factory of the operating system kernel.
+ * The resources factory of the operating system kernel.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef KERNEL_FACTORY_CREATOR_HPP_
-#define KERNEL_FACTORY_CREATOR_HPP_
+#ifndef KERNEL_RESOURCE_HPP_
+#define KERNEL_RESOURCE_HPP_
 
-#include "kernel.AbstractFactory.hpp"
-#include "kernel.System.hpp"
+#include "Object.hpp"
+#include "api.Kernel.hpp"
+#include "kernel.Runtime.hpp"
+#include "kernel.Time.hpp"
 #include "kernel.Mutex.hpp"
 #include "kernel.Semaphore.hpp"
 #include "kernel.Interrupt.hpp"
+#include "kernel.Scheduler.hpp"
+#include "kernel.GlobalInterrupt.hpp"
 
 namespace kernel
 {
-    class FactoryCreator : public ::kernel::AbstractFactory
+    class Resource : public ::Object<>, public ::api::Kernel
     {
-        typedef ::kernel::AbstractFactory Parent;
+        typedef ::Object<> Parent;
       
     public:
     
         /** 
          * Constructor.
+         *
+         * @param scheduler a kernel scheduler.
          */    
-        FactoryCreator() : Parent(){    
+        Resource() : Parent(),
+            isConstructed_ (getConstruct()),        
+            scheduler_     (),
+            time_          (),
+            global_        (),
+            runtime_       (){    
             setConstruct( construct() );    
         }        
   
         /** 
          * Destructor.
          */
-        virtual ~FactoryCreator(){}
+        virtual ~Resource(){}
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }
+        
+        /** 
+         * Returns a kernel runtime environment.
+         *
+         * @return a kernel runtime environment.
+         */      
+        virtual ::api::Runtime& getRuntime()
+        {
+            return runtime_;
+        }
+        
+        /** 
+         * Returns a value of the kernel running time in nanoseconds.
+         *
+         * @return the running time in nanoseconds.
+         */      
+        virtual ::api::Value<int64>& getExecutionTime()
+        {
+            return time_;
+        }
         
         /** 
          * Returns a kernel scheduler.
@@ -41,7 +82,17 @@ namespace kernel
          */      
         virtual ::api::Scheduler& getScheduler()
         {
-            return System::getScheduler();
+            return scheduler_;
+        }
+        
+        /** 
+         * Returns a global interrupt resource.
+         *
+         * @return a global interrupt resource.
+         */      
+        virtual ::api::Toggle& getGlobalInterrupt()
+        {
+            return global_;
         }
         
         /** 
@@ -57,7 +108,6 @@ namespace kernel
             delete res;
             return NULL;   
         }
-        
         
         /** 
          * Creates new semaphore resource.
@@ -116,6 +166,10 @@ namespace kernel
         bool construct()
         {
             if( not isConstructed_ ) return false;
+            if( not scheduler_.isConstructed() ) return false;
+            if( not time_.isConstructed() ) return false;
+            if( not global_.isConstructed() ) return false;            
+            if( not runtime_.isConstructed() ) return false;            
             return true;
         }        
         
@@ -124,7 +178,7 @@ namespace kernel
          *
          * @param obj reference to source object.
          */
-        FactoryCreator(const FactoryCreator& obj);
+        Resource(const Resource& obj);
       
         /**
          * Assignment operator.
@@ -132,8 +186,33 @@ namespace kernel
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        FactoryCreator& operator =(const FactoryCreator& obj);            
+        Resource& operator =(const Resource& obj);
+        
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;        
+        
+        /**
+         * Kernel scheduler.
+         */
+        Scheduler scheduler_;
+
+        /**
+         * Kernel time.
+         */        
+        Time time_;
+
+        /**
+         * Global interrupt resource.
+         */                
+        GlobalInterrupt global_;
+        
+        /**
+         * Runtime kernel execution.
+         */        
+        Runtime runtime_;
         
     };
 }
-#endif // KERNEL_FACTORY_CREATOR_HPP_
+#endif // KERNEL_RESOURCE_HPP_

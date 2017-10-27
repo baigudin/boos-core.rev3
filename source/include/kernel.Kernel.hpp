@@ -5,51 +5,25 @@
  * @copyright 2014-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef KERNEL_SYSTEM_HPP_
-#define KERNEL_SYSTEM_HPP_
+#ifndef KERNEL_KERNEL_HPP_
+#define KERNEL_KERNEL_HPP_
 
-#include "Types.hpp"
-
-namespace api 
-{ 
-    class Scheduler;
-    class Toggle; 
-}
+#include "api.Kernel.hpp"
+#include "api.Toggle.hpp"
 
 namespace kernel
 {
-    class SystemTimerInterrupt;
-    
-    class System
+    class Kernel
     {
       
     public:
       
         /** 
-         * Returns a current value of the running system in milliseconds.
+         * Returns the kernel factory.
          *
-         * @return time in milliseconds.
-         */
-        static int64 getTimeMs();
-        
-        /** 
-         * Returns a current value of the running system in nanoseconds.
-         *
-         * @return time in nanoseconds.
+         * @return the kernel factory.
          */      
-        static int64 getTimeNs();
-        
-        /** 
-         * Returns a kernel scheduler.
-         *
-         * @return a kernel scheduler.
-         */      
-        static ::api::Scheduler& getScheduler();
-        
-        /**
-         * Terminates the operating system execution.
-         */
-        static void terminate();
+        static ::api::Kernel& getKernel();        
         
         /**
          * Initializes the resource.
@@ -88,20 +62,15 @@ namespace kernel
         static int32 stage_;
         
         /**
-         * Scheduler interrupt resource (no boot).
-         */
-        static ::api::Scheduler* scheduler_;        
-  
-        /**
-         * Hardware timer interrupt resource (no boot).
-         */
-        static SystemTimerInterrupt* interrupt_;
-        
-        /**
          * Global interrupt resource (no boot).
          */
         static ::api::Toggle* global_;    
+        
+        /**
+         * The kernel factory resource (no boot).
+         */
+        static ::api::Kernel* kernel_;
   
     };
 }
-#endif // KERNEL_SYSTEM_HPP_
+#endif // KERNEL_KERNEL_HPP_
