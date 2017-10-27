@@ -6,7 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Main.hpp" 
-#include "kernel.System.hpp"
+#include "kernel.Kernel.hpp"
 #include "kernel.Interrupt.hpp"
 #include "driver.Processor.hpp"
 #include "Allocator.hpp"
@@ -38,20 +38,16 @@ namespace kernel
             if( not ::Board::initialize(config) ) break;
             // Stage 4
             stage++;
-            if( not ::kernel::Interrupt::initialize() ) break;      
-            // Stage 5
-            stage++;
-            if( not ::kernel::System::initialize() ) break;      
+            if( not ::kernel::Kernel::initialize() ) break;      
             // Stage complete
             stage = -1;
-            error = ::system::Main::main();
+            error = ::system::Main::main(config, Kernel::getKernel());
         }
         while(false);
         switch(stage)
         {
             default:
-            case  5: ::kernel::System::deinitialize();
-            case  4: ::kernel::Interrupt::deinitialize();
+            case  4: ::kernel::Kernel::deinitialize();
             case  3: ::Board::deinitialize();      
             case  2: ::driver::Processor::deinitialize();
             case  1: ::Allocator::deinitialize();      

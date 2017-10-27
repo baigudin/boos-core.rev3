@@ -99,7 +99,7 @@ namespace kernel
          *
          * @return extended interface.
          */  
-        ::driver::Timer& getDriver();
+        ::driver::Timer& getDriver() const;
   
     private:
     
@@ -125,6 +125,11 @@ namespace kernel
          * @return reference to this object.     
          */
         Timer& operator =(const Timer& obj);
+        
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;        
        
         /**
          * Extended timer controller interface.

@@ -8,8 +8,7 @@
 #ifndef SYSTEM_SYSTEM_HPP_
 #define SYSTEM_SYSTEM_HPP_
 
-#include "Types.hpp"
-#include "kernel.Factory.hpp"
+#include "api.Kernel.hpp"
 
 namespace system
 {
@@ -37,7 +36,7 @@ namespace system
          *
          * @return a kernel factory.
          */
-        static ::kernel::Factory& getKernelFactory();
+        static ::api::Kernel& getKernel();
         
         /**
          * Terminates the operating system execution.
@@ -47,10 +46,11 @@ namespace system
         /**
          * Initializes the resource.
          *
+         * @param kernel a kernel resources factory.              
          * @return true if no errors have been occurred.
          */   
-        static bool initialize();
-        
+        static bool initialize(::api::Kernel& kernel);
+
         /**
          * Deinitializes the resource.
          */
@@ -83,7 +83,7 @@ namespace system
         /**
          * A kernel factory of the operating system (no boot).
          */
-        static ::kernel::Factory* factory_;
+        static ::api::Kernel* kernel_;
   
     };
 }

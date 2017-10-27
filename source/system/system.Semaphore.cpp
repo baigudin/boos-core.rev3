@@ -128,14 +128,14 @@ namespace system
     bool Semaphore::construct(int32 permits, bool* isFair)
     {
         if( not isConstructed_ ) return false;
-        ::kernel::Factory& factory = System::getKernelFactory();
+        ::api::Kernel& kernel = System::getKernel();
         if( isFair == NULL )
         {
-            kernel_ = factory.createSemaphore(permits);
+            kernel_ = kernel.createSemaphore(permits);
         }
         else
         {
-            kernel_ = factory.createSemaphore(permits, *isFair);
+            kernel_ = kernel.createSemaphore(permits, *isFair);
         }
         return kernel_ != NULL ? kernel_->isConstructed() : false;        
     }

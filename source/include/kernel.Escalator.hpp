@@ -274,11 +274,6 @@ namespace kernel
         Escalator& operator =(const Escalator& obj);     
         
         /**
-         * Toggle interface of global interrupts.
-         */
-        ::api::Toggle& toggle_;
-        
-        /**
          * Number of permits for acquiring this escalator.
          */
         int32 permits_;

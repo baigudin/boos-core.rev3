@@ -1,23 +1,26 @@
 /**
- * Factory of an operating system kernel.
+ * A kernel interface of the operating system.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef KERNEL_FACTORY_HPP_
-#define KERNEL_FACTORY_HPP_
+#ifndef API_KERNEL_HPP_
+#define API_KERNEL_HPP_
 
 #include "api.Object.hpp"
+#include "api.Runtime.hpp"
+#include "api.Value.hpp"
 #include "api.Scheduler.hpp"
 #include "api.Mutex.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Interrupt.hpp"
 #include "api.Task.hpp"
+#include "api.Toggle.hpp"
 
-namespace kernel
+namespace api
 {
-    class Factory : public ::api::Object
+    class Kernel : public ::api::Object
     {
     
     public:
@@ -25,7 +28,21 @@ namespace kernel
         /** 
          * Destructor.
          */
-        virtual ~Factory(){}
+        virtual ~Kernel(){}
+        
+        /** 
+         * Returns a kernel runtime environment.
+         *
+         * @return a kernel runtime environment.
+         */      
+        virtual ::api::Runtime& getRuntime() = 0;        
+        
+        /** 
+         * Returns a value of a kernel running time in nanoseconds.
+         *
+         * @return a running time in nanoseconds.
+         */      
+        virtual ::api::Value<int64>& getExecutionTime() = 0;
         
         /** 
          * Returns a kernel scheduler.
@@ -33,6 +50,13 @@ namespace kernel
          * @return a kernel scheduler.
          */      
         virtual ::api::Scheduler& getScheduler() = 0;        
+        
+        /** 
+         * Returns a global interrupt resource.
+         *
+         * @return a global interrupt resource.
+         */      
+        virtual ::api::Toggle& getGlobalInterrupt() = 0;
 
         /** 
          * Creates new mutex resource.
@@ -42,7 +66,7 @@ namespace kernel
         virtual ::api::Mutex* createMutex() = 0;
         
         /** 
-         * Creates new semaphore resource.
+         * Creates new unfair semaphore resource.
          *
          * @param permits the initial number of permits available.   
          * @return new semaphore resource, or NULL if error has been occurred.
@@ -66,14 +90,7 @@ namespace kernel
          * @return new interrupt resource, or NULL if error has been occurred.
          */  
         virtual ::api::Interrupt* createInterrupt(::api::Task& handler, int32 source) = 0;
-        
-        /**
-         * Returns a factory of an operating system kernel.
-         *
-         * @return a kernel factory, or NULL if error has been occurred.
-         */
-        static ::kernel::Factory* create();
- 
+
     };
 }
-#endif // KERNEL_FACTORY_HPP_
+#endif // API_KERNEL_HPP_

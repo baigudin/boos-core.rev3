@@ -8,8 +8,8 @@
 #ifndef SYSTEM_MAIN_HPP_
 #define SYSTEM_MAIN_HPP_
 
-#include "Main.hpp"
-#include "system.Thread.hpp"
+#include "Configuration.hpp"
+#include "api.Kernel.hpp"
 
 namespace system
 {
@@ -21,75 +21,12 @@ namespace system
         /**
          * The method which will be stated first.
          * 
+         * @param config the operating system configuration.         
+         * @param kernel a kernel resources factory.
          * @return error code or zero.
          */
-        static int32 main();
-      
-    private:
-   
-        /**
-         * User main thread.
-         */ 
-        class MainThread : public ::system::Thread
-        {
-            typedef ::system::Thread Parent;
-          
-        public:
-      
-            /** 
-             * Constructor.
-             */
-            MainThread() : Parent(),
-                error_ (-1){
-            }
-            
-            /** 
-             * Destructor.
-             */
-            virtual ~MainThread()
-            {
-            }
-            
-            /**
-             * The method with self context.
-             */  
-            virtual void main()
-            {
-                error_ = ::Main::main();
-            }
-            
-            /**
-             * Returns execution error.
-             */  
-            int32 error()
-            {
-                return error_;
-            }    
-          
-        private:
-          
-            /**
-             * Copy constructor.
-             *
-             * @param obj reference to source object.
-             */
-            MainThread(const MainThread& obj);
-            
-            /**
-             * Assignment operator.
-             *
-             * @param obj reference to source object.
-             * @return reference to this object.     
-             */
-            MainThread& operator =(const MainThread& obj);      
-            
-            /**
-             * Execution error.
-             */
-            int32 error_;
-          
-        };
-        
+        static int32 main(const ::Configuration config, ::api::Kernel& kernel);
+
     };
 }
 #endif // SYSTEM_MAIN_HPP_

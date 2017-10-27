@@ -7,7 +7,7 @@
  */
 #include "kernel.Scheduler.hpp" 
 #include "kernel.SchedulerThread.hpp" 
-#include "kernel.System.hpp"
+#include "kernel.Kernel.hpp"
 #include "driver.Interrupt.hpp"
 #include "driver.Timer.hpp"
 
@@ -73,7 +73,7 @@ namespace kernel
                 break;
                 case ::api::Thread::SLEEPING: 
                 {
-                    if( System::getTimeNs() >= thread->getSleep() )
+                    if( Kernel::getKernel().getExecutionTime().getValue() >= thread->getSleep() )
                     {
                         thread->setSleep(0);
                         thread->setStatus( ::api::Thread::RUNNABLE );
@@ -143,11 +143,12 @@ namespace kernel
      */
     ::api::Thread& Scheduler::getCurrentThread()
     {
-        if( not isConstructed_ ) System::terminate();
+        ::api::Runtime& kernel = Kernel::getKernel().getRuntime();
+        if( not isConstructed_ ) kernel.terminate(-1);
         bool is = Int::disableAll();
         ::api::Thread* thread = list_.peek();
         Int::enableAll(is);
-        if(thread == NULL) System::terminate();
+        if(thread == NULL) kernel.terminate(-1);
         return *thread;
     }
     

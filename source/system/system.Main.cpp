@@ -5,18 +5,21 @@
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
+#include "Main.hpp" 
 #include "system.Main.hpp" 
+#include "system.MainThread.hpp"
 #include "system.System.hpp" 
-#include "system.Thread.hpp"
 
 namespace system
 {
     /**
-     * The system method stated after the kernel start.
+     * The method which will be stated first.
      * 
+     * @param config the operating system configuration.         
+     * @param kernel a kernel resources factory.
      * @return error code or zero.
-     */   
-    int32 Main::main()
+     */
+    int32 Main::main(const ::Configuration config, ::api::Kernel& kernel)
     {
         int32 stage = 0;
         int32 error = -1;
@@ -24,7 +27,7 @@ namespace system
         {
             // Stage 1
             stage++;
-            if( not ::system::System::initialize() ) break;      
+            if( not ::system::System::initialize(kernel) ) break;      
             // Stage 2
             stage++;
             if( not ::system::Thread::initialize() ) break;              

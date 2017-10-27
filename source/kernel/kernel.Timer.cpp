@@ -6,7 +6,7 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Timer.hpp"
-#include "kernel.System.hpp" 
+#include "kernel.Kernel.hpp" 
 #include "driver.Timer.hpp"
 
 namespace kernel
@@ -17,6 +17,7 @@ namespace kernel
      * Construct Timer object and alloc first free HW timer.
      */
     Timer::Timer() : Parent(),
+        isConstructed_ (getConstruct()),    
         driver_ (NULL){
         setConstruct( construct(NULL) );    
     }
@@ -27,6 +28,7 @@ namespace kernel
      * @param available timer index.
      */
     Timer::Timer(int32 index) : Parent(),
+        isConstructed_ (getConstruct()),        
         driver_ (NULL){
         setConstruct( construct(&index) );
     }
@@ -47,7 +49,7 @@ namespace kernel
      */
     bool Timer::construct(int32* index)
     {
-        if(!isConstructed()) return false;
+        if( not isConstructed_ ) return false;
         ::driver::Timer::Resource res;
         if(index != NULL) 
         {
@@ -68,7 +70,7 @@ namespace kernel
      */    
     bool Timer::isConstructed() const
     {
-        return this->Parent::isConstructed();
+        return isConstructed_;
     } 
     
     /**
@@ -78,7 +80,7 @@ namespace kernel
      */      
     int64 Timer::getPeriod() const
     {
-        return isConstructed() ? driver_->getPeriod() : 0;
+        return isConstructed_ ? driver_->getPeriod() : 0;
     }  
     
     /**
@@ -88,7 +90,7 @@ namespace kernel
      */      
     void Timer::setPeriod(int64 us)
     {
-        if( isConstructed() ) driver_->setPeriod(us);  
+        if( isConstructed_ ) driver_->setPeriod(us);  
     }
     
     /**
@@ -98,7 +100,7 @@ namespace kernel
      */      
     int64 Timer::getCount() const
     {
-        return isConstructed() ? driver_->getCount() : 0;
+        return isConstructed_ ? driver_->getCount() : 0;
     }
     
     /**
@@ -108,7 +110,7 @@ namespace kernel
      */      
     void Timer::setCount(int64 count)
     {
-        if( isConstructed() ) driver_->setCount(count);  
+        if( isConstructed_ ) driver_->setCount(count);  
     }      
     
     /**
@@ -116,7 +118,7 @@ namespace kernel
      */        
     void Timer::start()
     {
-        if( isConstructed() ) driver_->start();  
+        if( isConstructed_ ) driver_->start();  
     }
         
     /**
@@ -124,7 +126,7 @@ namespace kernel
      */      
     void Timer::stop()
     {
-        if( isConstructed() ) driver_->stop();  
+        if( isConstructed_ ) driver_->stop();  
     }
     
     /**
@@ -134,7 +136,7 @@ namespace kernel
      */
     int32 Timer::getIndex() const
     {
-        return isConstructed() ? driver_->getIndex() : -1;
+        return isConstructed_ ? driver_->getIndex() : -1;
     }
     
     /** 
@@ -142,9 +144,9 @@ namespace kernel
      *
      * @return timer developing interface.
      */  
-    ::driver::Timer& Timer::getDriver()
+    ::driver::Timer& Timer::getDriver() const
     {
-        if(!isConstructed()) System::terminate();
+        if( not isConstructed_ ) Kernel::getKernel().getRuntime().terminate(-1);
         return *driver_;
     }
 }

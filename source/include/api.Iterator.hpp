@@ -8,7 +8,6 @@
 #ifndef API_ITERATOR_HPP_
 #define API_ITERATOR_HPP_
 
-#include "Types.hpp"
 #include "api.IllegalValue.hpp"
 
 namespace api

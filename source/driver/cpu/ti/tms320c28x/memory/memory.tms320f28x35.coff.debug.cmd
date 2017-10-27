@@ -42,22 +42,22 @@ SECTIONS
     /** Allocate program areas */
     .text      : > RAM,     PAGE = 0
     .special   : {
-                   ./Release/Board.obj            (.text)               
-                   ./Release/Configuration.obj    (.text)
-                   ./Release/driver.Boot.obj      (.text)
-                   ./Release/driver.Pll.obj       (.text)
-                   ./Release/driver.Processor.obj (.text)
-                   ./Release/driver.Watchdog.obj  (.text)
-                   ./Release/driver.Interrupt.obj (.text)                   
-                   ./Release/driver.Timer.obj     (.text)                                      
-                   ./Release/kernel.Interrupt.obj (.text)                   
-                   ./Release/kernel.Mutex.obj     (.text)
-                   ./Release/kernel.Semaphore.obj (.text)
-                   ./Release/kernel.Kernel.obj    (.text)                   
-                   ./Release/system.Mutex.obj     (.text)
-                   ./Release/system.Semaphore.obj (.text)
-                   ./Release/system.System.obj    (.text)                   
-                   ./Release/system.Thread.obj    (.text)
+                   ./Debug/Board.obj            (.text)               
+                   ./Debug/Configuration.obj    (.text)
+                   ./Debug/driver.Boot.obj      (.text)
+                   ./Debug/driver.Pll.obj       (.text)
+                   ./Debug/driver.Processor.obj (.text)
+                   ./Debug/driver.Watchdog.obj  (.text)
+                   ./Debug/driver.Interrupt.obj (.text)                   
+                   ./Debug/driver.Timer.obj     (.text)                                      
+                   ./Debug/kernel.Interrupt.obj (.text)                   
+                   ./Debug/kernel.Mutex.obj     (.text)
+                   ./Debug/kernel.Semaphore.obj (.text)
+                   ./Debug/kernel.Kernel.obj    (.text)                   
+                   ./Debug/system.Mutex.obj     (.text)
+                   ./Debug/system.Semaphore.obj (.text)
+                   ./Debug/system.System.obj    (.text)                   
+                   ./Debug/system.Thread.obj    (.text)
                  } 
                  > FLASHA,  PAGE = 0   
     .cinit     : > FLASHA,  PAGE = 0

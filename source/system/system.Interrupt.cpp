@@ -40,8 +40,8 @@ namespace system
     bool Interrupt::construct(::api::Task& handler, int32 source)
     {
         if( not isConstructed_ ) return false;    
-        ::kernel::Factory& factory = System::getKernelFactory();
-        kernel_ = factory.createInterrupt(handler, source);
+        ::api::Kernel& kernel = System::getKernel();
+        kernel_ = kernel.createInterrupt(handler, source);
         return kernel_ != NULL ? kernel_->isConstructed() : false;
     }
   

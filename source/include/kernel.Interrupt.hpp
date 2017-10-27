@@ -75,25 +75,6 @@ namespace kernel
          * @param status returned status by lock method.
          */
         virtual void enable(bool status);
-        
-        /** 
-         * Returns the toggle interface for controlling global interrupts.
-         *
-         * @return toggle interface.
-         */
-        static ::api::Toggle& global();
-        
-        /**
-         * Initializes the resource.
-         *
-         * @return true if no errors have been occurred.
-         */   
-        static bool initialize();
-        
-        /**
-         * Deinitializes the resource.
-         */
-        static void deinitialize();   
       
     protected:
   
@@ -102,7 +83,7 @@ namespace kernel
          *
          * @return extended interface.
          */  
-        ::driver::Interrupt& getDriver();
+        ::driver::Interrupt& getDriver() const;
   
     private:
       
@@ -114,13 +95,6 @@ namespace kernel
          * @return true if object has been constructed successfully.     
          */    
         bool construct(::api::Task* handler, int32 source);
-                
-        /**
-         * Tests if the module has been initialized.
-         *
-         * @return true if the module has been initialized successfully.
-         */    
-        static bool isInitialized();
                 
         /**
          * Copy constructor.
@@ -137,81 +111,15 @@ namespace kernel
          */
         Interrupt& operator =(const Interrupt& obj);
         
-        /** 
-         * Hardware global interrupts controller.
-         */
-        class Global : public ::Object<>, public ::api::Toggle
-        {
-          typedef ::Object<> Parent;
-      
-        public:
-          
-            /** 
-             * Constructor.
-             */
-            Global() : Parent(),
-                isConstructed_ (getConstruct()){
-            }  
-            
-            /** 
-             * Destructor.
-             */                               
-            virtual ~Global()
-            {
-            }
-            
-            /**
-             * Tests if this object has been constructed.
-             *
-             * @return true if object has been constructed successfully.
-             */    
-            virtual bool isConstructed() const
-            {
-                return isConstructed_;
-            }
-            
-            /** 
-             * Disables all maskable interrupts.
-             *
-             * @return global interrupt enable bit value before method was called.
-             */ 
-            virtual bool disable();
-            
-            /** 
-             * Enables all maskable interrupts.
-             *
-             * @param status returned status by disable method.
-             */    
-            virtual void enable(bool status);
-          
-        private:
-          
-            /** 
-             * The root object constructed flag.
-             */  
-            const bool& isConstructed_;       
-          
-        }; 
-        
         /**
          * The module initialized falg value.
          */
         static const int32 IS_INITIALIZED = 0x15798351;    
         
         /**
-         * The module has been initialized successfully (no boot).
-         */
-        static int32 isInitialized_;           
-        
-        /**
          * The module initialization stage (no boot).
          */
         static int32 stage_;
-        
-        /**    
-         * Hardware global interrupt controller (no boot).
-         */
-        static Global* global_;
         
         /** 
          * The root object constructed flag.
