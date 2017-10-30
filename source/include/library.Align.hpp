@@ -5,12 +5,12 @@
  * @copyright 2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_ALIGN_HPP_
-#define UTILITY_ALIGN_HPP_
+#ifndef LIBRARY_ALIGN_HPP_
+#define LIBRARY_ALIGN_HPP_
 
 #include "Object.hpp"
 
-namespace utility
+namespace library
 {
     /** 
      * @param Type   type of aligning data.
@@ -209,4 +209,4 @@ namespace utility
         return t1 != t2;
     }
 } 
-#endif // UTILITY_ALIGN_HPP_
+#endif // LIBRARY_ALIGN_HPP_

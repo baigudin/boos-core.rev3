@@ -12,14 +12,14 @@
 #include "driver.Processor.hpp"
 #include "driver.Register.hpp"
 #include "driver.reg.Aintc.hpp"
-#include "utility.Stack.hpp"
+#include "library.Stack.hpp"
 
 namespace driver
 {
     class InterruptController : public ::driver::InterruptBase
     {
         typedef ::driver::InterruptBase            Parent;
-        typedef ::utility::Stack<int64,Allocator>  Stack;
+        typedef ::library::Stack<int64,Allocator>  Stack;
   
     public:
     

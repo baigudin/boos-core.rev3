@@ -11,7 +11,7 @@
 #include "kernel.TimerInterrupt.hpp"
 #include "api.Scheduler.hpp"
 #include "api.Task.hpp"
-#include "utility.LinkedList.hpp"
+#include "library.LinkedList.hpp"
 
 namespace kernel
 {
@@ -156,7 +156,7 @@ namespace kernel
         /**
          * The tasks list.
          */
-        ::utility::LinkedList< SchedulerThread* > list_;
+        ::library::LinkedList< SchedulerThread* > list_;
         
         /**
          * Counter of thread identifiers.

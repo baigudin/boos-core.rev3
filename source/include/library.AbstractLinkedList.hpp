@@ -5,17 +5,17 @@
  * @copyright 2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_ABSTRACT_LINKED_LIST_HPP_
-#define UTILITY_ABSTRACT_LINKED_LIST_HPP_
+#ifndef LIBRARY_ABSTRACT_LINKED_LIST_HPP_
+#define LIBRARY_ABSTRACT_LINKED_LIST_HPP_
 
 #include "Object.hpp"
-#include "utility.Buffer.hpp"
-#include "utility.LinkedNode.hpp"
+#include "library.Buffer.hpp"
+#include "library.LinkedNode.hpp"
 #include "api.List.hpp"
 #include "api.Queue.hpp"
 #include "api.Iterable.hpp"
 
-namespace utility
+namespace library
 {  
     /** 
      * @param Type  data type of container element.
@@ -29,7 +29,7 @@ namespace utility
         public ::api::Iterable<Type>{
   
         typedef ::Object<Alloc>                Parent;
-        typedef ::utility::LinkedNode<Type,Alloc> Node;
+        typedef ::library::LinkedNode<Type,Alloc> Node;
   
     public:      
   
@@ -285,7 +285,7 @@ namespace utility
          *
          * @return pointer to reference of elements or NULL if list is empty.
          */  
-        virtual ::utility::Buffer<Type,0,Alloc>* array() const
+        virtual ::library::Buffer<Type,0,Alloc>* array() const
         {
             if(!isConstructed()) return NULL;
             int32 count = getLength();
@@ -504,4 +504,4 @@ namespace utility
   
     };
 }
-#endif // UTILITY_ABSTRACT_LINKED_LIST_HPP_
+#endif // LIBRARY_ABSTRACT_LINKED_LIST_HPP_

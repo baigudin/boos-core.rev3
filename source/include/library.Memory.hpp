@@ -5,12 +5,12 @@
  * @copyright 2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_MEMORY_HPP_
-#define UTILITY_MEMORY_HPP_
+#ifndef LIBRARY_MEMORY_HPP_
+#define LIBRARY_MEMORY_HPP_
 
 #include "Types.hpp"
 
-namespace utility
+namespace library
 {
     class Memory
     {
@@ -118,5 +118,5 @@ namespace utility
   
     };
 }
-#endif // UTILITY_MEMORY_HPP_
+#endif // LIBRARY_MEMORY_HPP_
 

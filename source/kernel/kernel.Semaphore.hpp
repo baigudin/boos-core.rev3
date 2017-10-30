@@ -11,7 +11,7 @@
 #include "Object.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Thread.hpp"
-#include "utility.LinkedList.hpp"
+#include "library.LinkedList.hpp"
 
 namespace kernel
 {
@@ -147,7 +147,7 @@ namespace kernel
         /** 
          * Queue of locked threads.
          */     
-        ::utility::LinkedList< ::api::Thread* > fifo_;
+        ::library::LinkedList< ::api::Thread* > fifo_;
   
     };  
 }

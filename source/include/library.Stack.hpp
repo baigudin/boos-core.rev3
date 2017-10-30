@@ -5,14 +5,14 @@
  * @copyright 2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_STACK_HPP_
-#define UTILITY_STACK_HPP_
+#ifndef LIBRARY_STACK_HPP_
+#define LIBRARY_STACK_HPP_
 
 #include "Object.hpp"
 #include "api.Stack.hpp"
-#include "utility.Buffer.hpp"
+#include "library.Buffer.hpp"
 
-namespace utility
+namespace library
 {
     /** 
      * @param Type  data type of default stack element.
@@ -194,4 +194,4 @@ namespace utility
   
     };
 }
-#endif // UTILITY_STACK_HPP_
+#endif // LIBRARY_STACK_HPP_

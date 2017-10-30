@@ -15,14 +15,14 @@
 #include "driver.Interrupt.hpp"
 #include "driver.Processor.hpp"
 #include "driver.Register.hpp"
-#include "utility.Stack.hpp"
+#include "library.Stack.hpp"
 
 namespace kernel
 {      
     class SchedulerThread : public ::Object<>, public ::api::Thread
     {
         typedef ::Object<>               Parent;
-        typedef ::utility::Stack<int64>  Stack;
+        typedef ::library::Stack<int64>  Stack;
         typedef ::driver::Interrupt      Int;
     
     public:

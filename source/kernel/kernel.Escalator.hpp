@@ -11,7 +11,7 @@
 #include "Object.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Thread.hpp"
-#include "utility.LinkedList.hpp"
+#include "library.LinkedList.hpp"
 
 namespace kernel
 {
@@ -232,14 +232,14 @@ namespace kernel
              *
              * ::api::Queue interface of the list is only used by the escalator.
              */      
-            utility::LinkedList<Node> exec;
+            library::LinkedList<Node> exec;
             
             /**
              * List of locked threads.
              *
              * ::api::Queue interface of the list is only used by the escalator.
              */      
-            utility::LinkedList<Node> lock;
+            library::LinkedList<Node> lock;
          
         };
         

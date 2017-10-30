@@ -5,13 +5,13 @@
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_TOGGLE_HPP_
-#define UTILITY_TOGGLE_HPP_
+#ifndef LIBRARY_TOGGLE_HPP_
+#define LIBRARY_TOGGLE_HPP_
 
 #include "Object.hpp"
 #include "api.Toggle.hpp"
 
-namespace utility
+namespace library
 {
     /** 
      *
@@ -127,4 +127,4 @@ namespace utility
   
     };
 }
-#endif // UTILITY_TOGGLE_HPP_
+#endif // LIBRARY_TOGGLE_HPP_

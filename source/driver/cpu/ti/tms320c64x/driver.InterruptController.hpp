@@ -12,15 +12,15 @@
 #include "driver.Processor.hpp"
 #include "driver.Register.hpp"
 #include "driver.reg.Intc.hpp"
-#include "utility.Stack.hpp"
-#include "utility.Memory.hpp"
+#include "library.Stack.hpp"
+#include "library.Memory.hpp"
 
 namespace driver
 {
     class InterruptController : public ::driver::InterruptBase
     {
         typedef ::driver::InterruptBase     Parent;
-        typedef ::utility::Stack<int64,Allocator>  Stack;
+        typedef ::library::Stack<int64,Allocator>  Stack;
   
     public:
     
@@ -248,8 +248,8 @@ namespace driver
             isInitialized_ = 0;    
             config_ = config;
             intc_ = new (reg::Intc::ADDRESS) reg::Intc();      
-            utility::Memory::memset(context_, 0x0, sizeof(context_));
-            utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));    
+            library::Memory::memset(context_, 0x0, sizeof(context_));
+            library::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));    
             isInitialized_ = IS_INITIALIZED;      
             return true;
         }
@@ -260,8 +260,8 @@ namespace driver
         static void deinitialize()
         {
             intc_ = NULL;
-            utility::Memory::memset(context_, 0x0, sizeof(context_));
-            utility::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));         
+            library::Memory::memset(context_, 0x0, sizeof(context_));
+            library::Memory::memset(contextLow_, 0x0, sizeof(contextLow_));         
             isInitialized_ = 0;      
         }    
   

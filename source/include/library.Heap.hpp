@@ -7,13 +7,13 @@
  * @copyright 2014-2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_HEAP_HPP_
-#define UTILITY_HEAP_HPP_
+#ifndef LIBRARY_HEAP_HPP_
+#define LIBRARY_HEAP_HPP_
 
 #include "api.Heap.hpp"
 #include "api.Toggle.hpp"
 
-namespace utility
+namespace library
 {
     class Heap : public ::api::Heap
     {
@@ -770,4 +770,4 @@ namespace utility
 
     };
 }
-#endif // UTILITY_HEAP_HPP_
+#endif // LIBRARY_HEAP_HPP_

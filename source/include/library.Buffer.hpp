@@ -11,12 +11,12 @@
  * @copyright 2014-2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_BUFFER_HPP_
-#define UTILITY_BUFFER_HPP_
+#ifndef LIBRARY_BUFFER_HPP_
+#define LIBRARY_BUFFER_HPP_
 
-#include "utility.AbstractBuffer.hpp"
+#include "library.AbstractBuffer.hpp"
 
-namespace utility
+namespace library
 { 
     /** 
      * Static buffer class.
@@ -26,9 +26,9 @@ namespace utility
      * @param Alloc heap memory allocator class.
      */ 
     template <typename Type, int32 COUNT=0, class Alloc=::Allocator>
-    class Buffer : public ::utility::AbstractBuffer<Type,Alloc>
+    class Buffer : public ::library::AbstractBuffer<Type,Alloc>
     {
-        typedef ::utility::AbstractBuffer<Type,Alloc> Parent;
+        typedef ::library::AbstractBuffer<Type,Alloc> Parent;
   
     public:      
   
@@ -128,7 +128,7 @@ namespace utility
     template <typename Type, class Alloc>
     class Buffer<Type,0,Alloc> : public AbstractBuffer<Type,Alloc>
     {
-        typedef ::utility::AbstractBuffer<Type,Alloc> Parent;
+        typedef ::library::AbstractBuffer<Type,Alloc> Parent;
   
     public:      
   
@@ -277,4 +277,4 @@ namespace utility
       
     };
 }
-#endif // UTILITY_BUFFER_HPP_
+#endif // LIBRARY_BUFFER_HPP_

@@ -5,13 +5,13 @@
  * @copyright 2014-2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_ABSTRACT_BUFFER_HPP_
-#define UTILITY_ABSTRACT_BUFFER_HPP_
+#ifndef LIBRARY_ABSTRACT_BUFFER_HPP_
+#define LIBRARY_ABSTRACT_BUFFER_HPP_
 
 #include "Object.hpp"
 #include "api.Collection.hpp"
 
-namespace utility
+namespace library
 { 
     /** 
      * @param Type  data type of buffer element.
@@ -232,4 +232,4 @@ namespace utility
       
     };
 }
-#endif // UTILITY_ABSTRACT_BUFFER_HPP_
+#endif // LIBRARY_ABSTRACT_BUFFER_HPP_

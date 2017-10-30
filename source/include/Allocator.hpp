@@ -8,7 +8,7 @@
 #ifndef ALLOCATOR_HPP_
 #define ALLOCATOR_HPP_
 
-#include "utility.Heap.hpp"
+#include "library.Heap.hpp"
 #include "Configuration.hpp"
 
 class Allocator
@@ -59,7 +59,7 @@ public:
         void* addr = config.heapAddr;
         int64 size = config.heapSize;
         if(addr == NULL || size <= 0) return false;
-        heap_ = new (addr) ::utility::Heap(size);
+        heap_ = new (addr) ::library::Heap(size);
         if(heap_ == NULL || not heap_->isConstructed()) heap_ = NULL;        
         return heap_ != NULL ? true : false;
     }

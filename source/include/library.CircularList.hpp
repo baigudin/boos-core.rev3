@@ -1,33 +1,33 @@
 /** 
- * Doubly linked list.
+ * Circular doubly linked list.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_LINKED_LIST_HPP_
-#define UTILITY_LINKED_LIST_HPP_
+#ifndef LIBRARY_CIRCULAR_LIST_HPP_
+#define LIBRARY_CIRCULAR_LIST_HPP_
 
-#include "utility.AbstractLinkedList.hpp"
+#include "library.AbstractLinkedList.hpp"
 
-namespace utility
+namespace library
 {  
     /** 
      * @param Type  data type of container element.
      * @param Alloc heap memory allocator class.
-     */
+     */  
     template <typename Type, class Alloc=::Allocator>
-    class LinkedList : public ::utility::AbstractLinkedList<Type,Alloc>
+    class CircularList : public ::library::AbstractLinkedList<Type,Alloc>
     {
-        typedef ::utility::AbstractLinkedList<Type,Alloc>  Parent;
-        typedef ::utility::LinkedNode<Type,Alloc>          Node;
-  
-    public:
-  
+        typedef ::library::AbstractLinkedList<Type,Alloc>  Parent;
+        typedef ::library::LinkedNode<Type,Alloc>          Node;
+      
+    public:      
+      
         /** 
          * Constructor.
          */    
-        LinkedList() : Parent()
+        CircularList() : Parent()
         {
         }
       
@@ -36,14 +36,14 @@ namespace utility
          *
          * @param illegal illegal element.
          */
-        LinkedList(const Type illegal) : Parent(illegal)
+        CircularList(const Type illegal) : Parent(illegal)
         {
         }
       
         /**
          * Destructor.
          */
-        virtual ~LinkedList()
+        virtual ~CircularList()
         {
         }
       
@@ -61,15 +61,15 @@ namespace utility
             delete iterator;
             return NULL;
         }
-  
+      
     private:
-  
+      
         /**
          * Copy constructor.
          *
          * @param obj reference to source object.
          */
-        LinkedList(const LinkedList& obj);
+        CircularList(const CircularList& obj);
       
         /**
          * Assignment operator.
@@ -77,7 +77,7 @@ namespace utility
          * @param obj reference to source object.
          * @return reference to this object.     
          */
-        LinkedList& operator =(const LinkedList& obj);
+        CircularList& operator =(const CircularList& obj);
       
         /**
          * The list iterator.
@@ -86,10 +86,10 @@ namespace utility
          * For this reason, for fast iteration some tests are skipped.
          * You have to use this class only if it has been constructed.
          */      
-        class Iterator : public ::Object<Alloc>, public ::api::ListIterator<Type>
+        class Iterator : public Object<Alloc>, public ::api::ListIterator<Type>
         {
-            typedef ::Object<Alloc>                 Parent;
-            typedef ::utility::LinkedList<Type,Alloc>  List;
+            typedef Object<Alloc>             Parent;
+            typedef CircularList<Type,Alloc>  List;
   	  
         public:
       
@@ -130,12 +130,14 @@ namespace utility
              * @param element inserting element.
              * @return true if element is added.
              */      
-            virtual bool add(Type element)
+            virtual bool add(const Type& element)
             {
                 if(count_.list != count_.self) return false;
+                Node* last = last_;
                 if(list_.add(getNextIndex(), element) == false) return false;
                 count_.self++;
                 rindex_ = ILLEGAL_INDEX;
+                if(last == NULL) curs_ = last_;
                 return true;
             }
           
@@ -150,11 +152,11 @@ namespace utility
                 if(count_.list != count_.self) return false;
                 if(rindex_ == ILLEGAL_INDEX) return false;
                 if(curs_->getIndex() != rindex_) curs = curs_;
-                else curs = curs_ != last_ ? curs_->getNext() : NULL;
+                else curs = curs_->getNext();
                 if(list_.remove(rindex_) == false) return false;
                 count_.self++;
                 rindex_ = ILLEGAL_INDEX;
-                curs_ = curs;
+                curs_ = last_ != NULL ? curs : NULL;
                 return true;
             }
           
@@ -166,20 +168,19 @@ namespace utility
             virtual Type getPrevious()
             {
                 if(!hasPrevious()) return illegal_;
-                curs_ = curs_ == NULL ? last_ : curs_->getPrevious();
-                rindex_ = curs_->getIndex();
+                curs_ = curs_->getPrevious();
+                rindex_ = curs_->index();
                 return curs_->getElement();
             }
           
             /**
-             * Returns the index of the element that would be returned by a subsequent call to getPrevious().
+             * Returns the index of the element that would be returned by a subsequent call to previous().
              *
              * @return index of the previous element or -1 if the list iterator is at the beginning of the list.
              */      
             virtual int32 getPreviousIndex() const
             {
-                if(!hasPrevious()) return -1;
-                return curs_ == NULL ? last_->getIndex() : curs_->getPrevious()->getIndex();
+                return hasPrevious() ? curs_->getPrevious()->getIndex() : -1;
             }
           
             /**
@@ -190,8 +191,7 @@ namespace utility
             virtual bool hasPrevious() const
             {
                 if(count_.list != count_.self) return false;
-                if(last_ == NULL) return false;
-                if(curs_->getPrevious() == last_) return false;
+                if(curs_ == NULL) return false;
                 return true;
             }
           
@@ -203,20 +203,20 @@ namespace utility
             virtual Type getNext()
             {
                 if(!hasNext()) return illegal_;
-                Node* node = curs_;
-                curs_ = curs_ != last_ ? curs_->getNext() : NULL;
+                register Node* node = curs_;
+                curs_ = curs_->getNext();
                 rindex_ = node->getIndex();
                 return node->getElement();
             }
           
             /**
-             * Returns the index of the element that would be returned by a subsequent call to getNext().
+             * Returns the index of the element that would be returned by a subsequent call to next().
              *
              * @return index of the next element or list size if the list iterator is at the end of the list.
              */      
             virtual int32 getNextIndex() const
             {
-                return hasNext() ? curs_->getIndex() : list_.getLength();
+                return hasNext() ? curs_->getIndex() : 0;
             }
           
             /**
@@ -232,7 +232,7 @@ namespace utility
             }
           
             /**
-             * Returns illegal element which will be returned as error value.
+             * Returns illegal element which will be return as error value.
              *
              * If illegal value is not set method returns uninitialized variable.
              *
@@ -273,9 +273,10 @@ namespace utility
              */
             bool construct(int32 index)
             {
-                if(!this->Parent::isConstructed()) return false;
+                if(!this->isConstructed()) return false;
                 if(!list_.isConstructed()) return false;
                 if(list_.isIndexOutOfBounds(index)) return false;
+                if(index == last_->getIndex() + 1) index = 0;
                 curs_ = list_.getNodeByIndex(index);
                 return true;
             }
@@ -283,7 +284,7 @@ namespace utility
             /**
              * Copy constructor.
              *
-             * @param obj reference to source object.
+             * @param obj reference to source registers.
              */
             Iterator(const Iterator& obj);
           
@@ -361,8 +362,8 @@ namespace utility
              * Index of element of list which can be removed by remove method.
              */
             int32 rindex_;
-      
+          
         };
     };
 }
-#endif // UTILITY_LINKED_LIST_HPP_
+#endif // LIBRARY_CIRCULAR_LIST_HPP_

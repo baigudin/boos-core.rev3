@@ -5,12 +5,12 @@
  * @copyright 2016, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef UTILITY_LINKED_NODE_HPP_
-#define UTILITY_LINKED_NODE_HPP_
+#ifndef LIBRARY_LINKED_NODE_HPP_
+#define LIBRARY_LINKED_NODE_HPP_
 
 #include "Object.hpp"
 
-namespace utility
+namespace library
 {  
     /** 
      * @param Type  data type of element.
@@ -60,7 +60,7 @@ namespace utility
          *
          * @param node pointer to inserted node.
          */
-        virtual void insertAfter(::utility::LinkedNode<Type,Alloc>* node)
+        virtual void insertAfter(::library::LinkedNode<Type,Alloc>* node)
         {
             link(node);
             node->index_ = index_;
@@ -80,7 +80,7 @@ namespace utility
          *
          * @param node pointer to inserted node.
          */
-        virtual void insertBefore(::utility::LinkedNode<Type,Alloc>* node)
+        virtual void insertBefore(::library::LinkedNode<Type,Alloc>* node)
         {
             prev_->link(node);
             node->index_ = index_;
@@ -98,7 +98,7 @@ namespace utility
          *
          * @return previous element.
          */  
-        virtual ::utility::LinkedNode<Type,Alloc>* getPrevious() const
+        virtual ::library::LinkedNode<Type,Alloc>* getPrevious() const
         {
             return prev_;
         }
@@ -108,7 +108,7 @@ namespace utility
          *
          * @return next element.
          */  
-        virtual ::utility::LinkedNode<Type,Alloc>* getNext() const
+        virtual ::library::LinkedNode<Type,Alloc>* getNext() const
         {
             return next_;
         }
@@ -140,7 +140,7 @@ namespace utility
          *
          * @param node pointer to linking node.
          */
-        void link(::utility::LinkedNode<Type,Alloc>* node)
+        void link(::library::LinkedNode<Type,Alloc>* node)
         {
             next_->prev_ = node;
             node->next_ = next_;
@@ -185,4 +185,4 @@ namespace utility
     
     };
 }
-#endif // UTILITY_LINKED_NODE_HPP_
+#endif // LIBRARY_LINKED_NODE_HPP_

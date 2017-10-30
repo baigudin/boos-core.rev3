@@ -12,15 +12,15 @@
 #include "driver.Processor.hpp"
 #include "driver.Register.hpp"
 #include "driver.reg.Intc.hpp"
-#include "utility.Stack.hpp"
-#include "utility.Buffer.hpp"
+#include "library.Stack.hpp"
+#include "library.Buffer.hpp"
 
 namespace driver
 {
     class InterruptController : public ::driver::InterruptBase
     {
         typedef ::driver::InterruptBase             Parent;
-        typedef ::utility::Stack<int64, Allocator>  Stack;
+        typedef ::library::Stack<int64, Allocator>  Stack;
   
     public:
     
@@ -719,12 +719,12 @@ namespace driver
             /**
              * Hi level interrupt contexts.
              */            
-            ::utility::Buffer<ContextHi, NUMBER_VECTORS> hi_;
+            ::library::Buffer<ContextHi, NUMBER_VECTORS> hi_;
             
             /**
              * Low level interrupt contexts.
              */    
-            ::utility::Buffer<ContextLo> lo_;
+            ::library::Buffer<ContextLo> lo_;
           
             /**
              * Hi level interrupt illegal context.
