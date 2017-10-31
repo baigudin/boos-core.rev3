@@ -7,7 +7,6 @@
  */
 #include "kernel.Main.hpp" 
 #include "kernel.Kernel.hpp"
-#include "kernel.Interrupt.hpp"
 #include "module.Processor.hpp"
 #include "Allocator.hpp"
 #include "Board.hpp"
@@ -73,7 +72,7 @@ namespace kernel
 #ifdef EOOS_VENDOR_BOOT
 int main()
 {
-    return ::kernel::Main::main() & 0x0000ffff;
+    return static_cast<int>( ::kernel::Main::main() );
 }
 #endif // EOOS_VENDOR_BOOT
 
