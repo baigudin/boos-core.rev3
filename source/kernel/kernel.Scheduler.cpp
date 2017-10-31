@@ -8,10 +8,10 @@
 #include "kernel.Scheduler.hpp" 
 #include "kernel.SchedulerThread.hpp" 
 #include "kernel.Kernel.hpp"
-#include "driver.Interrupt.hpp"
-#include "driver.Timer.hpp"
+#include "module.Interrupt.hpp"
+#include "module.Timer.hpp"
 
-typedef ::driver::Interrupt Int;
+typedef ::module::Interrupt Int;
 
 namespace kernel
 {

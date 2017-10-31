@@ -144,14 +144,14 @@ namespace kernel
         const bool& isConstructed_;        
       
         /**
-         * Driver interrupt controller.
+         * Module of interrupt controller.
          */    
-        ::driver::Interrupt& int_;
+        ::module::Interrupt& int_;
         
         /**
-         * Driver timer controller.
+         * Module of timer controller.
          */    
-        ::driver::Timer& tim_;
+        ::module::Timer& tim_;
         
         /**
          * The tasks list.

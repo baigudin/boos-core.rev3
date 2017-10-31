@@ -19,7 +19,7 @@ namespace system
      * @param kernel a kernel resources factory.
      * @return error code or zero.
      */
-    int32 Main::main(const ::Configuration config, ::api::Kernel& kernel)
+    int32 Main::main(::api::Kernel& kernel)
     {
         int32 stage = 0;
         int32 error = -1;

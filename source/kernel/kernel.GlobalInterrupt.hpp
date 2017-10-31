@@ -10,7 +10,7 @@
     
 #include "Object.hpp"
 #include "api.Toggle.hpp"
-#include "driver.Interrupt.hpp"
+#include "module.Interrupt.hpp"
 
 namespace kernel
 {
@@ -51,7 +51,7 @@ namespace kernel
          */ 
         virtual bool disable()
         {
-            return ::driver::Interrupt::disableAll();
+            return ::module::Interrupt::disableAll();
         }        
         
         /** 
@@ -61,7 +61,7 @@ namespace kernel
          */    
         virtual void enable(bool status)
         {
-            ::driver::Interrupt::enableAll(status);  
+            ::module::Interrupt::enableAll(status);  
         }        
       
     private:

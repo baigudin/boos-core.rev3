@@ -7,7 +7,7 @@
  */
 #include "kernel.Interrupt.hpp"
 #include "kernel.Kernel.hpp"
-#include "driver.Interrupt.hpp"
+#include "module.Interrupt.hpp"
  
 namespace kernel
 {
@@ -50,7 +50,7 @@ namespace kernel
     bool Interrupt::construct(::api::Task* handler, int32 source)
     {
         if( not isConstructed_ ) return false;
-        ::driver::Interrupt::Resource res;
+        ::module::Interrupt::Resource res;
         if(handler != NULL) 
         {
             res.handler = handler;
@@ -61,7 +61,7 @@ namespace kernel
             res.handler = NULL;
             res.source = 0;
         }
-        driver_ = ::driver::Interrupt::create(res);    
+        driver_ = ::module::Interrupt::create(res);    
         return driver_ != NULL ? driver_->isConstructed() : false;
     }
   
@@ -129,7 +129,7 @@ namespace kernel
      *
      * @return interrupt developing interface.
      */  
-    ::driver::Interrupt& Interrupt::getDriver() const
+    ::module::Interrupt& Interrupt::getDriver() const
     {
         if( not isConstructed_ ) Kernel::getKernel().getRuntime().terminate(-1);
         return *driver_;

@@ -12,16 +12,6 @@ Config="Debug"
 Config="Release"
 
 [Source Files]
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Boot.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Boot.ll.asm"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Interrupt.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Interrupt.ll.asm"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Pll.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Processor.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Register.ll.asm"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Timer.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\driver.Watchdog.cpp"
 Source="..\..\source\kernel\kernel.Interrupt.cpp"
 Source="..\..\source\kernel\kernel.Kernel.cpp"
 Source="..\..\source\kernel\kernel.Main.cpp"
@@ -30,6 +20,16 @@ Source="..\..\source\kernel\kernel.Scheduler.cpp"
 Source="..\..\source\kernel\kernel.Semaphore.cpp"
 Source="..\..\source\kernel\kernel.Timer.cpp"
 Source="..\..\source\kernel\kernel.TimerInterrupt.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Boot.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Boot.ll.asm"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Interrupt.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Interrupt.ll.asm"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Pll.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Processor.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Register.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Register.ll.asm"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Timer.cpp"
+Source="..\..\source\module\cpu\ti\tms320c28x\module.Watchdog.cpp"
 Source="..\..\source\system\system.Interrupt.cpp"
 Source="..\..\source\system\system.Main.cpp"
 Source="..\..\source\system\system.Mutex.cpp"
@@ -40,14 +40,14 @@ Source="source\Board.cpp"
 Source="source\Configuration.cpp"
 Source="source\libraries\rts2800_fpu32.lib"
 Source="source\Main.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd"
-Source="..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd"
+Source="..\..\source\module\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd"
+Source="..\..\source\module\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd"
 
 ["Compiler" Settings: "Debug"]
-Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\include" -i"$(Proj_dir)\..\..\source\module\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
 
 ["Compiler" Settings: "Release"]
-Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
+Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\include" -i"$(Proj_dir)\..\..\source\module\include" -d"EOOS_TYPE_WIDTH_LP32" -ml -v28 --float_support=fpu32
 
 ["Linker" Settings: "Debug"]
 Options=-c -m".\Debug\eoos.tms320f28x3x.debug.map" -o".\Debug\eoos.tms320f28x3x.debug.out" -w -x
@@ -55,17 +55,17 @@ Options=-c -m".\Debug\eoos.tms320f28x3x.debug.map" -o".\Debug\eoos.tms320f28x3x.
 ["Linker" Settings: "Release"]
 Options=-c -m".\Release\eoos.tms320f28x3x.map" -o".\Release\eoos.tms320f28x3x.out" -w -x
 
-["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]
+["..\..\source\module\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Debug"]
 ExcludeFromBuild=true
 LinkOrder=1
 
-["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Release"]
+["..\..\source\module\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.cmd" Settings: "Release"]
 LinkOrder=1
 
-["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd" Settings: "Debug"]
+["..\..\source\module\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd" Settings: "Debug"]
 LinkOrder=1
 
-["..\..\source\driver\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd" Settings: "Release"]
+["..\..\source\module\cpu\ti\tms320c28x\memory\memory.tms320f28x35.coff.debug.cmd" Settings: "Release"]
 ExcludeFromBuild=true
 LinkOrder=1
 

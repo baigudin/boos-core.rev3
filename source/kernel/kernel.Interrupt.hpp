@@ -12,7 +12,7 @@
 #include "api.Task.hpp"
 #include "api.Interrupt.hpp"
 
-namespace driver { class Interrupt; }
+namespace module { class Interrupt; }
 
 namespace kernel
 {
@@ -83,7 +83,7 @@ namespace kernel
          *
          * @return extended interface.
          */  
-        ::driver::Interrupt& getDriver() const;
+        ::module::Interrupt& getDriver() const;
   
     private:
       
@@ -129,7 +129,7 @@ namespace kernel
         /**
          * Extended interrupt controller interface.
          */    
-        ::driver::Interrupt* driver_;
+        ::module::Interrupt* driver_;
   
     };
 }

@@ -11,7 +11,7 @@
 #include "Object.hpp" 
 #include "api.Timer.hpp" 
 
-namespace driver { class Timer; }
+namespace module { class Timer; }
 
 namespace kernel
 {
@@ -99,7 +99,7 @@ namespace kernel
          *
          * @return extended interface.
          */  
-        ::driver::Timer& getDriver() const;
+        ::module::Timer& getDriver() const;
   
     private:
     
@@ -134,7 +134,7 @@ namespace kernel
         /**
          * Extended timer controller interface.
          */    
-        ::driver::Timer* driver_;
+        ::module::Timer* driver_;
       
     };
 }

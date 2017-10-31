@@ -7,11 +7,11 @@
  */
 #include "kernel.Escalator.hpp"
 #include "system.Thread.hpp"
-#include "driver.Interrupt.hpp"
+#include "module.Interrupt.hpp"
 
 namespace kernel
 {
-    typedef ::driver::Interrupt Int;
+    typedef ::module::Interrupt Int;
 
     /** 
      * Constructor.

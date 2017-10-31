@@ -8,7 +8,7 @@
 #include "kernel.Main.hpp" 
 #include "kernel.Kernel.hpp"
 #include "kernel.Interrupt.hpp"
-#include "driver.Processor.hpp"
+#include "module.Processor.hpp"
 #include "Allocator.hpp"
 #include "Board.hpp"
 #include "system.Main.hpp" 
@@ -32,24 +32,24 @@ namespace kernel
             if( not ::Allocator::initialize(config) ) break;        
             // Stage 2
             stage++;
-            if( not ::driver::Processor::initialize(config) ) break;    
+            if( not ::Board::initialize(config) ) break;            
             // Stage 3
             stage++;
-            if( not ::Board::initialize(config) ) break;
+            if( not ::module::Processor::initialize(config) ) break;    
             // Stage 4
             stage++;
             if( not ::kernel::Kernel::initialize() ) break;      
             // Stage complete
             stage = -1;
-            error = ::system::Main::main(config, Kernel::getKernel());
+            error = ::system::Main::main(Kernel::getKernel());
         }
         while(false);
         switch(stage)
         {
             default:
             case  4: ::kernel::Kernel::deinitialize();
-            case  3: ::Board::deinitialize();      
-            case  2: ::driver::Processor::deinitialize();
+            case  3: ::module::Processor::deinitialize();
+            case  2: ::Board::deinitialize();
             case  1: ::Allocator::deinitialize();      
             case  0: break;
         }

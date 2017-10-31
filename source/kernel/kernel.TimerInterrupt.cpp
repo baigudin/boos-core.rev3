@@ -6,8 +6,8 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.TimerInterrupt.hpp"
-#include "driver.Interrupt.hpp" 
-#include "driver.Timer.hpp"
+#include "module.Interrupt.hpp" 
+#include "module.Timer.hpp"
 
 namespace kernel
 {

@@ -11,8 +11,8 @@
 #include "kernel.TimerInterrupt.hpp"
 #include "api.Task.hpp"
 #include "api.Value.hpp"
-#include "driver.Interrupt.hpp"
-#include "driver.Timer.hpp"
+#include "module.Interrupt.hpp"
+#include "module.Timer.hpp"
  
 namespace kernel
 {
@@ -133,7 +133,7 @@ namespace kernel
             int64 time, dc, dt;
             int64 timerFrequency = Timer::getDriver().getInternalClock();
             if(timerFrequency == 0) return time_;
-            bool is = ::driver::Interrupt::disableAll();
+            bool is = ::module::Interrupt::disableAll();
             // Set delta count it the value in timer clocks
             // which equals a time from previous updating.
             // This time in nanoseconds is a multiplying of
@@ -150,7 +150,7 @@ namespace kernel
             acc_ = acc_ - dt * timerFrequency;
             // Store the timer counter value
             cnt_ = cnt;
-            ::driver::Interrupt::enableAll(is);               
+            ::module::Interrupt::enableAll(is);               
             return time;
         } 
       

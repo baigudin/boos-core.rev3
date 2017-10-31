@@ -7,7 +7,7 @@
  */
 #include "kernel.Timer.hpp"
 #include "kernel.Kernel.hpp" 
-#include "driver.Timer.hpp"
+#include "module.Timer.hpp"
 
 namespace kernel
 {
@@ -50,7 +50,7 @@ namespace kernel
     bool Timer::construct(int32* index)
     {
         if( not isConstructed_ ) return false;
-        ::driver::Timer::Resource res;
+        ::module::Timer::Resource res;
         if(index != NULL) 
         {
             res.index = *index;
@@ -59,7 +59,7 @@ namespace kernel
         {
             res.index = -1;    
         }  
-        driver_ = ::driver::Timer::create(res);
+        driver_ = ::module::Timer::create(res);
         return driver_ != NULL ? driver_->isConstructed() : false;
     }
     
@@ -144,7 +144,7 @@ namespace kernel
      *
      * @return timer developing interface.
      */  
-    ::driver::Timer& Timer::getDriver() const
+    ::module::Timer& Timer::getDriver() const
     {
         if( not isConstructed_ ) Kernel::getKernel().getRuntime().terminate(-1);
         return *driver_;

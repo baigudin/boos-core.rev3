@@ -12,9 +12,9 @@
 #include "api.Thread.hpp"
 #include "api.Task.hpp"
 #include "kernel.Kernel.hpp"
-#include "driver.Interrupt.hpp"
-#include "driver.Processor.hpp"
-#include "driver.Register.hpp"
+#include "module.Interrupt.hpp"
+#include "module.Processor.hpp"
+#include "module.Register.hpp"
 #include "library.Stack.hpp"
 
 namespace kernel
@@ -23,7 +23,7 @@ namespace kernel
     {
         typedef ::Object<>               Parent;
         typedef ::library::Stack<int64>  Stack;
-        typedef ::driver::Interrupt      Int;
+        typedef ::module::Interrupt      Int;
     
     public:
     
@@ -244,7 +244,7 @@ namespace kernel
          *
          * @return this thread registers.     
          */        
-        ::driver::Register* getRegister()
+        ::module::Register* getRegister()
         {
             return register_;
         }
@@ -276,10 +276,10 @@ namespace kernel
             if( not isConstructed_ ) return false;  
             if( not task_->isConstructed() ) return false;    
             // Set this thread CPU registers context 
-            register_ = ::driver::Register::create();
+            register_ = ::module::Register::create();
             if(register_ == NULL || not register_->isConstructed()) return false;
             // Set this thread stack context 
-            stack_ = new Stack( ::driver::Processor::getStackType(), task_->getStackSize() >> 3 );    
+            stack_ = new Stack( ::module::Processor::getStackType(), task_->getStackSize() >> 3 );    
             if(stack_ == NULL || not stack_->isConstructed()) return false;
             // Set default registers value
             int32 foo = reinterpret_cast<int32>(entry);
@@ -311,7 +311,7 @@ namespace kernel
         /**
          * CPU state registers.
          */        
-        ::driver::Register* register_;
+        ::module::Register* register_;
         
         /**
          * Thread stack.

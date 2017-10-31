@@ -10,7 +10,7 @@
 
 #include "Object.hpp"
 #include "api.Runtime.hpp"
-#include "driver.Interrupt.hpp"
+#include "module.Interrupt.hpp"
 
 namespace kernel
 {
@@ -52,7 +52,7 @@ namespace kernel
          */    
         virtual void terminate(int32 status)
         {
-            ::driver::Interrupt::disableAll();
+            ::module::Interrupt::disableAll();
             while(true);
         }
         
