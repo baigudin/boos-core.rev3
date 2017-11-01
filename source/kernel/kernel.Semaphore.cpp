@@ -77,7 +77,7 @@ namespace kernel
      */   
     bool Semaphore::acquire(int32 permits)
     {
-        if(!isConstructed_) return false;
+        if( not isConstructed_ ) return false;
         bool is = Int::disableAll();
         ::api::Thread& thread = ::system::Thread::getCurrent();        
         // Acquire fairly
@@ -141,7 +141,7 @@ namespace kernel
      */  
     void Semaphore::release(int32 permits)
     {
-        if(!isConstructed_) return;
+        if( not isConstructed_ ) return;
         bool is = Int::disableAll();
         permits_ += permits;
         Int::enableAll(is);
@@ -154,7 +154,7 @@ namespace kernel
      */ 
     bool Semaphore::isBlocked()
     {
-        if(!isConstructed_) return false;
+        if( not isConstructed_ ) return false;
         bool is = Int::disableAll();
         bool res = permits_ > 0 ? false : true;
         return Int::enableAll(is, res);
@@ -177,8 +177,8 @@ namespace kernel
      */
     bool Semaphore::construct()
     {
-        if(!isConstructed_) return false;
-        if(!fifo_.isConstructed()) return false;      
+        if( not isConstructed_ ) return false;
+        if( not fifo_.isConstructed() ) return false;      
         return true;
     }
 }

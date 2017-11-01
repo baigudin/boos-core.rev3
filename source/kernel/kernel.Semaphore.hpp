@@ -89,23 +89,7 @@ namespace kernel
          */ 
         virtual bool isBlocked();
   
-    private:
-  
-        /**
-         * Fairly acquires the given number of permits from this semaphore.
-         *
-         * @param permits the number of permits to acquire.
-         * @return true if the semaphore is acquired successfully.
-         */  
-        bool acquireFair(int32 permits);
-        
-        /**
-         * Unfairly acquires the given number of permits from this semaphore.
-         *
-         * @param permits the number of permits to acquire.
-         * @return true if the semaphore is acquired successfully.
-         */  
-        bool acquireUnfair(int32 permits);      
+    private:   
         
         /**
          * Constructor.
