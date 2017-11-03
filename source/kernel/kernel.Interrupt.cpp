@@ -134,10 +134,4 @@ namespace kernel
         if( not isConstructed_ ) Kernel::getKernel().getRuntime().terminate(-1);
         return *driver_;
     }
-    
-    /**
-     * The module initialization stage (no boot).
-     */
-    int32 Interrupt::stage_;
-      
 }

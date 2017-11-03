@@ -111,6 +111,14 @@ namespace system
         static ::api::Thread& getCurrent();
         
         /**
+         * Causes current thread to sleep.
+         *
+         * @param millis a time to sleep in milliseconds.
+         * @param nanos  an additional nanoseconds to sleep.
+         */  
+        static void sleepCurrent(int64 millis, int32 nanos=0);
+        
+        /**
          * Yields to next thread.
          */
         static void yield();

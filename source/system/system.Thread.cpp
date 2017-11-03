@@ -152,6 +152,17 @@ namespace system
     }
     
     /**
+     * Causes current thread to sleep.
+     *
+     * @param millis a time to sleep in milliseconds.
+     * @param nanos  an additional nanoseconds to sleep.
+     */  
+    void Thread::sleepCurrent(int64 millis, int32 nanos)
+    {
+        getCurrent().sleep(millis, nanos);
+    }   
+    
+    /**
      * Yields to next thread.
      */
     void Thread::yield()

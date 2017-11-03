@@ -104,7 +104,7 @@ namespace kernel
         /** 
          * Queue of locked threads.
          */     
-        ::library::LinkedList< ::api::Thread* > fifo_;    
+        ::library::LinkedList< ::api::Thread* > fifo_;
   
     };
 }

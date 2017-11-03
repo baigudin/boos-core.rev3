@@ -111,16 +111,6 @@ namespace kernel
          */
         Interrupt& operator =(const Interrupt& obj);
         
-        /**
-         * The module initialized falg value.
-         */
-        static const int32 IS_INITIALIZED = 0x15798351;    
-        
-        /**
-         * The module initialization stage (no boot).
-         */
-        static int32 stage_;
-        
         /** 
          * The root object constructed flag.
          */  

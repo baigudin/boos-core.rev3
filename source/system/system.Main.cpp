@@ -39,10 +39,10 @@ namespace system
                 {
                     thread.start();
                     thread.yield();
+                    thread.join();
                     error = thread.error();            
                 }
             }
-
         }
         while(false);
         switch(stage)

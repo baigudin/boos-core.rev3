@@ -18,7 +18,7 @@ namespace kernel
     /** 
      * Constructor.
      */
-    Scheduler::Scheduler() :
+    Scheduler::Scheduler() : Parent(),
         isConstructed_ (getConstruct()),      
         int_           (ResInt::getDriver()),
         tim_           (ResTim::getDriver()),
@@ -219,7 +219,6 @@ namespace kernel
         list_.removeElement(thread);
         Int::enableAll(is);
     }
-   
     
     /**
      * Runs a method of Runnable interface start vector.

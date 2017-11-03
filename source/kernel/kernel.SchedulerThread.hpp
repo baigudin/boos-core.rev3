@@ -25,31 +25,12 @@ namespace kernel
         typedef ::library::Stack<int64>  Stack;
         typedef ::module::Interrupt      Int;
     
-    public:
-    
-        /** 
-         * Constructor of not constructed object.
-         *
-         * @param task an task interface whose main method is invoked when this thread is started.
-         */
-        SchedulerThread() : Parent(),
-            isConstructed_ (getConstruct()),
-            register_  (NULL),
-            stack_     (NULL),            
-            task_      (NULL),
-            scheduler_ (NULL),            
-            block_     (NULL),
-            id_        (-1),
-            priority_  (NORM_PRIORITY),
-            sleep_     (0),
-            status_    (DEAD){
-            setConstruct( false );
-        }    
+    public:      
     
         /** 
          * Constructor.
          *
-         * @param task     an task interface whose main method is invoked when this thread is started.
+         * @param task     a task interface whose main method is invoked when this thread is started.
          * @param id       this thread ID.
          * @param schInt   the scheduler interrupt resource.
          * @param entry    router entry point.
@@ -57,15 +38,15 @@ namespace kernel
          */
         SchedulerThread(::api::Task& task, int64 id, void (*entry)(::kernel::Scheduler*), Scheduler* scheduler) : Parent(),
             isConstructed_ (getConstruct()),
-            register_  (NULL),
-            stack_     (NULL),            
-            task_      (&task),
-            scheduler_ (scheduler),
-            block_     (NULL),
-            id_        (id),
-            priority_  (NORM_PRIORITY),
-            sleep_     (0),
-            status_    (NEW){
+            register_      (NULL),
+            stack_         (NULL),            
+            task_          (&task),
+            scheduler_     (scheduler),
+            block_         (NULL),
+            id_            (id),
+            priority_      (NORM_PRIORITY),
+            sleep_         (0),
+            status_        (NEW){
             setConstruct( construct(entry, scheduler) );
         }
         
@@ -124,9 +105,13 @@ namespace kernel
          */  
         virtual void sleep(int64 millis, int32 nanos)
         {
+            if( not isConstructed_ ) return;        
             bool is = Int::disableAll();
             status_ = SLEEPING;            
-            sleep_ = Kernel::getKernel().getExecutionTime().getValue() + millis * 1000000 + nanos;
+            int64 t = Kernel::getKernel().getExecutionTime().getValue();
+            int64 m = millis * 1000000;
+            int64 n = static_cast<int64>(nanos);
+            sleep_ = t + m + n;
             scheduler_->yield();
             Int::enableAll(is);        
         }
@@ -183,7 +168,6 @@ namespace kernel
             else 
                 priority_ = priority;        
         }
-        
 
         /**
          * Returns a status of this thread.
@@ -260,7 +244,6 @@ namespace kernel
         {
             return task_;                 
         }
-        
         
     private:
     
