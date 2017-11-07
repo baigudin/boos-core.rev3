@@ -60,7 +60,11 @@ namespace library
         static size_t strlen(const char* str)
         {
             register size_t len = 0;
-            while(*str++) len++;
+            while( *str != 0 ) 
+            {
+                len++;
+                str++;
+            }            
             return len;
         }
         

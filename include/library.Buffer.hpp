@@ -249,8 +249,8 @@ namespace library
         bool construct(int32 count)
         {
             if(!this->isConstructed()) return false;
-            // If you have a WTF question looking to the next construction, then look
-            // to description of 'alloc' template method of 'Object' template class.
+            // If you have a WTF question looking at the next construction, then look
+            // at description of 'allocate' template method of 'Object' template class.
             if(buf_ == NULL) buf_ = this->template allocate<Type*>(count * sizeof(Type));
             return buf_ == NULL ? false : true;
         }

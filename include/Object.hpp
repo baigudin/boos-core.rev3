@@ -124,7 +124,7 @@ protected:
     /**
      * Allocates memory.
      *
-     * NOTE: You need to use "this->template alloc<Type>(size);" 
+     * NOTE: You need to use "this->template allocate<Type>(size);" 
      * syntax, if your class is a template and inherits this class.
      *
      * @param size number of bytes to allocate.
