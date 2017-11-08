@@ -90,7 +90,7 @@ namespace library
         /**
          * Returns a pointer to the fist buffer element.
          *
-         * @return pointer to buffer or NULL.
+         * @return pointer to buffer, or NULL.
          */
         virtual Type* getBuffer() const
         {
@@ -228,9 +228,9 @@ namespace library
     protected: 
   
         /**
-         * Get pointer to buffer.
+         * Returns a pointer to the fist buffer element.
          *
-         * @return pointer to buffer.
+         * @return pointer to buffer, or NULL.
          */
         virtual Type* getBuffer() const
         {
