@@ -7,7 +7,8 @@
  */
 #include "Main.hpp" 
 #include "system.Main.hpp" 
-#include "system.MainThread.hpp"
+#include "system.TaskMain.hpp"
+#include "system.Thread.hpp"
 #include "system.System.hpp" 
 
 namespace system
@@ -19,7 +20,7 @@ namespace system
      * @param kernel a kernel resources factory.
      * @return error code or zero.
      */
-    int32 Main::main(::api::Kernel& kernel)
+    int32 Main::main(const ::Configuration config, ::api::Kernel& kernel)
     {
         int32 stage = 0;
         int32 error = -1;
@@ -34,13 +35,14 @@ namespace system
             // Stage complete
             stage = -1;
             {
-                MainThread thread;
+                TaskMain task(config.stackSize);
+                Thread thread(task);
                 if( thread.isConstructed() )
                 {
                     thread.start();
                     thread.yield();
                     thread.join();
-                    error = thread.error();            
+                    error = task.error();            
                 }
             }
         }

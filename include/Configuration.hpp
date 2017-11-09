@@ -33,7 +33,12 @@ public:
     /**
      * Size of heap page in bytes.
      */
-    int64 heapSize;   
+    int64 heapSize; 
+
+    /**
+     * Size of stack of user main thread in bytes.
+     */    
+    int32 stackSize;
   
     /** 
      * Constructor.
@@ -49,7 +54,8 @@ public:
         sourceClock (obj.sourceClock),
         cpuClock    (obj.cpuClock),
         heapAddr    (obj.heapAddr),
-        heapSize    (obj.heapSize){
+        heapSize    (obj.heapSize),
+        stackSize   (obj.stackSize){
     }
         
     /** 
@@ -71,6 +77,7 @@ public:
         cpuClock    = obj.cpuClock;
         heapAddr    = obj.heapAddr;
         heapSize    = obj.heapSize;
+        stackSize   = obj.stackSize;
         return *this;
     }
      

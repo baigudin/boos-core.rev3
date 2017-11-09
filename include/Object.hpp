@@ -37,6 +37,15 @@ public:
     }
     
     /** 
+     * Copy constructor.
+     *
+     * @param obj reference to source object.
+     */ 
+    Object(const ::api::Object& obj) :
+        isConstructed_ (obj.isConstructed()){
+    }    
+    
+    /** 
      * Destructor.
      */    
     virtual ~Object()

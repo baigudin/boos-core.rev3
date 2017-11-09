@@ -44,8 +44,6 @@ namespace system
         /**
          * Returns size of interrupt stack.
          *
-         * The method returns size of interrupt stack in bytes which should be allocated for the task.
-         *
          * @return stack size in bytes.
          */  
         virtual int32 getStackSize() const

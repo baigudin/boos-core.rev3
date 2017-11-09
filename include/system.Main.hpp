@@ -25,7 +25,7 @@ namespace system
          * @param kernel a kernel resources factory.
          * @return error code or zero.
          */
-        static int32 main(::api::Kernel& kernel);
+        static int32 main(const ::Configuration config, ::api::Kernel& kernel);
 
     };
 }
