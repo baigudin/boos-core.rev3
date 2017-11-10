@@ -15,7 +15,7 @@ namespace system
      */      
     Mutex::Mutex() : Parent(),
         isConstructed_ (getConstruct()),
-        kernel_        (NULL){
+        mutex_         (NULL){
         setConstruct( construct() ); 
     }    
   
@@ -24,7 +24,7 @@ namespace system
      */
     Mutex::~Mutex()
     {
-        delete kernel_;
+        delete mutex_;
     }
   
     /**
@@ -45,7 +45,7 @@ namespace system
     bool Mutex::lock()
     {
         if( not isConstructed_ ) return false;
-        return kernel_->lock();
+        return mutex_->lock();
     }
     
     /**
@@ -54,7 +54,7 @@ namespace system
     void Mutex::unlock()
     {
         if( not isConstructed_ ) return ;
-        kernel_->unlock();
+        mutex_->unlock();
     }
   
     /** 
@@ -65,7 +65,7 @@ namespace system
     bool Mutex::isBlocked()
     {
         if( not isConstructed_ ) return false;
-        return kernel_->isBlocked();
+        return mutex_->isBlocked();
     }
     
     /**
@@ -76,8 +76,8 @@ namespace system
     bool Mutex::construct()
     {
         if( not isConstructed_ ) return false;
-        ::api::Kernel& kernel = System::getKernel();
-        kernel_ = kernel.createMutex();
-        return kernel_ != NULL ? kernel_->isConstructed() : false;        
+        ::api::Kernel& kernel = System::call().getKernel();
+        mutex_ = kernel.createMutex();
+        return mutex_ != NULL ? mutex_->isConstructed() : false;        
     }
 }

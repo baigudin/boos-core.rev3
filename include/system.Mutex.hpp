@@ -85,9 +85,9 @@ namespace system
         const bool& isConstructed_;    
       
         /**
-         * Kernel mutex interface.
+         * System mutex interface.
          */    
-        ::api::Mutex* kernel_;
+        ::api::Mutex* mutex_;
   
     };
 }

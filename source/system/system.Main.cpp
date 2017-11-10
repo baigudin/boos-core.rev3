@@ -31,7 +31,7 @@ namespace system
             if( not ::system::System::initialize(kernel) ) break;      
             // Stage 2
             stage++;
-            if( not ::system::Thread::initialize() ) break;              
+            if( not ::system::Thread::initialize(kernel) ) break;              
             // Stage complete
             stage = -1;
             {

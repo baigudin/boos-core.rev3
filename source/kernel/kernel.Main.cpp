@@ -40,7 +40,7 @@ namespace kernel
             if( not ::kernel::Kernel::initialize() ) break;      
             // Stage complete
             stage = -1;
-            error = ::system::Main::main(config, Kernel::getKernel());
+            error = ::system::Main::main(config, Kernel::call());
         }
         while(false);
         switch(stage)

@@ -19,7 +19,7 @@ namespace system
      */      
     Semaphore::Semaphore(int32 permits) : Parent(),
         isConstructed_ (getConstruct()),
-        kernel_        (NULL){
+        semaphore_     (NULL){
         setConstruct( construct(permits, NULL) ); 
     }    
     
@@ -31,7 +31,7 @@ namespace system
      */      
     Semaphore::Semaphore(int32 permits, bool isFair) : Parent(),
         isConstructed_ (getConstruct()),
-        kernel_        (NULL){
+        semaphore_     (NULL){
         setConstruct( construct(permits, &isFair) );   
     }
   
@@ -40,7 +40,7 @@ namespace system
      */
     Semaphore::~Semaphore()
     {
-        delete kernel_;
+        delete semaphore_;
     }
     
     /**
@@ -61,7 +61,7 @@ namespace system
     bool Semaphore::acquire()
     {
         if( not isConstructed_ ) return false;
-        return kernel_->acquire();    
+        return semaphore_->acquire();    
     }
   
     /**
@@ -73,7 +73,7 @@ namespace system
     bool Semaphore::acquire(int32 permits)
     {
         if( not isConstructed_ ) return false;
-        return kernel_->acquire(permits);        
+        return semaphore_->acquire(permits);        
     }
   
     /**
@@ -82,7 +82,7 @@ namespace system
     void Semaphore::release()
     {
         if( not isConstructed_ ) return;
-        kernel_->release();        
+        semaphore_->release();        
     }    
   
     /**
@@ -93,7 +93,7 @@ namespace system
     void Semaphore::release(int32 permits)
     {
         if( not isConstructed_ ) return;
-        kernel_->release(permits);            
+        semaphore_->release(permits);            
     }  
     
     /** 
@@ -104,7 +104,7 @@ namespace system
     bool Semaphore::isBlocked()
     {
         if( not isConstructed_ ) return false;
-        return kernel_->isBlocked();        
+        return semaphore_->isBlocked();        
     }
     
     /**
@@ -115,7 +115,7 @@ namespace system
     bool Semaphore::isFair() const
     {
         if( not isConstructed_ ) return false;    
-        return kernel_->isFair(); 
+        return semaphore_->isFair(); 
     }
     
     /**
@@ -128,15 +128,15 @@ namespace system
     bool Semaphore::construct(int32 permits, bool* isFair)
     {
         if( not isConstructed_ ) return false;
-        ::api::Kernel& kernel = System::getKernel();
+        ::api::Kernel& kernel = System::call().getKernel();
         if( isFair == NULL )
         {
-            kernel_ = kernel.createSemaphore(permits);
+            semaphore_ = kernel.createSemaphore(permits);
         }
         else
         {
-            kernel_ = kernel.createSemaphore(permits, *isFair);
+            semaphore_ = kernel.createSemaphore(permits, *isFair);
         }
-        return kernel_ != NULL ? kernel_->isConstructed() : false;        
+        return semaphore_ != NULL ? semaphore_->isConstructed() : false;        
     }
 }

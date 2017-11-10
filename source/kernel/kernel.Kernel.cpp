@@ -1,8 +1,8 @@
 /** 
- * Kernel class.
+ * System class of the operating system kernel syscalls.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
+ * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
 #include "kernel.Kernel.hpp"
@@ -15,7 +15,7 @@ namespace kernel
      *
      * @return a kernel factory.
      */      
-    ::api::Kernel& Kernel::getKernel()
+    ::api::Kernel& Kernel::call()
     {
         if( not isInitialized() ) while(true);
         return *kernel_;    
@@ -33,9 +33,10 @@ namespace kernel
         global_ = NULL;
         kernel_ = NULL;
         // Stage 1: Create the kernel resource factory
+        stage_++;
         kernel_ = new Resource();
         if(kernel_ == NULL || not kernel_->isConstructed()) return false;                
-        // Stage 3: Set heap interrupt controller
+        // Stage 2: Set heap interrupt controller
         stage_++;        
         ::api::Heap* heap = ::Allocator::getHeap();
         if(heap == NULL || not heap->isConstructed()) return false;

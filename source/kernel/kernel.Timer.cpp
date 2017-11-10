@@ -146,7 +146,7 @@ namespace kernel
      */  
     ::module::Timer& Timer::getDriver() const
     {
-        if( not isConstructed_ ) Kernel::getKernel().getRuntime().terminate(-1);
+        if( not isConstructed_ ) Kernel::call().getRuntime().terminate(-1);
         return *driver_;
     }
 }

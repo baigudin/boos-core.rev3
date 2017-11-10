@@ -73,7 +73,7 @@ namespace kernel
                 break;
                 case ::api::Thread::SLEEPING: 
                 {
-                    if( Kernel::getKernel().getExecutionTime().getValue() >= thread->getSleep() )
+                    if( Kernel::call().getExecutionTime().getValue() >= thread->getSleep() )
                     {
                         thread->setSleep(0);
                         thread->setStatus( ::api::Thread::RUNNABLE );
@@ -143,12 +143,12 @@ namespace kernel
      */
     ::api::Thread& Scheduler::getCurrentThread()
     {
-        ::api::Runtime& kernel = Kernel::getKernel().getRuntime();
-        if( not isConstructed_ ) kernel.terminate(-1);
+        ::api::Runtime& runtime = Kernel::call().getRuntime();
+        if( not isConstructed_ ) runtime.terminate(-1);
         bool is = Int::disableAll();
         ::api::Thread* thread = list_.peek();
         Int::enableAll(is);
-        if(thread == NULL) kernel.terminate(-1);
+        if(thread == NULL) runtime.terminate(-1);
         return *thread;
     }
     

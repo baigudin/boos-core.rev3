@@ -1,15 +1,16 @@
 /** 
- * System class of the operating system kernel.
+ * System class of the operating system kernel syscalls.
  * 
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2017, Embedded Team, Sergey Baigudin
+ * @copyright 2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
 #ifndef KERNEL_KERNEL_HPP_
 #define KERNEL_KERNEL_HPP_
 
 #include "api.Kernel.hpp"
-#include "api.Toggle.hpp"
+
+namespace api { class Toggle; }
 
 namespace kernel
 {
@@ -23,7 +24,7 @@ namespace kernel
          *
          * @return the kernel factory.
          */      
-        static ::api::Kernel& getKernel();        
+        static ::api::Kernel& call();        
         
         /**
          * Initializes the resource.

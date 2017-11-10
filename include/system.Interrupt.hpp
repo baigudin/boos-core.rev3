@@ -101,9 +101,9 @@ namespace system
         const bool& isConstructed_;    
       
         /**
-         * Kernel interrupt controller interface.
+         * System interrupt controller interface.
          */    
-        ::api::Interrupt* kernel_;
+        ::api::Interrupt* interrupt_;
   
     };
 }

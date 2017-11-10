@@ -147,7 +147,7 @@ namespace system
      */
     ::api::Thread& Thread::getCurrent()
     {
-        if( not isInitialized() ) System::terminate();
+        if( not isInitialized() ) System::call().terminate();
         return scheduler_->getCurrentThread();
     }
     
@@ -167,7 +167,7 @@ namespace system
      */
     void Thread::yield()
     {
-        if( not isInitialized() ) System::terminate();
+        if( not isInitialized() ) System::call().terminate();
         return scheduler_->yield();     
     }
     
@@ -178,7 +178,7 @@ namespace system
      */ 
     ::api::Toggle& Thread::toggle()
     {
-        if( not isInitialized() ) System::terminate();
+        if( not isInitialized() ) System::call().terminate();
         return scheduler_->toggle();    
     }
     
@@ -198,17 +198,18 @@ namespace system
     }
     
     /**
-     * Initialization.
+     * Initializes the resource.
      *
-     * @return true if no errors.
-     */
-    bool Thread::initialize()
+     * @param kernel a kernel resources factory.              
+     * @return true if no errors have been occurred.
+     */   
+    bool Thread::initialize(::api::Kernel& kernel)             
     {
         isInitialized_ = 0;
         stage_ = 0;
         // Stage 1: Create global interrupt class switching
         stage_++;
-        ::api::Scheduler& scheduler = System::getKernel().getScheduler();
+        ::api::Scheduler& scheduler = kernel.getScheduler();
         if( not scheduler.isConstructed() ) return false;
         scheduler_ = &scheduler;
         // Stage complete

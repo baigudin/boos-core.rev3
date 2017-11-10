@@ -18,7 +18,7 @@ namespace system
      */
     Interrupt::Interrupt(::api::Task& handler, int32 source) : Parent(),
         isConstructed_ (getConstruct()),
-        kernel_        (NULL){
+        interrupt_     (NULL){
         setConstruct( construct(handler, source) );
     }
     
@@ -27,7 +27,7 @@ namespace system
      */
     Interrupt::~Interrupt()
     {
-        delete kernel_;
+        delete interrupt_;
     }
     
     /**
@@ -40,9 +40,8 @@ namespace system
     bool Interrupt::construct(::api::Task& handler, int32 source)
     {
         if( not isConstructed_ ) return false;    
-        ::api::Kernel& kernel = System::getKernel();
-        kernel_ = kernel.createInterrupt(handler, source);
-        return kernel_ != NULL ? kernel_->isConstructed() : false;
+        interrupt_ = System::call().getKernel().createInterrupt(handler, source);
+        return interrupt_ != NULL ? interrupt_->isConstructed() : false;
     }
   
     /**
@@ -61,7 +60,7 @@ namespace system
     void Interrupt::jump()
     {
         if( not isConstructed_ ) return;
-        kernel_->jump();
+        interrupt_->jump();
     }
     
     /**
@@ -70,7 +69,7 @@ namespace system
     void Interrupt::clear()
     {
         if( not isConstructed_ ) return;
-        kernel_->clear();  
+        interrupt_->clear();  
     }
     
     /**
@@ -79,7 +78,7 @@ namespace system
     void Interrupt::set()
     {
         if( not isConstructed_ ) return;
-        kernel_->set();  
+        interrupt_->set();  
     }  
     
     /**
@@ -90,7 +89,7 @@ namespace system
     bool Interrupt::disable()
     {
         if( not isConstructed_ ) return false;  
-        return kernel_->disable();
+        return interrupt_->disable();
     }
     
     /**
@@ -101,7 +100,7 @@ namespace system
     void Interrupt::enable(bool status)
     {
         if( not isConstructed_ ) return;
-        kernel_->enable(status);  
+        interrupt_->enable(status);  
     }
 
 }

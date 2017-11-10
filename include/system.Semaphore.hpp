@@ -119,9 +119,9 @@ namespace system
         const bool& isConstructed_;    
       
         /**
-         * Kernel semaphore interface.
+         * System semaphore interface.
          */    
-        ::api::Semaphore* kernel_;
+        ::api::Semaphore* semaphore_;
   
     };
 }

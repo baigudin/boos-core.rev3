@@ -8,6 +8,7 @@
 #ifndef SYSTEM_SYSTEM_HPP_
 #define SYSTEM_SYSTEM_HPP_
 
+#include "api.System.hpp"
 #include "api.Kernel.hpp"
 
 namespace system
@@ -16,43 +17,16 @@ namespace system
     {
       
     public:
-      
+    
         /** 
-         * Returns a current value of the running system in milliseconds.
+         * Returns the operating system syscall interface.
          *
-         * @return time in milliseconds.
-         */
-        static int64 getTimeMs();
-        
-        /** 
-         * Returns a current value of the running system in nanoseconds.
-         *
-         * @return time in nanoseconds.
+         * @return the operating system syscall interface.
          */      
-        static int64 getTimeNs();
-        
+        static ::api::System& call();    
+      
         /**
-         * Loads a program for executing.
-         *
-         * @param path a system path to a program.
-         * @return true if program has been loaded successfully.
-         */    
-        static bool loadProgram(const char* path);
-        
-        /**
-         * Terminates the operating system execution.
-         */
-        static void terminate();        
-        
-        /**
-         * Returns an kernel factory of the operating system.
-         *
-         * @return a kernel factory.
-         */
-        static ::api::Kernel& getKernel();
-        
-        /**
-         * Initializes the resource.
+         * Initializes the operating system.
          *
          * @param kernel a kernel resources factory.              
          * @return true if no errors have been occurred.
@@ -60,38 +34,38 @@ namespace system
         static bool initialize(::api::Kernel& kernel);
 
         /**
-         * Deinitializes the resource.
+         * Deinitializes the operating system.
          */
         static void deinitialize();        
   
     private:
     
         /**
-         * Tests if the module has been initialized.
+         * Tests if the operating system has been initialized.
          *
-         * @return true if the module has been initialized successfully.
+         * @return true if the operating system has been initialized successfully.
          */    
         static bool isInitialized();    
     
         /**
-         * The module initialized falg value.
+         * The operating system initialized falg value.
          */
         static const int32 IS_INITIALIZED = 0x95277129;    
         
         /**
-         * The module has been initialized successfully (no boot).
+         * The operating system has been initialized successfully (no boot).
          */
         static int32 isInitialized_;           
         
         /**
-         * The module initialization stage (no boot).
+         * The operating system initialization stage (no boot).
          */
         static int32 stage_;
-  
+        
         /**
-         * A kernel factory of the operating system (no boot).
+         * The operating system factory resource (no boot).
          */
-        static ::api::Kernel* kernel_;
+        static ::api::System* system_;
   
     };
 }

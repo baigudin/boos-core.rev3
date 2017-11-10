@@ -10,6 +10,7 @@
 
 #include "system.TaskBase.hpp"
 #include "api.Thread.hpp"
+#include "api.Kernel.hpp"
 
 namespace api { class Scheduler; }
 
@@ -133,9 +134,10 @@ namespace system
         /**
          * Initializes the resource.
          *
+         * @param kernel a kernel resources factory.              
          * @return true if no errors have been occurred.
          */   
-        static bool initialize();
+        static bool initialize(::api::Kernel& kernel);        
         
         /**
          * Deinitializes the resource.

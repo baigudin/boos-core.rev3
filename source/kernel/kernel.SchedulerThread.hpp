@@ -108,7 +108,7 @@ namespace kernel
             if( not isConstructed_ ) return;        
             bool is = Int::disableAll();
             status_ = SLEEPING;            
-            int64 t = Kernel::getKernel().getExecutionTime().getValue();
+            int64 t = Kernel::call().getExecutionTime().getValue();
             int64 m = millis * 1000000;
             int64 n = static_cast<int64>(nanos);
             sleep_ = t + m + n;
