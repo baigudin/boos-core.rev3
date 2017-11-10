@@ -43,7 +43,19 @@ namespace kernel
         virtual bool isConstructed() const
         {
             return isConstructed_;
-        }   
+        }
+        
+        /**
+         * Loads a program for executing.
+         *
+         * @param path a system path to a program.
+         * @return true if program has been loaded successfully.
+         */    
+        virtual bool load(const char* path)
+        {
+            if( not isConstructed_ ) return false;
+            return path != NULL ? false : false;
+        }           
   
         /**
          * Terminates a kernel execution.

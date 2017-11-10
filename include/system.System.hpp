@@ -32,16 +32,24 @@ namespace system
         static int64 getTimeNs();
         
         /**
+         * Loads a program for executing.
+         *
+         * @param path a system path to a program.
+         * @return true if program has been loaded successfully.
+         */    
+        static bool loadProgram(const char* path);
+        
+        /**
+         * Terminates the operating system execution.
+         */
+        static void terminate();        
+        
+        /**
          * Returns an kernel factory of the operating system.
          *
          * @return a kernel factory.
          */
         static ::api::Kernel& getKernel();
-        
-        /**
-         * Terminates the operating system execution.
-         */
-        static void terminate();
         
         /**
          * Initializes the resource.

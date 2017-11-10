@@ -30,6 +30,27 @@ namespace system
     }
     
     /**
+     * Loads a program for executing.
+     *
+     * @param path a system path to a program.
+     * @return true if program has been loaded successfully.
+     */    
+    bool System::loadProgram(const char* path)
+    {
+        if( not isInitialized() ) return false;        
+        return kernel_->getRuntime().load(path);
+    }    
+    
+    /**
+     * Terminates the operating system execution.
+     */
+    void System::terminate()
+    {
+        if( isInitialized() ) kernel_->getRuntime().terminate(-1);
+        while(true);
+    }
+    
+    /**
      * Returns an kernel factory of the operating system.
      *
      * @return a kernel factory.
@@ -38,15 +59,7 @@ namespace system
     {
         if( not isInitialized() ) terminate();
         return *kernel_;
-    }
-    
-    /**
-     * Terminates the operating system execution.
-     */
-    void System::terminate()
-    {
-        kernel_->getRuntime().terminate(-1);
-    }
+    }    
     
     /**
      * Initialization.

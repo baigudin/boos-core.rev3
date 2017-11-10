@@ -23,6 +23,14 @@ namespace api
         virtual ~Runtime(){}
         
         /**
+         * Loads a program for executing.
+         *
+         * @param path a system path to a program.
+         * @return true if program has been loaded successfully.
+         */    
+        virtual bool load(const char* path) = 0;        
+        
+        /**
          * Terminates a program execution.
          *
          * @param status a termination status.
