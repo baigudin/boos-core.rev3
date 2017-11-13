@@ -226,14 +226,9 @@ namespace system
         switch(stage_)
         {
             default:
-            case  1: 
-            {
-
-            }
-            case  0: 
-            {
+            case 1: 
+            case 0: 
                 break;
-            }
         }
         isInitialized_ = 0;    
 

@@ -194,8 +194,11 @@ namespace module
         {
             switch(index_)
             {
-                case 0: return TINTLO0;
-                case 1: return TINTLO1;
+                case 0: 
+                    return TINTLO0;
+                    
+                case 1: 
+                    return TINTLO1;
             }
             return -1;
         }
@@ -249,9 +252,17 @@ namespace module
                 uint32 addr;
                 switch(index)
                 {
-                    case  0: addr = reg::Timer::ADDRESS0; break;
-                    case  1: addr = reg::Timer::ADDRESS1; break;
-                    default: addr = 0; break;
+                    case 0: 
+                        addr = reg::Timer::ADDRESS0; 
+                        break;
+                        
+                    case 1: 
+                        addr = reg::Timer::ADDRESS1; 
+                        break;
+                        
+                    default: 
+                        addr = 0; 
+                        break;
                 }    
                 if(addr == 0) 
                 {

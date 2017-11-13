@@ -50,9 +50,14 @@ namespace system
         switch(stage)
         {
             default:
-            case  2: ::system::Thread::deinitialize();            
-            case  1: ::system::System::deinitialize();
-            case  0: break;
+            case 2: 
+                ::system::Thread::deinitialize();            
+                
+            case 1: 
+                ::system::System::deinitialize();
+                
+            case 0: 
+                break;
         }
         return error;
     }

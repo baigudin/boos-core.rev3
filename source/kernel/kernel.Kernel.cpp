@@ -57,18 +57,14 @@ namespace kernel
         {
             default:
             case 2:             
-            {
                 global_ = NULL;            
-            }
+
             case 1:
-            {
                 delete kernel_;
                 kernel_ = NULL;
-            }            
+
             case 0: 
-            {
                 break;
-            }
         }
         isInitialized_ = 0;     
     }

@@ -46,11 +46,20 @@ namespace kernel
         switch(stage)
         {
             default:
-            case  4: ::kernel::Kernel::deinitialize();
-            case  3: ::module::Processor::deinitialize();
-            case  2: ::Board::deinitialize();
-            case  1: ::Allocator::deinitialize();      
-            case  0: break;
+            case 4: 
+                ::kernel::Kernel::deinitialize();
+                
+            case 3: 
+                ::module::Processor::deinitialize();
+                
+            case 2: 
+                ::Board::deinitialize();
+                
+            case 1: 
+                ::Allocator::deinitialize();      
+                
+            case 0: 
+                break;
         }
         return error;
     }

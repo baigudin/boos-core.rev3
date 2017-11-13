@@ -377,11 +377,24 @@ namespace module
             temp.value = reg->value;
             switch(p)
             {
-                case  0: temp.bit.intsel0 = source & 0x7f; break;
-                case  1: temp.bit.intsel1 = source & 0x7f; break;
-                case  2: temp.bit.intsel2 = source & 0x7f; break;
-                case  3: temp.bit.intsel3 = source & 0x7f; break;
-                default: break;
+                case 0: 
+                    temp.bit.intsel0 = source & 0x7f; 
+                    break;
+                    
+                case 1: 
+                    temp.bit.intsel1 = source & 0x7f; 
+                    break;
+                    
+                case 2: 
+                    temp.bit.intsel2 = source & 0x7f; 
+                    break;
+                    
+                case 3: 
+                    temp.bit.intsel3 = source & 0x7f; 
+                    break;
+                    
+                default: 
+                    break;
             }
             reg->value = temp.value;
         }    

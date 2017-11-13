@@ -73,11 +73,20 @@ namespace module
             switch(stage_)
             {
                 default:
-                case  4: ::module::Timer::deinitialize();
-                case  3: ::module::Interrupt::deinitialize();
-                case  2: ::module::Register::deinitialize();      
-                case  1: ::module::Pll::deinitialize();
-                case  0: break;
+                case 4: 
+                    ::module::Timer::deinitialize();
+                    
+                case 3: 
+                    ::module::Interrupt::deinitialize();
+                    
+                case 2: 
+                    ::module::Register::deinitialize();      
+                    
+                case 1: 
+                    ::module::Pll::deinitialize();
+                    
+                case 0: 
+                    break;
             }
             isInitialized_ = 0;      
         }

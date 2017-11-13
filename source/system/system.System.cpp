@@ -50,15 +50,12 @@ namespace system
         switch(stage_)
         {
             default:
-            case  1: 
-            {
+            case 1: 
                 delete system_;
                 system_ = NULL;            
-            }          
-            case  0: 
-            {
+
+            case 0: 
                 break;
-            }
         }
         isInitialized_ = 0;     
     }

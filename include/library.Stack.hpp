@@ -79,11 +79,20 @@ namespace library
             Type* stack = &stack_[0];
             switch(type_)
             {
-                case StackIntf::FD: return &stack[stack_.getLength()];
-                case StackIntf::ED: return &stack[stack_.getLength() - 1];
-                case StackIntf::FA: return &stack[0] - 1;
-                case StackIntf::EA: return &stack[0];
-                default: return NULL;  
+                case StackIntf::FD: 
+                    return &stack[stack_.getLength()];
+                    
+                case StackIntf::ED: 
+                    return &stack[stack_.getLength() - 1];
+                    
+                case StackIntf::FA: 
+                    return &stack[0] - 1;
+                    
+                case StackIntf::EA: 
+                    return &stack[0];
+                    
+                default: 
+                    return NULL;  
             }
         }
         

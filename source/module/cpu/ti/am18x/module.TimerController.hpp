@@ -199,10 +199,9 @@ namespace module
             {
                 case 0:
                 case 1:        
-                {
                     // Internal clock for this timers is AUXCLK, which is OSCIN
                     return oscin;
-                }
+
                 case 2:
                 case 3:        
                 {
@@ -255,7 +254,9 @@ namespace module
                     clock = clock / plldiv2;
                     return clock;
                 }
-                default: return 0;        
+                
+                default: 
+                    return 0;        
             }
         }    
         
@@ -278,10 +279,17 @@ namespace module
         {
             switch(index_)
             {
-                case 0: return T64P0_TINT12;
-                case 1: return T64P1_TINT12;
-                case 2: return T64P2_ALL;
-                case 3: return T64P3_ALL;        
+                case 0: 
+                    return T64P0_TINT12;
+                    
+                case 1: 
+                    return T64P1_TINT12;
+                    
+                case 2: 
+                    return T64P2_ALL;
+                    
+                case 3: 
+                    return T64P3_ALL;
             }
             return -1;
         }
@@ -401,11 +409,20 @@ namespace module
         {
             switch(index)
             {
-                case 0: return reg::Timer::ADDRESS0;
-                case 1: return reg::Timer::ADDRESS1;
-                case 2: return reg::Timer::ADDRESS2;
-                case 3: return reg::Timer::ADDRESS3;
-                default: return 0;
+                case 0: 
+                    return reg::Timer::ADDRESS0;
+                    
+                case 1: 
+                    return reg::Timer::ADDRESS1;
+                    
+                case 2: 
+                    return reg::Timer::ADDRESS2;
+                    
+                case 3: 
+                    return reg::Timer::ADDRESS3;
+                    
+                default: 
+                    return 0;
             }
         }
         

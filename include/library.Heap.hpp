@@ -507,31 +507,25 @@ namespace library
                 switch(sibling)
                 {
                     case PREV_FREE | NEXT_FREE:
-                    {
                         prev_->size_ += 2 * sizeof(HeapBlock) + size_ + next_->size_;
                         prev_->next_ = next_->next_;
                         if(prev_->next_ != NULL) prev_->next_->prev_ = prev_;
-                    }
-                    break;
+                        break;
+                        
                     case PREV_FREE:
-                    {
                         prev_->size_ += sizeof(HeapBlock) + size_;
                         prev_->next_ = next_;
                         if(next_ != NULL) next_->prev_ = prev_;
-                    }
-                    break;
+                        break;
+                        
                     case NEXT_FREE:
-                    {
                         size_ += sizeof(HeapBlock) + next_->size_;
                         next_ = next_->next_;
                         if(next_ != NULL) next_->prev_ = this;
                         attr_ &= ~ATTR_USED;
-                    }
-                    break;
+                        break;
                     default:
-                    {
                         attr_ &= ~ATTR_USED;
-                    }
                 }
                 return true;
             }

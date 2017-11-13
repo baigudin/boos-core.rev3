@@ -66,26 +66,25 @@ namespace kernel
             switch( thread->getStatus() )
             {
                 case ::api::Thread::BLOCKED: 
-                {
                     if( not thread->getBlock()->isBlocked() )
+                    {
                         thread->setStatus( ::api::Thread::RUNNABLE );
-                }
-                break;
+                    }
+                    break;
+                    
                 case ::api::Thread::SLEEPING: 
-                {
                     if( Kernel::call().getExecutionTime().getValue() >= thread->getSleep() )
                     {
                         thread->setSleep(0);
                         thread->setStatus( ::api::Thread::RUNNABLE );
                     }
-                }
-                break;             
+                    break;             
+                    
                 case ::api::Thread::RUNNING: 
-                {
                     thread->setStatus( ::api::Thread::RUNNABLE );
-                }
-                break;
-                case ::api::Thread::RUNNABLE: 
+                    break;
+                    
+                case ::api::Thread::RUNNABLE:
                 {
                     thread->setStatus( ::api::Thread::RUNNING );
                     // Switch to the task
@@ -103,7 +102,9 @@ namespace kernel
                     tim_.setPeriod(priority * QUANT);
                     return;
                 }
-                default: break;
+                
+                default:
+                    break;
             }
             list_.remove();
             list_.add(thread);

@@ -264,13 +264,20 @@ namespace module
             }
             switch(stage)
             {
-                case  2: delete ctx_->stack; 
-                         ctx_->stack = NULL;
-                case  1: delete ctx_->reg; 
-                         ctx_->reg = NULL;
-                         ctx_ = NULL;
-                default: return Interrupt::enableAll(is, false);
-                case  0: break;
+                case 2: 
+                    delete ctx_->stack; 
+                    ctx_->stack = NULL;
+                    
+                case 1: 
+                    delete ctx_->reg; 
+                    ctx_->reg = NULL;
+                    ctx_ = NULL;
+                    
+                default: 
+                    return Interrupt::enableAll(is, false);
+                    
+                case 0: 
+                    break;
             }      
             ctx_->channel = channel;
             ctx_->handler = &handler;
@@ -361,9 +368,14 @@ namespace module
             while(false);
             switch(stage)
             {
-                case  1: deinitAintc();
-                default: return false;
-                case  0: break;
+                case 1: 
+                    deinitAintc();
+                    
+                default: 
+                    return false;
+                    
+                case 0: 
+                    break;
             }
             isInitialized_ = IS_INITIALIZED;      
             return true;      
@@ -492,11 +504,24 @@ namespace module
             int32 i = source >> 2;
             switch(source & 0x3)
             {
-                case  0: reg.cmr[i].bit.channel0 = channel & 0xff; break;
-                case  1: reg.cmr[i].bit.channel1 = channel & 0xff; break;
-                case  2: reg.cmr[i].bit.channel2 = channel & 0xff; break;
-                case  3: reg.cmr[i].bit.channel3 = channel & 0xff; break;
-                default: return false;
+                case 0: 
+                    reg.cmr[i].bit.channel0 = channel & 0xff; 
+                    break;
+                    
+                case 1: 
+                    reg.cmr[i].bit.channel1 = channel & 0xff; 
+                    break;
+                    
+                case 2: 
+                    reg.cmr[i].bit.channel2 = channel & 0xff; 
+                    break;
+                    
+                case 3: 
+                    reg.cmr[i].bit.channel3 = channel & 0xff; 
+                    break;
+                    
+                default: 
+                    return false;
             }
             return true;
         }    
