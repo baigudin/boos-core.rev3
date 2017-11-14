@@ -8,14 +8,13 @@
 #ifndef MODULE_INTERRUPT_HPP_
 #define MODULE_INTERRUPT_HPP_
 
-#include "api.Interrupt.hpp"
+#include "api.ProcessorInterrupt.hpp"
 #include "api.Task.hpp"
-#include "module.Register.hpp"
 #include "Configuration.hpp"
 
 namespace module
 {
-    class Interrupt : public ::api::Interrupt
+    class Interrupt
     {
   
     public:
@@ -36,53 +35,14 @@ namespace module
             int32 source;
 
         };
-        
-        /** 
-         * Destructor.
-         */                               
-        virtual ~Interrupt(){}
-        
-        /**
-         * Sets interrupt source handler.
-         *
-         * @param handler pointer to user class which implements an interrupt handler interface.
-         * @param source  available interrupt source.
-         * @return true if handler is set successfully.
-         */      
-        virtual bool setHandler(::api::Task& handler, int32 source) = 0;
-        
-        /**
-         * Removes this interrupt source handler.
-         */        
-        virtual void removeHandler() = 0;
-        
-        /**
-         * Sets new registers context for storing.
-         * 
-         * Method sets a new register context for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * given conxet will be restored by the context restore procedure.
-         *
-         * @param reg new registers context.
-         */
-        virtual void setContext(::module::Register& reg) = 0;
-
-        /**
-         * Restores registers context for storing to the default.
-         * 
-         * Method restores default registers for storing the CPU registers to it.
-         * This method may be called in an user interrupt handler, it means
-         * the default conxet will be restored with the context restore procedure.
-         */
-        virtual void restoreContext() = 0;        
-        
+              
         /**
          * Returns the interrupt interface of a target processor.
          *
          * @param res the module resource creating structure.     
          * @return target processor interrupt interface.
          */
-        static ::module::Interrupt* create(const ::module::Interrupt::Resource res);
+        static ::api::ProcessorInterrupt* create(const ::module::Interrupt::Resource res);
         
         /**
          * Disables all maskable interrupts.
@@ -108,8 +68,8 @@ namespace module
          * @param ret    value which will be returned.     
          * @return given value.     
          */
-        template<class Type>
-        static inline bool enableAll(bool status, Type ret)
+        template<typename Type>
+        static inline Type enableAll(bool status, Type ret)
         {
             enableAll(status);
             return ret;   

@@ -6,11 +6,13 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Main.hpp" 
-#include "kernel.Kernel.hpp"
+#include "kernel.Resource.hpp"
 #include "module.Processor.hpp"
+#include "module.Interrupt.hpp" 
+#include "system.Main.hpp"
+#include "Configuration.hpp"
 #include "Allocator.hpp"
 #include "Board.hpp"
-#include "system.Main.hpp" 
 
 namespace kernel
 {
@@ -23,37 +25,33 @@ namespace kernel
     {
         int32 stage = 0;
         int32 error = -1;
+        kernel_ = NULL;        
         const ::Configuration config = ::Configuration();
         do
         {
             // Stage 1
             stage++;
-            if( not ::Allocator::initialize(config) ) break;        
+            if( not ::Allocator::initialize(config) ) break;                   
             // Stage 2
             stage++;
-            if( not ::Board::initialize(config) ) break;            
-            // Stage 3
-            stage++;
             if( not ::module::Processor::initialize(config) ) break;    
-            // Stage 4
+            // Stage 3: Create the kernel resource factory
             stage++;
-            if( not ::kernel::Kernel::initialize() ) break;      
+            kernel_ = new Resource(config);
+            if(kernel_ == NULL || not kernel_->isConstructed()) break;       
             // Stage complete
             stage = -1;
-            error = ::system::Main::main(config, Kernel::call());
+            error = ::system::Main::main( *kernel_ );
         }
         while(false);
         switch(stage)
         {
             default:
-            case 4: 
-                ::kernel::Kernel::deinitialize();
-                
             case 3: 
-                ::module::Processor::deinitialize();
+                delete kernel_;
                 
             case 2: 
-                ::Board::deinitialize();
+                ::module::Processor::deinitialize();
                 
             case 1: 
                 ::Allocator::deinitialize();      
@@ -63,6 +61,23 @@ namespace kernel
         }
         return error;
     }
+    
+    /**
+     * Returns the kernel factory resource.
+     *        
+     * @return the kernel interface.
+     */
+    ::api::Kernel& Main::getKernel()
+    {
+        if(kernel_ == NULL) ::module::Interrupt::disableAll();
+        return *kernel_;
+    }            
+    
+    /**
+     * The kernel factory resource (no boot).
+     */
+    ::api::Kernel* Main::kernel_;
+
 }
 
 /**
@@ -85,7 +100,3 @@ int main()
 }
 #endif // EOOS_VENDOR_BOOT
 
-/**
- * Pointer to constructed heap memory (no boot).
- */
-::api::Heap* ::Allocator::heap_;

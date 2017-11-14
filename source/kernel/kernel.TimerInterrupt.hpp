@@ -15,9 +15,8 @@ namespace kernel
 {
     class TimerInterrupt : public ::kernel::Interrupt, public ::kernel::Timer
     {
-        typedef ::kernel::Interrupt Parent;
-        typedef ::kernel::Interrupt ResInt;    
-        typedef ::kernel::Timer     ResTim;
+        typedef ::kernel::Interrupt ParentInt;    
+        typedef ::kernel::Timer     ParentTim;
       
     public:
   
@@ -26,7 +25,11 @@ namespace kernel
          *
          * @param handler user class which implements an interrupt handler interface.
          */     
-        TimerInterrupt(::api::Task& handler);
+        TimerInterrupt(::api::Task& handler) : 
+            Interrupt (),
+            Timer     (){
+            setConstruct( construct(&handler) );
+        }        
         
         /**
          * Constructor.
@@ -34,40 +37,62 @@ namespace kernel
          * @param handler user class which implements an interrupt handler interface.
          * @param number  available timer number for interrupting.
          */     
-        TimerInterrupt(::api::Task& handler, int32 number);
+        TimerInterrupt(::api::Task& handler, int32 number) : 
+            Interrupt (),
+            Timer     (number){
+            setConstruct( construct(&handler) );    
+        }        
         
         /** 
          * Destructor.
          */
-        virtual ~TimerInterrupt();
+        virtual ~TimerInterrupt()
+        {
+        }
         
         /**
          * Tests if this object has been constructed.
          *
          * @return true if object has been constructed successfully.
          */    
-        virtual bool isConstructed() const;
+        virtual bool isConstructed() const
+        {
+            if( not ParentInt::isConstructed() ) return false;
+            if( not ParentTim::isConstructed() ) return false;    
+            return true;
+        }        
       
     protected:
     
         /** 
          * Constructor.
          */     
-        TimerInterrupt();   
+        TimerInterrupt() :
+            Interrupt (),
+            Timer     (){
+            setConstruct( construct(NULL) );
+        }        
         
         /**
          * Sets the object constructed flag.
          *
          * @param flag constructed flag.
          */      
-        virtual void setConstruct(bool flag);
+        virtual void setConstruct(bool flag)
+        {
+            ParentInt::setConstruct(flag);
+            ParentTim::setConstruct(flag);    
+        }        
         
         /**
          * Returns the object constructed flag.
          *
          * @return reference to the constructed flag.
          */      
-        virtual const bool& getConstruct();     
+        virtual const bool& getConstruct()     
+        {
+            return ParentInt::getConstruct();  
+        }         
       
     private:
   
@@ -77,7 +102,12 @@ namespace kernel
          * @param handler user class which implements an interrupt handler interface.
          * @return true if object has been constructed successfully.     
          */     
-        bool construct(::api::Task* handler);    
+        bool construct(::api::Task* handler)
+        {
+            if( not isConstructed() ) return false;
+            if(handler == NULL) return true;
+            return ParentInt::setHandler(*handler, ParentTim::getInterrupSource());
+        }        
         
         /**
          * Copy constructor.

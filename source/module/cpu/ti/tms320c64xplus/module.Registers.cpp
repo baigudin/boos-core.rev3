@@ -5,8 +5,8 @@
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#include "module.Register.hpp" 
-#include "module.RegisterController.hpp"
+#include "module.Registers.hpp" 
+#include "module.RegistersController.hpp"
 
 namespace module
 {
@@ -15,9 +15,9 @@ namespace module
      *
      * @return target processor register interface, or NULL if error has been occurred.
      */
-    ::module::Register* Register::create()
+    ::api::ProcessorRegisters* Registers::create()
     {
-        ::module::Register* resource = new RegisterController();
+        ::api::ProcessorRegisters* resource = new RegistersController();
         if(resource == NULL) return NULL; 
         if(resource->isConstructed()) return resource;       
         delete resource;
@@ -27,14 +27,14 @@ namespace module
     /** 
      * Allows an access to protected memory mapped CPU registers.
      */    
-    void Register::allow()
+    void Registers::allow()
     {
     }
     
     /** 
      * Protects an access to protected memory mapped CPU registers.
      */    
-    void Register::protect()
+    void Registers::protect()
     {
     }
     
@@ -44,7 +44,7 @@ namespace module
      * @param config a target processor configuration.
      * @return true if no errors have been occurred.
      */   
-    bool Register::initialize(const ::Configuration config)
+    bool Registers::initialize(const ::Configuration config)
     {
         return config.sourceClock < 0 ? false : true;
     }
@@ -52,7 +52,7 @@ namespace module
     /**
      * Deinitializes the module.
      */
-    void Register::deinitialize()
+    void Registers::deinitialize()
     {
     }  
 }

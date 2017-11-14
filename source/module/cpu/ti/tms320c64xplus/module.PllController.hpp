@@ -8,22 +8,23 @@
 #ifndef MODULE_PLL_CONTROLLER_HPP_
 #define MODULE_PLL_CONTROLLER_HPP_
 
-#include "module.PllBase.hpp"
+#include "Object.hpp"
+#include "api.ProcessorPll.hpp"
 #include "module.reg.Pllc.hpp"
 
 namespace module
 {
-    class PllController : public ::module::PllBase
+    class PllController : public ::Object<>, public ::api::ProcessorPll
     {
-        typedef ::module::PllBase  Parent;
+        typedef ::Object<>  Parent;
       
     public:
     
         /** 
          * Constructor.
          */     
-        PllController() : Parent()
-        {
+        PllController() : Parent(),
+            isConstructed_ (getConstruct()){
             setConstruct( construct() );
         }
         
@@ -32,7 +33,37 @@ namespace module
          */
         virtual ~PllController()
         {
-        }  
+        }
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }        
+
+        /**
+         * Returns source clock of CPU oscillator in Hz.
+         *
+         * @return frequency value in Hz.         
+         */      
+        virtual int64 getSourceClock()
+        {
+            return isConstructed_ ? sourceClock_ : 0;
+        }
+    
+        /**
+         * Returns source clock of CPU in Hz.
+         *
+         * @return frequency value in Hz.
+         */  
+        virtual int64 getCpuClock()
+        {
+            return isConstructed_ ? cpuClock_ : 0;        
+        }
       
         /**
          * Initialization.
@@ -145,6 +176,11 @@ namespace module
          * CPU clock rate in Hz (no boot).
          */      
         static int64 cpuClock_;
+        
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;        
       
     };
     

@@ -8,8 +8,9 @@
 #ifndef SYSTEM_MAIN_HPP_
 #define SYSTEM_MAIN_HPP_
 
-#include "Configuration.hpp"
 #include "api.Kernel.hpp"
+#include "api.System.hpp"
+#include "api.Toggle.hpp"
 
 namespace system
 {
@@ -20,12 +21,35 @@ namespace system
    
         /**
          * The method which will be stated first.
-         * 
-         * @param config the operating system configuration.         
+         *        
          * @param kernel a kernel resources factory.
          * @return error code or zero.
          */
-        static int32 main(const ::Configuration config, ::api::Kernel& kernel);
+        static int32 main(::api::Kernel& kernel);
+        
+        /**
+         * Returns the operating system factory resource.
+         *        
+         * @return the operating system interface.
+         */
+        static ::api::System& getSystem();
+        
+    private:
+    
+        /**
+         * The operating system factory resource (no boot).
+         */
+        static ::api::System* system_;
+        
+        /**
+         * The operating system global interrupt resource (no boot).
+         */
+        static ::api::Toggle* global_;         
+        
+        /**
+         * The operating system kernel factory resource (no boot).
+         */
+        static ::api::Kernel* kernel_;
 
     };
 }

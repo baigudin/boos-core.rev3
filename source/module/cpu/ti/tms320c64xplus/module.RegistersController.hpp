@@ -1,29 +1,31 @@
 /**
- * TI TMS320C64x registers.
+ * TI TMS320C64x+ registers.
  *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2016-2017, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
  */
-#ifndef MODULE_REGISTER_CONTROLLER_HPP_
-#define MODULE_REGISTER_CONTROLLER_HPP_
+#ifndef MODULE_REGISTERS_CONTROLLER_HPP_
+#define MODULE_REGISTERS_CONTROLLER_HPP_
 
-#include "module.RegisterBase.hpp"
+#include "Object.hpp"
+#include "api.ProcessorRegisters.hpp"
 
 extern void* __bss__;
 
 namespace module
 {
-    class RegisterController : public ::module::RegisterBase
-    { 
-        typedef ::module::RegisterBase  Parent;
+    class RegistersController : public ::Object<>, public ::api::ProcessorRegisters
+    {
+        typedef ::Object<>  Parent;
       
       public:
       
         /** 
          * Constructor.
          */  
-        RegisterController() : Parent(),
+        RegistersController() : Parent(),
+            isConstructed_ (getConstruct()),
             align8_ (0xb00cffffffffb00c),      
             a0_ (0),   a1_(0),   b0_(0),   b1_(0),
             a2_ (0),   a3_(0),   b2_(0),   b3_(0),
@@ -47,11 +49,64 @@ namespace module
         }
         
         /** 
+         * Copy constructor.
+         *
+         * @param obj reference to source object.
+         */
+        RegistersController(const RegistersController& obj) : Parent(obj),
+            isConstructed_ (getConstruct()),        
+            align8_ (obj.align8_),
+            a0_ (obj.a0_),   a1_ (obj.a1_),   b0_ (obj.b0_),   b1_ (obj.b1_),
+            a2_ (obj.a2_),   a3_ (obj.a3_),   b2_ (obj.b2_),   b3_ (obj.b3_),
+            a4_ (obj.a4_),   a5_ (obj.a5_),   b4_ (obj.b4_),   b5_ (obj.b5_),
+            a6_ (obj.a6_),   a7_ (obj.a7_),   b6_ (obj.b6_),   b7_ (obj.b7_),
+            a8_ (obj.a8_),   a9_ (obj.a9_),   b8_ (obj.b8_),   b9_ (obj.b9_),
+            a10_(obj.a10_),  a11_(obj.a11_),  b10_(obj.b10_),  b11_(obj.b11_),
+            a12_(obj.a12_),  a13_(obj.a13_),  b12_(obj.b12_),  b13_(obj.b13_),
+            a14_(obj.a14_),  a15_(obj.a15_),  b14_(obj.b14_),  b15_(obj.b15_),
+            a16_(obj.a16_),  a17_(obj.a17_),  b16_(obj.b16_),  b17_(obj.b17_),
+            a18_(obj.a18_),  a19_(obj.a19_),  b18_(obj.b18_),  b19_(obj.b19_),
+            a20_(obj.a20_),  a21_(obj.a21_),  b20_(obj.b20_),  b21_(obj.b21_),
+            a22_(obj.a22_),  a23_(obj.a23_),  b22_(obj.b22_),  b23_(obj.b23_),
+            a24_(obj.a24_),  a25_(obj.a25_),  b24_(obj.b24_),  b25_(obj.b25_),
+            a26_(obj.a26_),  a27_(obj.a27_),  b26_(obj.b26_),  b27_(obj.b27_),
+            a28_(obj.a28_),  a29_(obj.a29_),  b28_(obj.b28_),  b29_(obj.b29_),
+            a30_(obj.a30_),  a31_(obj.a31_),  b30_(obj.b30_),  b31_(obj.b31_),
+            amr_(obj.amr_),  irp_(obj.irp_),  csr_(obj.csr_), itsr_(obj.itsr_),
+            ilc_(obj.ilc_), rilc_(obj.rilc_),tmp1_(obj.tmp1_),tmp2_(obj.tmp2_){
+            setConstruct( copy(obj) );
+        }
+        
+        /** 
          * Destructor.
          */    
-        virtual ~RegisterController()
+        virtual ~RegistersController()
         {
         }
+        
+        
+        /** 
+         * Assignment operator.
+         *
+         * @param obj reference to source object.
+         * @return reference to this object.       
+         */     
+        RegistersController& operator =(const RegistersController& obj)
+        {
+            Parent::operator=(obj);
+            setConstruct( copy(obj) );
+            return *this;
+        }         
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }        
         
         /** 
          * Initializes the registers.
@@ -62,11 +117,10 @@ namespace module
          * @param stack a stack.
          * @param entry router entry point.
          * @param arg1  first router argument.
-         * @param arg2  second router argument.     
          */  
-        virtual void setInitialization(::api::Stack<int64>& stack, int32 entry, int32 arg1, int32 arg2)
+        virtual void setInitialization(::api::Stack<int64>& stack, void* entry, int32 argument)
         {
-            if(!isConstructed_) return;
+            if( not isConstructed_ ) return;
             // Initialize Control Status Register (Csr).        
             Csr csr = 0;
             // Set GIE bit to zero for restoring with out crash, because
@@ -82,13 +136,13 @@ namespace module
             // Thus, we have to set the bit for globally enabling interrupts of a new thread.
             itsr.bit.gie = 1;
             // Initialize self values of registers
-            irp_ = entry;
+            irp_ = reinterpret_cast<int32>(entry);
             b3_  = 0; // LP
             b14_ = reinterpret_cast<int32>(&__bss__);        
             b15_ = reinterpret_cast<int32>(stack.getTos());
-            a4_  = arg1;
+            a4_  = argument;
             a5_  = 0;
-            b4_  = arg2;
+            b4_  = 0;
             b5_  = 0;
             csr_ = csr.value;
             itsr_= itsr.value;            
@@ -180,7 +234,7 @@ namespace module
          * @param reg reference to source object.
          * @return boolean result.
          */
-        bool copy(const RegisterController& reg)
+        bool copy(const RegistersController& reg)
         {
             align8_ = reg.align8_;
             a0_  = reg.a0_;   b0_  = reg.a0_;
@@ -225,47 +279,6 @@ namespace module
             tmp2_= reg.tmp2_;
             return reg.isConstructed();
         }
-        
-        /** 
-         * Copy constructor.
-         *
-         * @param obj reference to source object.
-         */
-        RegisterController(const RegisterController& obj) : //Parent(),
-            align8_ (obj.align8_),
-            a0_ (obj.a0_),   a1_ (obj.a1_),   b0_ (obj.b0_),   b1_ (obj.b1_),
-            a2_ (obj.a2_),   a3_ (obj.a3_),   b2_ (obj.b2_),   b3_ (obj.b3_),
-            a4_ (obj.a4_),   a5_ (obj.a5_),   b4_ (obj.b4_),   b5_ (obj.b5_),
-            a6_ (obj.a6_),   a7_ (obj.a7_),   b6_ (obj.b6_),   b7_ (obj.b7_),
-            a8_ (obj.a8_),   a9_ (obj.a9_),   b8_ (obj.b8_),   b9_ (obj.b9_),
-            a10_(obj.a10_),  a11_(obj.a11_),  b10_(obj.b10_),  b11_(obj.b11_),
-            a12_(obj.a12_),  a13_(obj.a13_),  b12_(obj.b12_),  b13_(obj.b13_),
-            a14_(obj.a14_),  a15_(obj.a15_),  b14_(obj.b14_),  b15_(obj.b15_),
-            a16_(obj.a16_),  a17_(obj.a17_),  b16_(obj.b16_),  b17_(obj.b17_),
-            a18_(obj.a18_),  a19_(obj.a19_),  b18_(obj.b18_),  b19_(obj.b19_),
-            a20_(obj.a20_),  a21_(obj.a21_),  b20_(obj.b20_),  b21_(obj.b21_),
-            a22_(obj.a22_),  a23_(obj.a23_),  b22_(obj.b22_),  b23_(obj.b23_),
-            a24_(obj.a24_),  a25_(obj.a25_),  b24_(obj.b24_),  b25_(obj.b25_),
-            a26_(obj.a26_),  a27_(obj.a27_),  b26_(obj.b26_),  b27_(obj.b27_),
-            a28_(obj.a28_),  a29_(obj.a29_),  b28_(obj.b28_),  b29_(obj.b29_),
-            a30_(obj.a30_),  a31_(obj.a31_),  b30_(obj.b30_),  b31_(obj.b31_),
-            amr_(obj.amr_),  irp_(obj.irp_),  csr_(obj.csr_), itsr_(obj.itsr_),
-            ilc_(obj.ilc_), rilc_(obj.rilc_),tmp1_(obj.tmp1_),tmp2_(obj.tmp2_){
-            setConstruct( copy(obj) );
-        }
-        
-        /** 
-         * Assignment operator.
-         *
-         * @param obj reference to source object.
-         * @return reference to this object.       
-         */     
-        RegisterController& operator =(const RegisterController& obj)
-        {
-          //Parent::operator=(obj);
-            copy(obj);
-            return *this;
-        }       
         
         /**
          * Control Status Register (Csr).
@@ -357,6 +370,11 @@ namespace module
                 uint32      : 16;
             } bit;
         };       
+        
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;        
       
         /**
          * For alignment to eight on stack
@@ -387,4 +405,4 @@ namespace module
       
     };  
 }
-#endif // MODULE_REGISTER_CONTROLLER_HPP_
+#endif // MODULE_REGISTERS_CONTROLLER_HPP_

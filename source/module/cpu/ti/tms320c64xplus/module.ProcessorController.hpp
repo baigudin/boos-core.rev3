@@ -8,17 +8,17 @@
 #ifndef MODULE_PROCESSOR_CONTROLLER_HPP_
 #define MODULE_PROCESSOR_CONTROLLER_HPP_
 
-#include "module.ProcessorBase.hpp"
+#include "Object.hpp"
 #include "module.Pll.hpp"
-#include "module.Register.hpp"
+#include "module.Registers.hpp"
 #include "module.Interrupt.hpp"
 #include "module.Timer.hpp"
 
 namespace module
 {
-    class ProcessorController : public ::module::ProcessorBase
+    class ProcessorController : public ::Object<>
     {
-        typedef ::module::ProcessorBase  Parent;
+        typedef ::Object<> Parent;
       
     public:
     
@@ -52,7 +52,7 @@ namespace module
             if( not ::module::Pll::initialize(config) ) return false;    
             // Stage 2 
             stage_++;
-            if( not ::module::Register::initialize(config) ) return false;
+            if( not ::module::Registers::initialize(config) ) return false;
             // Stage 3 
             stage_++;
             if( not ::module::Interrupt::initialize(config) ) return false;
@@ -80,7 +80,7 @@ namespace module
                     ::module::Interrupt::deinitialize();
                     
                 case 2: 
-                    ::module::Register::deinitialize();
+                    ::module::Registers::deinitialize();
                     
                 case 1: 
                     ::module::Pll::deinitialize();

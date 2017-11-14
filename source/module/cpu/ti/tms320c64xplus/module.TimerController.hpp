@@ -8,18 +8,17 @@
 #ifndef MODULE_TIMER_CONTROLLER_HPP_
 #define MODULE_TIMER_CONTROLLER_HPP_
 
-#include "module.TimerBase.hpp"
+#include "Object.hpp"
+#include "api.ProcessorTimer.hpp"
 #include "module.Interrupt.hpp"
 #include "module.reg.Timer.hpp"
 
 namespace module
 {
-    class TimerController : public ::module::TimerBase
+    class TimerController : public ::Object<>, public ::api::ProcessorTimer
     {
-        typedef ::module::TimerBase  Parent;
+        typedef ::Object<> Parent;
         
-    public:
-      
         /**
          * Available interrupt sources.
          */
@@ -30,14 +29,17 @@ namespace module
             TINTLO1 = 69, // Timer 1 lower counter interrupt
             TINTHI1 = 70  // Timer 1 higher counter interrupt
         };
+        
+    public:        
       
         /** 
          * Constructor.
          */      
         TimerController() : Parent(),
-            timerClock_ (0),
-            index_      (-1),
-            regTim_     (NULL){
+            isConstructed_ (getConstruct()),        
+            timerClock_    (0),
+            index_         (-1),
+            regTim_        (NULL){
             for(int32 i=0; i<RESOURCES_NUMBER; i++) 
             {
                 if( construct(i) == true )
@@ -55,9 +57,10 @@ namespace module
          * @param index available timer index.
          */
         TimerController(int32 index) : Parent(),
-            timerClock_ (0),
-            index_      (-1),
-            regTim_     (NULL){
+            isConstructed_ (getConstruct()),        
+            timerClock_    (0),
+            index_         (-1),
+            regTim_        (NULL){
             setConstruct( construct(index) );
         }
       
@@ -67,6 +70,16 @@ namespace module
         virtual ~TimerController()
         {
         }
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }        
         
         /**
          * Gets this timer counter.
@@ -359,6 +372,11 @@ namespace module
          * Locked by some object flag of each HW timer (no boot).
          */    
         static bool lock_[RESOURCES_NUMBER];
+
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;        
         
         /**
          * The timer internal clock in Hz.

@@ -131,7 +131,7 @@ namespace kernel
         int64 updateTime(uint64 cnt) const
         {
             int64 time, dc, dt;
-            int64 timerFrequency = Timer::getDriver().getInternalClock();
+            int64 timerFrequency = getInternalClock();
             if(timerFrequency == 0) return time_;
             bool is = ::module::Interrupt::disableAll();
             // Set delta count it the value in timer clocks
@@ -163,8 +163,8 @@ namespace kernel
         {
             if( not isConstructed_ ) return false;
             ::api::Task& handler = reinterpret(this);
-            int32 source = ResTim::getDriver().getInterrupSource();
-            if(!ResInt::getDriver().setHandler(handler, source)) return false;
+            int32 source = getInterrupSource();
+            if( setHandler(handler, source) == false ) return false;
             setPeriod();
             setCount(0);
             start();

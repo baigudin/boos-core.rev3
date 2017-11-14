@@ -8,7 +8,6 @@
 #ifndef MODULE_WATCHDOG_HPP_
 #define MODULE_WATCHDOG_HPP_
 
-#include "api.Object.hpp"
 #include "Configuration.hpp"
 
 namespace module
@@ -17,19 +16,7 @@ namespace module
     {
     
     public:
-    
-         /** 
-          * Destructor.
-          */                               
-         virtual ~Watchdog(){}
-             
-         /**
-          * Returns the Watchdog interface of a target processor.
-          *
-          * @return target processor hardware interface, or NULL if error has been occurred.
-          */
-         static ::module::Watchdog* create();    
-         
+
          /**
           * Initializes the module.
           *

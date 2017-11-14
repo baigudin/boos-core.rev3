@@ -17,6 +17,7 @@
 #include "kernel.Interrupt.hpp"
 #include "kernel.Scheduler.hpp"
 #include "kernel.GlobalInterrupt.hpp"
+#include "Configuration.hpp"
 
 namespace kernel
 {
@@ -29,10 +30,11 @@ namespace kernel
         /** 
          * Constructor.
          *
-         * @param scheduler a kernel scheduler.
+         * @param config the operating system configuration.
          */    
-        Resource() : Parent(),
+        Resource(const ::Configuration config) : Parent(),
             isConstructed_ (getConstruct()),        
+            config_        (config),            
             scheduler_     (),
             time_          (),
             global_        (),
@@ -54,6 +56,16 @@ namespace kernel
         {
             return isConstructed_;
         }
+        
+        /** 
+         * Returns a default size of stack in bytes.
+         *
+         * @return a size of stack in bytes.
+         */ 
+        virtual int32 getStackSize()
+        {
+            return config_.stackSize;
+        }        
         
         /** 
          * Returns a kernel runtime environment.
@@ -191,7 +203,12 @@ namespace kernel
         /** 
          * The root object constructed flag.
          */  
-        const bool& isConstructed_;        
+        const bool& isConstructed_;
+        
+        /** 
+         * The operating system configuration.
+         */    
+        const ::Configuration config_;                
         
         /**
          * Kernel scheduler.

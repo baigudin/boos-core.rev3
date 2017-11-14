@@ -15,9 +15,9 @@ namespace module
      *
      * @return target processor register interface, or NULL if error has been occurred.
      */
-    ::module::Pll* Pll::create()
+    ::api::ProcessorPll* Pll::create()
     {
-        ::module::PllController* resource;
+        ::api::ProcessorPll* resource;
         resource = new PllController();
         if(resource == NULL) return NULL; 
         if(resource->isConstructed()) return resource;       

@@ -20,8 +20,6 @@ namespace kernel
      */
     Scheduler::Scheduler() : Parent(),
         isConstructed_ (getConstruct()),      
-        int_           (ResInt::getDriver()),
-        tim_           (ResTim::getDriver()),
         list_          (NULL),
         idCount_       (0){
         setConstruct( construct() );
@@ -53,10 +51,10 @@ namespace kernel
         // Test for completing execution
         if( list_.isEmpty() )
         {
-            int_.restoreContext();
-            tim_.stop();        
-            tim_.setCount(0);
-            tim_.setPeriod();
+            restoreContext();
+            stop();        
+            setCount(0);
+            setPeriod();
             return;
         }
         // Select next thread for executing
@@ -89,17 +87,17 @@ namespace kernel
                     thread->setStatus( ::api::Thread::RUNNING );
                     // Switch to the task
                     int32 priority = thread->getPriority();
-                    int_.setContext( *thread->getRegister() );                    
+                    setContext( *thread->getRegister() );                    
                     if(priority == ::api::Thread::LOCK_PRIORITY)
                     {
-                        tim_.stop();        
+                        stop();        
                     }
                     else
                     {
-                        tim_.start();
+                        start();
                     }
-                    tim_.setCount(0);
-                    tim_.setPeriod(priority * QUANT);
+                    setCount(0);
+                    setPeriod(priority * QUANT);
                     return;
                 }
                 
@@ -118,7 +116,7 @@ namespace kernel
      */  
     int32 Scheduler::getStackSize() const
     {
-        return 0x200;
+        return 0x1000;
     }
     
     /**
@@ -185,8 +183,8 @@ namespace kernel
     {
         if( not isConstructed() ) return false;
         if( not list_.isConstructed() ) return false;
-        int32 source = tim_.getInterrupSource();
-        if( not int_.setHandler(*this, source) ) return false;
+        int32 source = getInterrupSource();
+        if( not setHandler(*this, source) ) return false;
         setCount(0);
         setPeriod(QUANT);
         start();

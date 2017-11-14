@@ -14,7 +14,7 @@
 #include "kernel.Kernel.hpp"
 #include "module.Interrupt.hpp"
 #include "module.Processor.hpp"
-#include "module.Register.hpp"
+#include "module.Registers.hpp"
 #include "library.Stack.hpp"
 
 namespace kernel
@@ -228,7 +228,7 @@ namespace kernel
          *
          * @return this thread registers.     
          */        
-        ::module::Register* getRegister()
+        ::api::ProcessorRegisters* getRegister()
         {
             return register_;
         }
@@ -259,15 +259,15 @@ namespace kernel
             if( not isConstructed_ ) return false;  
             if( not task_->isConstructed() ) return false;    
             // Set this thread CPU registers context 
-            register_ = ::module::Register::create();
+            register_ = ::module::Registers::create();
             if(register_ == NULL || not register_->isConstructed()) return false;
             // Set this thread stack context 
             stack_ = new Stack( ::module::Processor::getStackType(), task_->getStackSize() >> 3 );    
             if(stack_ == NULL || not stack_->isConstructed()) return false;
             // Set default registers value
-            int32 foo = reinterpret_cast<int32>(entry);
+            void* foo = reinterpret_cast<void*>( reinterpret_cast<uint32>(entry) );
             int32 arg = reinterpret_cast<int32>(argument);
-            register_->setInitialization(*stack_, foo, arg, 0);            
+            register_->setInitialization(*stack_, foo, arg);            
             return true;
         }
         
@@ -294,7 +294,7 @@ namespace kernel
         /**
          * CPU state registers.
          */        
-        ::module::Register* register_;
+        ::api::ProcessorRegisters* register_;
         
         /**
          * Thread stack.

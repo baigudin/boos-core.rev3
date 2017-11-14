@@ -8,7 +8,7 @@
 #ifndef KERNEL_MAIN_HPP_
 #define KERNEL_MAIN_HPP_
 
-#include "Types.hpp"
+#include "api.Kernel.hpp"
 
 namespace kernel
 {
@@ -23,6 +23,20 @@ namespace kernel
          * @return error code or zero.
          */
         static int32 main();
+        
+        /**
+         * Returns the kernel factory resource.
+         *        
+         * @return the kernel interface.
+         */
+        static ::api::Kernel& getKernel();        
+        
+    private:
+        
+        /**
+         * The kernel factory resource (no boot).
+         */
+        static ::api::Kernel* kernel_;
         
     };
 }
