@@ -8,17 +8,16 @@
 #ifndef KERNEL_INTERRUPT_HPP_
 #define KERNEL_INTERRUPT_HPP_
 
-#include "Object.hpp"
+#include "kernel.Object.hpp"
 #include "api.ProcessorInterrupt.hpp"
 #include "module.Interrupt.hpp"
 
-namespace module { class Interrupt; }
-
 namespace kernel
 {
-    class Interrupt : public ::Object<>, public ::api::ProcessorInterrupt
+    class Interrupt : public ::kernel::Object, public ::api::ProcessorInterrupt
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object    Parent;
+        typedef ::module::Interrupt Int;
   
     public:
       
@@ -48,7 +47,9 @@ namespace kernel
          */
         virtual ~Interrupt()
         {
+            bool is = Int::disableAll();
             delete module_;
+            Int::enableAll(is);                
         }
         
         /**
@@ -120,7 +121,10 @@ namespace kernel
         virtual bool setHandler(::api::Task& handler, int32 source)
         {
             if( not isConstructed_ ) return false;
-            return module_->setHandler(handler, source);  
+            bool is = Int::disableAll();
+            bool res = module_->setHandler(handler, source);  
+            Int::enableAll(is);             
+            return res;
         }         
         
         /**
@@ -129,7 +133,9 @@ namespace kernel
         virtual void removeHandler()
         {
             if( not isConstructed_ ) return;
+            bool is = Int::disableAll();            
             module_->removeHandler();
+            Int::enableAll(is);            
         }         
         
         /**
@@ -175,7 +181,9 @@ namespace kernel
                 res.handler = NULL;
                 res.source = 0;
             }
+            bool is = Int::disableAll();            
             module_ = ::module::Interrupt::create(res);    
+            Int::enableAll(is);
             return module_ != NULL ? module_->isConstructed() : false;
         }        
                 

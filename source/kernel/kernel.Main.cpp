@@ -6,13 +6,12 @@
  * @license   http://embedded.team/license/
  */
 #include "kernel.Main.hpp" 
-#include "kernel.Resource.hpp"
+#include "kernel.Allocator.hpp"
 #include "module.Processor.hpp"
+#include "kernel.Resource.hpp"
 #include "module.Interrupt.hpp" 
 #include "system.Main.hpp"
 #include "Configuration.hpp"
-#include "Allocator.hpp"
-#include "Board.hpp"
 
 namespace kernel
 {
@@ -26,35 +25,36 @@ namespace kernel
         int32 stage = 0;
         int32 error = -1;
         kernel_ = NULL;        
-        const ::Configuration config = ::Configuration();
+        const ::Configuration config;
         do
         {
-            // Stage 1
+            // Stage 1: initialize the kernel heap allocator
             stage++;
-            if( not ::Allocator::initialize(config) ) break;                   
-            // Stage 2
+            if( not ::kernel::Allocator::initialize(config) ) break;                   
+            // Stage 2: initialize necessary modules of a processor
             stage++;
             if( not ::module::Processor::initialize(config) ) break;    
-            // Stage 3: Create the kernel resource factory
+            // Stage 3: create the kernel resource factory
             stage++;
-            kernel_ = new Resource(config);
+            Resource kernel(config);
+            kernel_ = &kernel;
             if(kernel_ == NULL || not kernel_->isConstructed()) break;       
-            // Stage complete
+            // Stage complete: call the operating system main method
             stage = -1;
-            error = ::system::Main::main( *kernel_ );
+            error = ::system::Main::main( kernel );
         }
         while(false);
         switch(stage)
         {
             default:
-            case 3: 
-                delete kernel_;
+            case 3:
+                kernel_ = NULL;
                 
             case 2: 
                 ::module::Processor::deinitialize();
                 
             case 1: 
-                ::Allocator::deinitialize();      
+                ::kernel::Allocator::deinitialize();      
                 
             case 0: 
                 break;
@@ -77,6 +77,11 @@ namespace kernel
      * The kernel factory resource (no boot).
      */
     ::api::Kernel* Main::kernel_;
+
+    /**
+     * Pointer to constructed heap memory (no boot).
+     */
+    ::api::Heap* Allocator::heap_;
 
 }
 

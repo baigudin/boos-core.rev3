@@ -11,8 +11,6 @@
 #include "module.Interrupt.hpp"
 #include "module.Timer.hpp"
 
-typedef ::module::Interrupt Int;
-
 namespace kernel
 {
     /** 

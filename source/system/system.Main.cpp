@@ -25,6 +25,7 @@ namespace system
         int32 stage = 0;
         int32 error = -1;
         system_ = NULL;
+        global_ = NULL;
         kernel_ = &kernel;
         do
         {
@@ -34,7 +35,7 @@ namespace system
             if(system_ == NULL || not system_->isConstructed()) break; 
             // Stage 2: Set heap interrupt controller
             stage++;        
-            ::api::Heap* heap = ::Allocator::getHeap();
+            ::api::Heap* heap = NULL;
             if(heap == NULL || not heap->isConstructed()) break;
             global_ = &kernel.getGlobalInterrupt();
             heap->setToggle(global_);
@@ -53,6 +54,9 @@ namespace system
         switch(stage)
         {
             default:
+            case 2: 
+                global_ = NULL;
+                            
             case 1: 
                 delete system_;
                 
@@ -89,9 +93,4 @@ namespace system
     ::api::Kernel* Main::kernel_;
 
 }
-
-/**
- * Pointer to constructed heap memory (no boot).
- */
-::api::Heap* ::Allocator::heap_;
 

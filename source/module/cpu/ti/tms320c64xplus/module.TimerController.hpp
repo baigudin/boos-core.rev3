@@ -10,7 +10,6 @@
 
 #include "Object.hpp"
 #include "api.ProcessorTimer.hpp"
-#include "module.Interrupt.hpp"
 #include "module.reg.Timer.hpp"
 
 namespace module
@@ -255,7 +254,6 @@ namespace module
             if(isInitialized_ != IS_INITIALIZED) return false;    
             if( not isConstructed_ ) return false;
             if( not isIndex(index) ) return false; 
-            bool is = Interrupt::disableAll();
             do
             {
                 if(lock_[index] == true)
@@ -309,7 +307,7 @@ namespace module
                 setCount(0);        
             }
             while(false);
-            return Interrupt::enableAll(is, index_ >= 0 ? true : false);    
+            return index_ >= 0 ? true : false;    
         }
         
         /** 

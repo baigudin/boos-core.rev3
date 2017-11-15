@@ -8,7 +8,7 @@
 #ifndef KERNEL_SEMAPHORE_HPP_
 #define KERNEL_SEMAPHORE_HPP_
 
-#include "Object.hpp"
+#include "kernel.Object.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Thread.hpp"
 #include "kernel.Kernel.hpp"
@@ -16,9 +16,9 @@
 
 namespace kernel
 {
-    class Semaphore : public ::Object<>, public ::api::Semaphore
+    class Semaphore : public ::kernel::Object, public ::api::Semaphore
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object Parent;
      
     public:
   

@@ -10,7 +10,6 @@
 
 #include "Object.hpp"
 #include "api.ProcessorInterrupt.hpp"
-#include "module.Interrupt.hpp"
 #include "module.Processor.hpp"
 #include "module.Registers.hpp"
 #include "module.reg.Intc.hpp"
@@ -220,23 +219,16 @@ namespace module
          */      
         virtual bool setHandler(::api::Task& handler, int32 source)
         {
-            bool res = false;
-            bool is = ::module::Interrupt::disableAll();
-            do
-            {
-                if( not isConstructed_ ) break;
-                if( isAllocated() ) break;
-                Source src = static_cast<Source>(source);
-                int32 index = contexts_->allocate(handler, src);
-                if(index == -1) break;
-                ctx_.hi = &contexts_->getHi(index);
-                ctx_.lo = &contexts_->getLo(index);
-                setMux();
-                index_ = index;
-                res = true;
-            }
-            while(false);
-            return ::module::Interrupt::enableAll(is, res);  
+            if( not isConstructed_ ) return false;
+            if( isAllocated() )  return false;
+            Source src = static_cast<Source>(source);
+            int32 index = contexts_->allocate(handler, src);
+            if(index == -1) return false;
+            ctx_.hi = &contexts_->getHi(index);
+            ctx_.lo = &contexts_->getLo(index);
+            setMux();
+            index_ = index;
+            return true;
         }
       
         /**
@@ -245,12 +237,10 @@ namespace module
         virtual void removeHandler()
         {
             if( not isAllocated() ) return;  
-            bool is = ::module::Interrupt::disableAll();
             disable();
             clear();
             resetMux();
             contexts_->free(index_);
-            ::module::Interrupt::enableAll(is);     
         }
         
         /**
@@ -619,6 +609,7 @@ namespace module
             int32 allocate(::api::Task& task, Source source)
             {
                 if( not isConstructed() ) return false;
+                if( not isSource(source) ) return false;
                 int32 index = -1;
                 // Test if interrupt source had been alloced
                 bool wasAllocated = false;

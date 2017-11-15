@@ -8,15 +8,17 @@
 #ifndef KERNEL_TIMER_HPP_
 #define KERNEL_TIMER_HPP_
 
-#include "Object.hpp" 
+#include "kernel.Object.hpp" 
 #include "api.ProcessorTimer.hpp" 
 #include "module.Timer.hpp"
+#include "module.Interrupt.hpp"
 
 namespace kernel
 {
-    class Timer : public ::Object<>, public ::api::ProcessorTimer
+    class Timer : public ::kernel::Object, public ::api::ProcessorTimer
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object    Parent;
+        typedef ::module::Interrupt Int;
   
     public:
   
@@ -27,7 +29,7 @@ namespace kernel
          */      
         Timer() : Parent(),
             isConstructed_ (getConstruct()),    
-            module_ (NULL){
+            module_        (NULL){
             setConstruct( construct(NULL) );    
         }
 
@@ -38,7 +40,7 @@ namespace kernel
          */
         Timer(int32 index) : Parent(),
             isConstructed_ (getConstruct()),        
-            module_ (NULL){
+            module_        (NULL){
             setConstruct( construct(&index) );
         }        
        
@@ -47,7 +49,9 @@ namespace kernel
          */    
         virtual ~Timer()
         {
+            bool is = Int::disableAll();
             delete module_;
+            Int::enableAll(is);
         }        
         
         /**
@@ -176,7 +180,9 @@ namespace kernel
             {
                 res.index = -1;    
             }  
+            bool is = Int::disableAll();
             module_ = ::module::Timer::create(res);
+            Int::enableAll(is);
             return module_ != NULL ? module_->isConstructed() : false;
         }
         

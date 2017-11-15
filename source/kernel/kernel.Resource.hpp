@@ -8,7 +8,7 @@
 #ifndef KERNEL_RESOURCE_HPP_
 #define KERNEL_RESOURCE_HPP_
 
-#include "Object.hpp"
+#include "kernel.Object.hpp"
 #include "api.Kernel.hpp"
 #include "kernel.Runtime.hpp"
 #include "kernel.Time.hpp"
@@ -21,9 +21,9 @@
 
 namespace kernel
 {
-    class Resource : public ::Object<>, public ::api::Kernel
+    class Resource : public ::kernel::Object, public ::api::Kernel
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object Parent;
       
     public:
     
@@ -45,7 +45,9 @@ namespace kernel
         /** 
          * Destructor.
          */
-        virtual ~Resource(){}
+        virtual ~Resource()
+        {
+        }
         
         /**
          * Tests if this object has been constructed.

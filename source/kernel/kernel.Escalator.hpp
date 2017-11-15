@@ -8,7 +8,7 @@
 #ifndef KERNEL_ESCALATOR_HPP_
 #define KERNEL_ESCALATOR_HPP_
 
-#include "Object.hpp"
+#include "kernel.Object.hpp"
 #include "api.Semaphore.hpp"
 #include "api.Thread.hpp"
 #include "kernel.Kernel.hpp"
@@ -16,9 +16,9 @@
 
 namespace kernel
 {
-    class Escalator : public ::Object<>, public ::api::Semaphore
+    class Escalator : public ::kernel::Object, public ::api::Semaphore
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object Parent;
      
     public:
   

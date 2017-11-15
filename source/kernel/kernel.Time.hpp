@@ -12,15 +12,12 @@
 #include "api.Task.hpp"
 #include "api.Value.hpp"
 #include "module.Interrupt.hpp"
-#include "module.Timer.hpp"
  
 namespace kernel
 {
     class Time : public ::kernel::TimerInterrupt, public ::api::Task, public ::api::Value<int64>
     {
         typedef ::kernel::TimerInterrupt Parent;
-        typedef ::kernel::Interrupt      ResInt;
-        typedef ::kernel::Timer          ResTim;
   
     public:
   
@@ -162,28 +159,13 @@ namespace kernel
         bool construct()
         {
             if( not isConstructed_ ) return false;
-            ::api::Task& handler = reinterpret(this);
             int32 source = getInterrupSource();
-            if( setHandler(handler, source) == false ) return false;
+            if( setHandler(*this, source) == false ) return false;
             setPeriod();
             setCount(0);
             start();
             enable(true);
             return true;
-        }
-      
-        /**
-         * Fixs a collision to call a TimerInterrupt constructor.
-         *
-         * Method gives to compiler an understanding about what should be called.
-         * The parent constructor will called, just not a copy constructor.
-         *
-         * @param cls pointer to this class.
-         * @return the reference to InterruptHandler interface of given class.
-         */
-        static ::api::Task& reinterpret(Time* cls)
-        {
-            return *cls;
         }
         
         /**

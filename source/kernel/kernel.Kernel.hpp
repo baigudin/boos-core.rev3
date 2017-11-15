@@ -9,8 +9,7 @@
 #define KERNEL_KERNEL_HPP_
 
 #include "api.Kernel.hpp"
-
-namespace api { class Toggle; }
+#include "api.Toggle.hpp"
 
 namespace kernel
 {

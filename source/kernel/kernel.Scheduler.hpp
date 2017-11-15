@@ -20,8 +20,7 @@ namespace kernel
     class Scheduler : public ::kernel::TimerInterrupt, public ::api::Scheduler, public ::api::Task
     {
         typedef ::kernel::TimerInterrupt Parent;
-        typedef ::kernel::Interrupt      ResInt;    
-        typedef ::kernel::Timer          ResTim;        
+        typedef ::module::Interrupt      Int;                
   
     public:
   
