@@ -8,27 +8,22 @@
 #ifndef MODULE_PLL_HPP_
 #define MODULE_PLL_HPP_
 
-#include "api.Object.hpp"
+#include "api.ProcessorPll.hpp"
 #include "Configuration.hpp"
 
 namespace module
 {
-    class Pll : public ::api::Object
+    class Pll
     {
     
     public:
-    
-        /** 
-         * Destructor.
-         */                               
-        virtual ~Pll(){}
             
         /**
          * Returns the PLL interface of a target processor.
          *
          * @return target processor hardware interface, or NULL if error has been occurred.
          */
-        static ::module::Pll* create();    
+        static ::api::ProcessorPll* create();    
         
         /**
          * Initializes the module.

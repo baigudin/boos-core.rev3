@@ -11,21 +11,6 @@
 namespace module
 {
     /**
-     * Returns the register interface of a target processor.
-     *
-     * @return target processor register interface, or NULL if error has been occurred.
-     */
-    ::module::Processor* Processor::create()
-    {
-        ::module::Processor* resource;
-        resource = new ProcessorController();
-        if(resource == NULL) return NULL; 
-        if(resource->isConstructed()) return resource;       
-        delete resource;
-        return NULL;  
-    }
-    
-    /**
      * Returns the processor stack operation type.
      *
      * @return the stack operation.     

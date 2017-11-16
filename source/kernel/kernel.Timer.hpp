@@ -8,16 +8,17 @@
 #ifndef KERNEL_TIMER_HPP_
 #define KERNEL_TIMER_HPP_
 
-#include "Object.hpp" 
-#include "api.Timer.hpp" 
-
-namespace module { class Timer; }
+#include "kernel.Object.hpp" 
+#include "api.ProcessorTimer.hpp" 
+#include "module.Timer.hpp"
+#include "module.Interrupt.hpp"
 
 namespace kernel
 {
-    class Timer : public ::Object<>, public ::api::Timer
+    class Timer : public ::kernel::Object, public ::api::ProcessorTimer
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object    Parent;
+        typedef ::module::Interrupt Int;
   
     public:
   
@@ -26,80 +27,138 @@ namespace kernel
          *
          * Constructs this object and allocs a first free hardware timer.
          */      
-        Timer();
-        
+        Timer() : Parent(),
+            isConstructed_ (getConstruct()),    
+            module_        (NULL){
+            setConstruct( construct(NULL) );    
+        }
+
         /** 
          * Constructor.
          *
          * @param index available timer index.
          */
-        Timer(int32 index);
+        Timer(int32 index) : Parent(),
+            isConstructed_ (getConstruct()),        
+            module_        (NULL){
+            setConstruct( construct(&index) );
+        }        
        
         /** 
          * Destructor.
          */    
-        virtual ~Timer();
+        virtual ~Timer()
+        {
+            bool is = Int::disableAll();
+            delete module_;
+            Int::enableAll(is);
+        }        
         
         /**
          * Tests if this object has been constructed.
          *
          * @return true if object has been constructed successfully.
          */    
-        virtual bool isConstructed() const;    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }         
         
         /**
          * Gets this timer counter.
          *
          * @return timer counter register value.   
          */      
-        virtual int64 getCount() const;
+        virtual int64 getCount() const
+        {
+            return isConstructed_ ? module_->getCount() : 0;
+        }        
         
         /**
          * Gets this timer period.
          *
          * @return timer period register value.
          */      
-        virtual int64 getPeriod() const;
+        virtual int64 getPeriod() const
+        {
+            return isConstructed_ ? module_->getPeriod() : 0;
+        }          
         
         /**
          * Sets this timer counter.
          *
          * @param count timer counter register value.
          */      
-        virtual void setCount(int64 count);
+        virtual void setCount(int64 count)
+        {
+            if( isConstructed_ ) module_->setCount(count);  
+        }          
         
         /**
          * Sets this timer period.
          *
          * @param us timer period in microseconds, zero sets the period to maxinum value.
          */      
-        virtual void setPeriod(int64 us=0);
+        virtual void setPeriod(int64 us=0)
+        {
+            if( isConstructed_ ) module_->setPeriod(us);  
+        }
         
         /**
          * Starts this timer count.
          */      
-        virtual void start();
+        virtual void start()
+        {
+            if( isConstructed_ ) module_->start();  
+        }
         
         /**
          * Stops this timer count.
          */      
-        virtual void stop();
+        virtual void stop()
+        {
+            if( isConstructed_ ) module_->stop();  
+        }
        
         /**
          * Returns this timer index.
          *
          * @return index of this timer, or -1 if error has been occurred.
          */
-        virtual int32 getIndex() const;
-      
-    protected:
-  
-        /** 
-         * Returns extended interface of interrupt.
+        virtual int32 getIndex() const
+        {
+            return isConstructed_ ? module_->getIndex() : -1;
+        }
+        
+        /**
+         * Returns number of timer digits.
          *
-         * @return extended interface.
+         * @return timer digits.
          */  
-        ::module::Timer& getDriver() const;
+        virtual int32 getDigit() const
+        {
+            return isConstructed_ ? module_->getDigit() : 0;        
+        }
+        
+        /**
+         * Returns this timer internal clock in Hz.
+         *
+         * @return timer internal clock.
+         */  
+        virtual int64 getInternalClock() const
+        {
+            return isConstructed_ ? module_->getInternalClock() : 0;                
+        }
+        
+        /**
+         * Returns an available interrupt source for this timer.
+         *
+         * @return available interrupt source, or -1 if error has been occurred.
+         */  
+        virtual int32 getInterrupSource() const
+        {
+            return isConstructed_ ? module_->getInterrupSource() : -1;        
+        }        
   
     private:
     
@@ -109,7 +168,23 @@ namespace kernel
          * @param index available timer index.
          * @return true if object has been constructed successfully.
          */
-        bool construct(int32* index);
+        bool construct(int32* index)
+        {
+            if( not isConstructed_ ) return false;
+            ::module::Timer::Resource res;
+            if(index != NULL) 
+            {
+                res.index = *index;
+            }
+            else 
+            {
+                res.index = -1;    
+            }  
+            bool is = Int::disableAll();
+            module_ = ::module::Timer::create(res);
+            Int::enableAll(is);
+            return module_ != NULL ? module_->isConstructed() : false;
+        }
         
         /**
          * Copy constructor.
@@ -134,7 +209,7 @@ namespace kernel
         /**
          * Extended timer controller interface.
          */    
-        ::module::Timer* driver_;
+        ::api::ProcessorTimer* module_;
       
     };
 }

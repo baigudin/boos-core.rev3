@@ -35,7 +35,7 @@ namespace api
          *
          * @param status a termination status.
          */    
-        virtual void terminate(int32 status) = 0;
+        virtual void terminate(int32 status=0) = 0;
 
     };
 }

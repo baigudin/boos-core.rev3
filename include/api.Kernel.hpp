@@ -31,6 +31,13 @@ namespace api
         virtual ~Kernel(){}
         
         /** 
+         * Returns a default size of stack in bytes.
+         *
+         * @return a size of stack in bytes.
+         */ 
+        virtual int32 getStackSize() = 0;        
+        
+        /** 
          * Returns a kernel runtime environment.
          *
          * @return a kernel runtime environment.

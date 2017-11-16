@@ -11,8 +11,6 @@
 #include "module.Interrupt.hpp"
 #include "module.Timer.hpp"
 
-typedef ::module::Interrupt Int;
-
 namespace kernel
 {
     /** 
@@ -20,8 +18,6 @@ namespace kernel
      */
     Scheduler::Scheduler() : Parent(),
         isConstructed_ (getConstruct()),      
-        int_           (ResInt::getDriver()),
-        tim_           (ResTim::getDriver()),
         list_          (NULL),
         idCount_       (0){
         setConstruct( construct() );
@@ -53,10 +49,10 @@ namespace kernel
         // Test for completing execution
         if( list_.isEmpty() )
         {
-            int_.restoreContext();
-            tim_.stop();        
-            tim_.setCount(0);
-            tim_.setPeriod();
+            restoreContext();
+            stop();        
+            setCount(0);
+            setPeriod();
             return;
         }
         // Select next thread for executing
@@ -66,44 +62,45 @@ namespace kernel
             switch( thread->getStatus() )
             {
                 case ::api::Thread::BLOCKED: 
-                {
                     if( not thread->getBlock()->isBlocked() )
+                    {
                         thread->setStatus( ::api::Thread::RUNNABLE );
-                }
-                break;
+                    }
+                    break;
+                    
                 case ::api::Thread::SLEEPING: 
-                {
-                    if( Kernel::getKernel().getExecutionTime().getValue() >= thread->getSleep() )
+                    if( Kernel::call().getExecutionTime().getValue() >= thread->getSleep() )
                     {
                         thread->setSleep(0);
                         thread->setStatus( ::api::Thread::RUNNABLE );
                     }
-                }
-                break;             
+                    break;             
+                    
                 case ::api::Thread::RUNNING: 
-                {
                     thread->setStatus( ::api::Thread::RUNNABLE );
-                }
-                break;
-                case ::api::Thread::RUNNABLE: 
+                    break;
+                    
+                case ::api::Thread::RUNNABLE:
                 {
                     thread->setStatus( ::api::Thread::RUNNING );
                     // Switch to the task
                     int32 priority = thread->getPriority();
-                    int_.setContext( *thread->getRegister() );                    
+                    setContext( *thread->getRegister() );                    
                     if(priority == ::api::Thread::LOCK_PRIORITY)
                     {
-                        tim_.stop();        
+                        stop();        
                     }
                     else
                     {
-                        tim_.start();
+                        start();
                     }
-                    tim_.setCount(0);
-                    tim_.setPeriod(priority * QUANT);
+                    setCount(0);
+                    setPeriod(priority * QUANT);
                     return;
                 }
-                default: break;
+                
+                default:
+                    break;
             }
             list_.remove();
             list_.add(thread);
@@ -117,7 +114,7 @@ namespace kernel
      */  
     int32 Scheduler::getStackSize() const
     {
-        return 0x200;
+        return 0x1000;
     }
     
     /**
@@ -143,12 +140,12 @@ namespace kernel
      */
     ::api::Thread& Scheduler::getCurrentThread()
     {
-        ::api::Runtime& kernel = Kernel::getKernel().getRuntime();
-        if( not isConstructed_ ) kernel.terminate(-1);
+        ::api::Runtime& runtime = Kernel::call().getRuntime();
+        if( not isConstructed_ ) runtime.terminate(-1);
         bool is = Int::disableAll();
         ::api::Thread* thread = list_.peek();
         Int::enableAll(is);
-        if(thread == NULL) kernel.terminate(-1);
+        if(thread == NULL) runtime.terminate(-1);
         return *thread;
     }
     
@@ -184,8 +181,8 @@ namespace kernel
     {
         if( not isConstructed() ) return false;
         if( not list_.isConstructed() ) return false;
-        int32 source = tim_.getInterrupSource();
-        if( not int_.setHandler(*this, source) ) return false;
+        int32 source = getInterrupSource();
+        if( not setHandler(*this, source) ) return false;
         setCount(0);
         setPeriod(QUANT);
         start();

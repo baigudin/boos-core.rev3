@@ -6,123 +6,18 @@
  * @license   http://embedded.team/license/
  */
 #include "system.System.hpp"
+#include "system.Main.hpp"
 
 namespace system
 {
-    /**
-     * Current value of the running system in milliseconds.
+    /** 
+     * Returns the operating system syscall interface.
      *
-     * @return time in milliseconds.
-     */  
-    int64 System::getTimeMs()
+     * @return the operating system syscall interface.
+     */   
+    ::api::System& System::call()
     {
-        return getTimeNs() / 1000000;
+        return Main::getSystem();    
     }
-  
-    /**
-     * Current value of the running system in nanoseconds.
-     *
-     * @return time in nanoseconds.
-     */  
-    int64 System::getTimeNs()
-    {
-        return isInitialized() ? kernel_->getExecutionTime().getValue() : 0;
-    }
-    
-    /**
-     * Loads a program for executing.
-     *
-     * @param path a system path to a program.
-     * @return true if program has been loaded successfully.
-     */    
-    bool System::loadProgram(const char* path)
-    {
-        if( not isInitialized() ) return false;        
-        return kernel_->getRuntime().load(path);
-    }    
-    
-    /**
-     * Terminates the operating system execution.
-     */
-    void System::terminate()
-    {
-        if( isInitialized() ) kernel_->getRuntime().terminate(-1);
-        while(true);
-    }
-    
-    /**
-     * Returns an kernel factory of the operating system.
-     *
-     * @return a kernel factory.
-     */
-    ::api::Kernel& System::getKernel()
-    {
-        if( not isInitialized() ) terminate();
-        return *kernel_;
-    }    
-    
-    /**
-     * Initialization.
-     *
-     * @param kernel a kernel resources factory.     
-     * @return true if no errors.
-     */
-    bool System::initialize(::api::Kernel& kernel)
-    {
-        isInitialized_ = 0;
-        stage_ = 0;        
-        // Stage 1: Create the operating system tick timer
-        stage_++;        
-        kernel_ = &kernel;
-        if(kernel_ == NULL || not kernel_->isConstructed() )  return false;
-        // Stage complete
-        stage_ = -1;
-        isInitialized_ = IS_INITIALIZED;        
-        return true;
-    }
-    
-    /**
-     * Deinitialization.
-     */
-    void System::deinitialize()
-    {
-        switch(stage_)
-        {
-            default:
-            case  1: 
-            {
-            }          
-            case  0: 
-            {
-                break;
-            }
-        }
-        isInitialized_ = 0;     
-    }
-    
-    /**
-     * Tests if the module has been initialized.
-     *
-     * @return true if the module has been initialized successfully.
-     */    
-    bool System::isInitialized()
-    {
-        return isInitialized_ != IS_INITIALIZED ? false : true;
-    }    
-    
-    /**
-     * The module has been initialized successfully (no boot).
-     */
-    int32 System::isInitialized_;    
-    
-    /**
-     * The module initialization stage (no boot).
-     */
-    int32 System::stage_;    
-    
-    /**
-     * A kernel factory of the operating system (no boot).
-     */
-    ::api::Kernel* System::kernel_;
-    
+
 }

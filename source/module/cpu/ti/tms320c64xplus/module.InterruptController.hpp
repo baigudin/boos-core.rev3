@@ -8,18 +8,19 @@
 #ifndef MODULE_INTERRUPT_CONTROLLER_HPP_
 #define MODULE_INTERRUPT_CONTROLLER_HPP_
 
-#include "module.InterruptBase.hpp"
+#include "Object.hpp"
+#include "api.ProcessorInterrupt.hpp"
 #include "module.Processor.hpp"
-#include "module.Register.hpp"
+#include "module.Registers.hpp"
 #include "module.reg.Intc.hpp"
 #include "library.Stack.hpp"
 #include "library.Buffer.hpp"
 
 namespace module
 {
-    class InterruptController : public ::module::InterruptBase
+    class InterruptController : public ::Object<>, public ::api::ProcessorInterrupt
     {
-        typedef ::module::InterruptBase             Parent;
+        typedef ::Object<>                          Parent;  
         typedef ::library::Stack<int64, Allocator>  Stack;
   
     public:
@@ -123,8 +124,9 @@ namespace module
          * Constructor.
          */    
         InterruptController() : Parent(),
-            index_ (-1),
-            ctx_   (){
+            isConstructed_ (getConstruct()),
+            index_         (-1),
+            ctx_           (){
             setConstruct( construct() );
         } 
       
@@ -135,8 +137,9 @@ namespace module
          * @param source  available interrupt source.
          */     
         InterruptController(::api::Task* handler, int32 source) : Parent(),
-            index_ (-1),    
-            ctx_ (){
+            isConstructed_ (getConstruct()),
+            index_         (-1),
+            ctx_           (){
             setConstruct( construct(*handler, source) );
         }
         
@@ -147,6 +150,16 @@ namespace module
         {
             removeHandler();    
         }
+        
+        /**
+         * Tests if this object has been constructed.
+         *
+         * @return true if object has been constructed successfully.
+         */    
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }           
         
         /**
          * Jumps to interrupt hardware vector.
@@ -206,23 +219,16 @@ namespace module
          */      
         virtual bool setHandler(::api::Task& handler, int32 source)
         {
-            bool res = false;
-            bool is = Interrupt::disableAll();
-            do
-            {
-                if( not isConstructed_ ) break;
-                if( isAllocated() ) break;
-                Source src = static_cast<Source>(source);
-                int32 index = contexts_->allocate(handler, src);
-                if(index == -1) break;
-                ctx_.hi = &contexts_->getHi(index);
-                ctx_.lo = &contexts_->getLo(index);
-                setMux();
-                index_ = index;
-                res = true;
-            }
-            while(false);
-            return Interrupt::enableAll(is, res);  
+            if( not isConstructed_ ) return false;
+            if( isAllocated() )  return false;
+            Source src = static_cast<Source>(source);
+            int32 index = contexts_->allocate(handler, src);
+            if(index == -1) return false;
+            ctx_.hi = &contexts_->getHi(index);
+            ctx_.lo = &contexts_->getLo(index);
+            setMux();
+            index_ = index;
+            return true;
         }
       
         /**
@@ -231,12 +237,10 @@ namespace module
         virtual void removeHandler()
         {
             if( not isAllocated() ) return;  
-            bool is = Interrupt::disableAll();
             disable();
             clear();
             resetMux();
             contexts_->free(index_);
-            Interrupt::enableAll(is);     
         }
         
         /**
@@ -244,7 +248,7 @@ namespace module
          *
          * @param reg pointer to new registers context.
          */
-        virtual void setContext(::module::Register& reg)
+        virtual void setContext(::api::ProcessorRegisters& reg)
         {
             if( not isAllocated() ) return;
             ctx_.lo->reg = reg.getRegisters();
@@ -377,11 +381,24 @@ namespace module
             temp.value = reg->value;
             switch(p)
             {
-                case  0: temp.bit.intsel0 = source & 0x7f; break;
-                case  1: temp.bit.intsel1 = source & 0x7f; break;
-                case  2: temp.bit.intsel2 = source & 0x7f; break;
-                case  3: temp.bit.intsel3 = source & 0x7f; break;
-                default: break;
+                case 0: 
+                    temp.bit.intsel0 = source & 0x7f; 
+                    break;
+                    
+                case 1: 
+                    temp.bit.intsel1 = source & 0x7f; 
+                    break;
+                    
+                case 2: 
+                    temp.bit.intsel2 = source & 0x7f; 
+                    break;
+                    
+                case 3: 
+                    temp.bit.intsel3 = source & 0x7f; 
+                    break;
+                    
+                default: 
+                    break;
             }
             reg->value = temp.value;
         }    
@@ -516,7 +533,7 @@ namespace module
             /**
              * CPU register state of interrupt source handler.
              */
-            ::module::Register* reg;
+            ::api::ProcessorRegisters* reg;
             
             /**
              * Stack of interrupt source handler.
@@ -592,6 +609,7 @@ namespace module
             int32 allocate(::api::Task& task, Source source)
             {
                 if( not isConstructed() ) return false;
+                if( not isSource(source) ) return false;
                 int32 index = -1;
                 // Test if interrupt source had been alloced
                 bool wasAllocated = false;
@@ -616,7 +634,7 @@ namespace module
                 hi->number = index + 4;      
                 hi->source = source;
                 hi->handler = &task;      
-                hi->reg = ::module::Register::create();
+                hi->reg = ::module::Registers::create();
                 if(hi->reg == NULL) return -1;
                 hi->stack = new Stack(::module::Processor::getStackType(), task.getStackSize() >> 3);
                 if(hi->stack == NULL || not hi->stack->isConstructed()) return -1;
@@ -805,6 +823,11 @@ namespace module
          * Don't use the field in any other cases.
          */    
         static ContextHi* contextHi_;    
+        
+        /** 
+         * The root object constructed flag.
+         */  
+        const bool& isConstructed_;        
         
         /**
          * Index of the interrupt context.

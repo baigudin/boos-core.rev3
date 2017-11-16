@@ -8,28 +8,15 @@
 #ifndef MODULE_PROCESSOR_HPP_
 #define MODULE_PROCESSOR_HPP_
 
-#include "api.Object.hpp"
 #include "api.Stack.hpp"
 #include "Configuration.hpp"
 
 namespace module
 {
-    class Processor : public ::api::Object
+    class Processor
     {
     
     public:
-    
-        /** 
-         * Destructor.
-         */                               
-        virtual ~Processor(){}
-            
-        /**
-         * Returns the interface of a target processor.
-         *
-         * @return target processor hardware interface, or NULL if error has been occurred.
-         */
-        static ::module::Processor* create(); 
         
         /**
          * Returns the processor stack operation type.

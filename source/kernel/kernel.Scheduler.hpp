@@ -20,8 +20,7 @@ namespace kernel
     class Scheduler : public ::kernel::TimerInterrupt, public ::api::Scheduler, public ::api::Task
     {
         typedef ::kernel::TimerInterrupt Parent;
-        typedef ::kernel::Interrupt      ResInt;    
-        typedef ::kernel::Timer          ResTim;        
+        typedef ::module::Interrupt      Int;                
   
     public:
   
@@ -142,16 +141,6 @@ namespace kernel
          * The root object constructed flag.
          */  
         const bool& isConstructed_;        
-      
-        /**
-         * Module of interrupt controller.
-         */    
-        ::module::Interrupt& int_;
-        
-        /**
-         * Module of timer controller.
-         */    
-        ::module::Timer& tim_;
         
         /**
          * The tasks list.

@@ -8,15 +8,15 @@
 #ifndef KERNEL_RUNTIME_HPP_
 #define KERNEL_RUNTIME_HPP_
 
-#include "Object.hpp"
+#include "kernel.Object.hpp"
 #include "api.Runtime.hpp"
 #include "module.Interrupt.hpp"
 
 namespace kernel
 {
-    class Runtime : public ::Object<>, public ::api::Runtime
+    class Runtime : public ::kernel::Object, public ::api::Runtime
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object Parent;
       
     public:
     

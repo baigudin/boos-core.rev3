@@ -16,9 +16,9 @@ namespace module
      * @param res the module resource creating structure.
      * @return target processor timer interface, or NULL if error has been occurred.
      */
-    ::module::Timer* Timer::create(const ::module::Timer::Resource res)
+    ::api::ProcessorTimer* Timer::create(const ::module::Timer::Resource res)         
     {
-        ::module::Timer* resource;  
+        ::api::ProcessorTimer* resource;  
         resource = res.index >= 0 ? new TimerController(res.index) : new TimerController();
         if(resource == NULL) return NULL; 
         if(resource->isConstructed()) return resource;       

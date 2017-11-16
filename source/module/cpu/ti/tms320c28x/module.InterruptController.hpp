@@ -587,9 +587,16 @@ namespace module
                 {
                     switch(source)
                     {
-                        case CPU_TIMER1_TINT1: num = 12; break;
-                        case CPU_TIMER2_TINT2: num = 13; break;
-                        default: return false;
+                        case CPU_TIMER1_TINT1: 
+                            num = 12; 
+                            break;
+                            
+                        case CPU_TIMER2_TINT2: 
+                            num = 13; 
+                            break;
+                            
+                        default: 
+                            return false;
                     }
                     maskPieAck = 0x0;
                     maskPieIer = 0x0;

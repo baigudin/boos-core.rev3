@@ -16,9 +16,9 @@ namespace module
      * @param res the module resource creating structure.     
      * @return target processor interrupt interface.
      */
-    ::module::Interrupt* Interrupt::create(const ::module::Interrupt::Resource res) 
+    ::api::ProcessorInterrupt* Interrupt::create(const ::module::Interrupt::Resource res) 
     {
-        ::module::Interrupt* resource;
+        ::api::ProcessorInterrupt* resource;
         resource = res.handler != NULL ? new InterruptController(res.handler, res.source) : new InterruptController();
         if(resource == NULL) return NULL; 
         if(resource->isConstructed()) return resource;       

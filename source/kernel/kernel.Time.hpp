@@ -12,15 +12,12 @@
 #include "api.Task.hpp"
 #include "api.Value.hpp"
 #include "module.Interrupt.hpp"
-#include "module.Timer.hpp"
  
 namespace kernel
 {
     class Time : public ::kernel::TimerInterrupt, public ::api::Task, public ::api::Value<int64>
     {
         typedef ::kernel::TimerInterrupt Parent;
-        typedef ::kernel::Interrupt      ResInt;
-        typedef ::kernel::Timer          ResTim;
   
     public:
   
@@ -131,7 +128,7 @@ namespace kernel
         int64 updateTime(uint64 cnt) const
         {
             int64 time, dc, dt;
-            int64 timerFrequency = Timer::getDriver().getInternalClock();
+            int64 timerFrequency = getInternalClock();
             if(timerFrequency == 0) return time_;
             bool is = ::module::Interrupt::disableAll();
             // Set delta count it the value in timer clocks
@@ -162,28 +159,13 @@ namespace kernel
         bool construct()
         {
             if( not isConstructed_ ) return false;
-            ::api::Task& handler = reinterpret(this);
-            int32 source = ResTim::getDriver().getInterrupSource();
-            if(!ResInt::getDriver().setHandler(handler, source)) return false;
+            int32 source = getInterrupSource();
+            if( setHandler(*this, source) == false ) return false;
             setPeriod();
             setCount(0);
             start();
             enable(true);
             return true;
-        }
-      
-        /**
-         * Fixs a collision to call a TimerInterrupt constructor.
-         *
-         * Method gives to compiler an understanding about what should be called.
-         * The parent constructor will called, just not a copy constructor.
-         *
-         * @param cls pointer to this class.
-         * @return the reference to InterruptHandler interface of given class.
-         */
-        static ::api::Task& reinterpret(Time* cls)
-        {
-            return *cls;
         }
         
         /**

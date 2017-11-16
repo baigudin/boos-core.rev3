@@ -8,7 +8,7 @@
 #ifndef KERNEL_RESOURCE_HPP_
 #define KERNEL_RESOURCE_HPP_
 
-#include "Object.hpp"
+#include "kernel.Object.hpp"
 #include "api.Kernel.hpp"
 #include "kernel.Runtime.hpp"
 #include "kernel.Time.hpp"
@@ -17,22 +17,24 @@
 #include "kernel.Interrupt.hpp"
 #include "kernel.Scheduler.hpp"
 #include "kernel.GlobalInterrupt.hpp"
+#include "Configuration.hpp"
 
 namespace kernel
 {
-    class Resource : public ::Object<>, public ::api::Kernel
+    class Resource : public ::kernel::Object, public ::api::Kernel
     {
-        typedef ::Object<> Parent;
+        typedef ::kernel::Object Parent;
       
     public:
     
         /** 
          * Constructor.
          *
-         * @param scheduler a kernel scheduler.
+         * @param config the operating system configuration.
          */    
-        Resource() : Parent(),
+        Resource(const ::Configuration config) : Parent(),
             isConstructed_ (getConstruct()),        
+            config_        (config),            
             scheduler_     (),
             time_          (),
             global_        (),
@@ -43,7 +45,9 @@ namespace kernel
         /** 
          * Destructor.
          */
-        virtual ~Resource(){}
+        virtual ~Resource()
+        {
+        }
         
         /**
          * Tests if this object has been constructed.
@@ -54,6 +58,16 @@ namespace kernel
         {
             return isConstructed_;
         }
+        
+        /** 
+         * Returns a default size of stack in bytes.
+         *
+         * @return a size of stack in bytes.
+         */ 
+        virtual int32 getStackSize()
+        {
+            return config_.stackSize;
+        }        
         
         /** 
          * Returns a kernel runtime environment.
@@ -191,7 +205,12 @@ namespace kernel
         /** 
          * The root object constructed flag.
          */  
-        const bool& isConstructed_;        
+        const bool& isConstructed_;
+        
+        /** 
+         * The operating system configuration.
+         */    
+        const ::Configuration config_;                
         
         /**
          * Kernel scheduler.

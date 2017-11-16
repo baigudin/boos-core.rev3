@@ -139,27 +139,88 @@ namespace module
             Source src;
             switch(source)
             {
-                case DSPINT     : src = DSPINT;     break;
-                case TINT0      : src = TINT0;      break;
-                case TINT1      : src = TINT1;      break;
-                case SD_INTA    : src = SD_INTA;    break;
-                case GPINT4     : src = GPINT4;     break;
-                case GPINT5     : src = GPINT5;     break;
-                case GPINT6     : src = GPINT6;     break;
-                case GPINT7     : src = GPINT7;     break;
-                case EDMA_INT   : src = EDMA_INT;   break;
-                case XINT0      : src = XINT0;      break;
-                case RINT0      : src = RINT0;      break;
-                case XINT1      : src = XINT1;      break;
-                case RINT1      : src = RINT1;      break;
-                case GPINT0     : src = GPINT0;     break;
-                case XINT2      : src = XINT2;      break;
-                case RINT2      : src = RINT2;      break;
-                case TINT2      : src = TINT2;      break;
-                case SD_INTB    : src = SD_INTB;    break;
-                case PCI_WAKEUP : src = PCI_WAKEUP; break;
-                case UINT       : src = UINT;       break;
-                default         : return false;
+                case DSPINT: 
+                    src = DSPINT;     
+                    break;
+                    
+                case TINT0: 
+                    src = TINT0;      
+                    break;
+                    
+                case TINT1: 
+                    src = TINT1;      
+                    break;
+                    
+                case SD_INTA: 
+                    src = SD_INTA;    
+                    break;
+                    
+                case GPINT4: 
+                    src = GPINT4;     
+                    break;
+                    
+                case GPINT5: 
+                    src = GPINT5;     
+                    break;
+                    
+                case GPINT6: 
+                    src = GPINT6;     
+                    break;
+                    
+                case GPINT7: 
+                    src = GPINT7;     
+                    break;
+                    
+                case EDMA_INT: 
+                    src = EDMA_INT;   
+                    break;
+                    
+                case XINT0: 
+                    src = XINT0;      
+                    break;
+                    
+                case RINT0: 
+                    src = RINT0;      
+                    break;
+                    
+                case XINT1: 
+                    src = XINT1;      
+                    break;
+                    
+                case RINT1: 
+                    src = RINT1;      
+                    break;
+                    
+                case GPINT0: 
+                    src = GPINT0;     
+                    break;
+
+                case XINT2: 
+                    src = XINT2;      
+                    break;
+                    
+                case RINT2: 
+                    src = RINT2;      
+                    break;
+                    
+                case TINT2: 
+                    src = TINT2;      
+                    break;
+                    
+                case SD_INTB: 
+                    src = SD_INTB;    
+                    break;
+                    
+                case PCI_WAKEUP: 
+                    src = PCI_WAKEUP; 
+                    break;
+                    
+                case UINT: 
+                    src = UINT;       
+                    break;
+                    
+                default: 
+                    return false;
             }
             bool is = Interrupt::disableAll();
             if(!isConstructed()) return Interrupt::enableAll(is, false);      
@@ -301,11 +362,14 @@ namespace module
             if(!isAllocated()) return false;
             switch(ctx_->source)
             {
-                default    : return false;
                 case GPINT4:
                 case GPINT5:
                 case GPINT6:
-                case GPINT7: return true;
+                case GPINT7: 
+                    return true;
+                
+                default: 
+                    return false;                
             }
         }
         
@@ -317,11 +381,24 @@ namespace module
             if(!isAllocated()) return;
             switch(ctx_->source)
             {
-                case GPINT4: intc_->extpol.bit.xip4 = 0; break;
-                case GPINT5: intc_->extpol.bit.xip5 = 0; break;
-                case GPINT6: intc_->extpol.bit.xip6 = 0; break;
-                case GPINT7: intc_->extpol.bit.xip7 = 0; break;
-                default: break;
+                case GPINT4: 
+                    intc_->extpol.bit.xip4 = 0; 
+                    break;
+                    
+                case GPINT5: 
+                    intc_->extpol.bit.xip5 = 0; 
+                    break;
+                    
+                case GPINT6: 
+                    intc_->extpol.bit.xip6 = 0; 
+                    break;
+                    
+                case GPINT7: 
+                    intc_->extpol.bit.xip7 = 0; 
+                    break;
+                    
+                default: 
+                    break;
             }    
         }
         
@@ -333,11 +410,24 @@ namespace module
             if(!isAllocated()) return;
             switch(ctx_->source)
             {
-                case GPINT4: intc_->extpol.bit.xip4 = 1; break;
-                case GPINT5: intc_->extpol.bit.xip5 = 1; break;
-                case GPINT6: intc_->extpol.bit.xip6 = 1; break;
-                case GPINT7: intc_->extpol.bit.xip7 = 1; break;
-                default: break;
+                case GPINT4: 
+                    intc_->extpol.bit.xip4 = 1; 
+                    break;
+                    
+                case GPINT5: 
+                    intc_->extpol.bit.xip5 = 1; 
+                    break;
+                    
+                case GPINT6: 
+                    intc_->extpol.bit.xip6 = 1; 
+                    break;
+                    
+                case GPINT7: 
+                    intc_->extpol.bit.xip7 = 1; 
+                    break;
+                    
+                default: 
+                    break;
             }    
         }      
         
@@ -364,19 +454,56 @@ namespace module
             reg::Intc intc = *intc_;
             switch(vn)
             {
-                case  4: intc.muxl.bit.intsel4  = source & 0x1f; break;
-                case  5: intc.muxl.bit.intsel5  = source & 0x1f; break;
-                case  6: intc.muxl.bit.intsel6  = source & 0x1f; break;
-                case  7: intc.muxl.bit.intsel7  = source & 0x1f; break;
-                case  8: intc.muxl.bit.intsel8  = source & 0x1f; break;
-                case  9: intc.muxl.bit.intsel9  = source & 0x1f; break;
-                case 10: intc.muxh.bit.intsel10 = source & 0x1f; break;
-                case 11: intc.muxh.bit.intsel11 = source & 0x1f; break;
-                case 12: intc.muxh.bit.intsel12 = source & 0x1f; break;
-                case 13: intc.muxh.bit.intsel13 = source & 0x1f; break;
-                case 14: intc.muxh.bit.intsel14 = source & 0x1f; break;
-                case 15: intc.muxh.bit.intsel15 = source & 0x1f; break;
-                default: return false;
+                case 4: 
+                    intc.muxl.bit.intsel4  = source & 0x1f; 
+                    break;
+                    
+                case 5: 
+                    intc.muxl.bit.intsel5  = source & 0x1f; 
+                    break;
+                    
+                case 6: 
+                    intc.muxl.bit.intsel6  = source & 0x1f; 
+                    break;
+                    
+                case 7: 
+                    intc.muxl.bit.intsel7  = source & 0x1f; 
+                    break;
+                    
+                case 8: 
+                    intc.muxl.bit.intsel8  = source & 0x1f; 
+                    break;
+                    
+                case 9: 
+                    intc.muxl.bit.intsel9  = source & 0x1f; 
+                    break;
+                    
+                case 10: 
+                    intc.muxh.bit.intsel10 = source & 0x1f; 
+                    break;
+                    
+                case 11: 
+                    intc.muxh.bit.intsel11 = source & 0x1f; 
+                    break;
+                    
+                case 12: 
+                    intc.muxh.bit.intsel12 = source & 0x1f; 
+                    break;
+                    
+                case 13: 
+                    intc.muxh.bit.intsel13 = source & 0x1f; 
+                    break;
+                    
+                case 14: 
+                    intc.muxh.bit.intsel14 = source & 0x1f; 
+                    break;
+                    
+                case 15: 
+                    intc.muxh.bit.intsel15 = source & 0x1f; 
+                    break;
+                    
+                default: 
+                    return false;
             }
             *intc_ = intc;
             return true;

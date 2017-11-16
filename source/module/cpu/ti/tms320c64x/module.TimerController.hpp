@@ -200,9 +200,14 @@ namespace module
         {
             switch(index_)
             {
-                case 0: return TINT0;
-                case 1: return TINT1;
-                case 2: return TINT2;
+                case 0: 
+                    return TINT0;
+                    
+                case 1: 
+                    return TINT1;
+                    
+                case 2: 
+                    return TINT2;
             }
             return -1;
         }
@@ -221,10 +226,20 @@ namespace module
             {
                 switch(i)
                 {
-                    case  0: new (reg::Timer::ADDRESS0) reg::Timer(); break;
-                    case  1: new (reg::Timer::ADDRESS1) reg::Timer(); break;
-                    case  2: new (reg::Timer::ADDRESS2) reg::Timer(); break;
-                    default: return false;
+                    case 0: 
+                        new (reg::Timer::ADDRESS0) reg::Timer(); 
+                        break;
+                        
+                    case 1: 
+                        new (reg::Timer::ADDRESS1) reg::Timer(); 
+                        break;
+                        
+                    case 2: 
+                        new (reg::Timer::ADDRESS2) reg::Timer(); 
+                        break;
+                        
+                    default: 
+                        return false;
                 }
                 lock_[i] = false;      
             } 
@@ -255,10 +270,20 @@ namespace module
             bool is = Interrupt::disableAll();
             switch(index)
             {
-                case  0: addr = reg::Timer::ADDRESS0; break;
-                case  1: addr = reg::Timer::ADDRESS1; break;
-                case  2: addr = reg::Timer::ADDRESS2; break;
-                default: return Interrupt::enableAll(is, false);
+                case 0: 
+                    addr = reg::Timer::ADDRESS0; 
+                    break;
+                    
+                case 1: 
+                    addr = reg::Timer::ADDRESS1; 
+                    break;
+                    
+                case 2: 
+                    addr = reg::Timer::ADDRESS2; 
+                    break;
+                    
+                default: 
+                    return Interrupt::enableAll(is, false);
             }    
             if(lock_[index] == true) return Interrupt::enableAll(is, false); 
             regTim_ = new (addr) reg::Timer();

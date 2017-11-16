@@ -10,6 +10,7 @@
 
 #include "Object.hpp"
 #include "api.Semaphore.hpp"
+#include "system.System.hpp"
 
 namespace system
 {
@@ -24,7 +25,11 @@ namespace system
          *
          * @param permits the initial number of permits available.   
          */      
-        Semaphore(int32 permits);
+        Semaphore(int32 permits) : Parent(),
+            isConstructed_ (getConstruct()),
+            semaphore_     (NULL){
+            setConstruct( construct(permits, NULL) ); 
+        }    
         
         /** 
          * Constructor.
@@ -32,26 +37,40 @@ namespace system
          * @param permits the initial number of permits available.      
          * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.
          */      
-        Semaphore(int32 permits, bool isFair);
+        Semaphore(int32 permits, bool isFair) : Parent(),
+            isConstructed_ (getConstruct()),
+            semaphore_     (NULL){
+            setConstruct( construct(permits, &isFair) );   
+        }
 
         /** 
          * Destructor.
          */
-        virtual ~Semaphore();
+        virtual ~Semaphore()
+        {
+            delete semaphore_;
+        }        
         
         /**
          * Tests if this object has been constructed.
          *
          * @return true if object has been constructed successfully.
          */    
-        virtual bool isConstructed() const;
+        virtual bool isConstructed() const
+        {
+            return isConstructed_;
+        }        
         
         /**
          * Acquires one permit from this semaphore.
          *
          * @return true if the semaphore is acquired successfully.
          */  
-        virtual bool acquire();
+        virtual bool acquire()
+        {
+            if( not isConstructed_ ) return false;
+            return semaphore_->acquire();    
+        }        
         
         /**
          * Acquires the given number of permits from this semaphore.
@@ -59,33 +78,53 @@ namespace system
          * @param permits the number of permits to acquire.
          * @return true if the semaphore is acquired successfully.
          */  
-        virtual bool acquire(int32 permits);
+        virtual bool acquire(int32 permits)
+        {
+            if( not isConstructed_ ) return false;
+            return semaphore_->acquire(permits);        
+        }    
         
         /**
          * Releases one permit.
          */
-        virtual void release();
+        virtual void release()
+        {
+            if( not isConstructed_ ) return;
+            semaphore_->release();        
+        }            
         
         /**
          * Releases the given number of permits.
          *
          * @param permits the number of permits to release.
          */  
-        virtual void release(int32 permits);
+        virtual void release(int32 permits)
+        {
+            if( not isConstructed_ ) return;
+            semaphore_->release(permits);            
+        }
         
         /**
          * Tests if this semaphore is fair.
          *
          * @return true if this semaphore has fairness set true.
          */  
-        virtual bool isFair() const;
+        virtual bool isFair() const
+        {
+            if( not isConstructed_ ) return false;    
+            return semaphore_->isFair(); 
+        }        
         
         /** 
          * Tests if this resource is blocked.
          *
          * @return true if this resource is blocked.
          */ 
-        virtual bool isBlocked();
+        virtual bool isBlocked()
+        {
+            if( not isConstructed_ ) return false;
+            return semaphore_->isBlocked();        
+        }        
   
     private:
       
@@ -96,7 +135,20 @@ namespace system
          * @param isFair  true if this semaphore will guarantee FIFO granting of permits under contention.     
          * @return true if object has been constructed successfully.   
          */
-        bool construct(int32 permits, bool* isFair);
+        bool construct(int32 permits, bool* isFair)
+        {
+            if( not isConstructed_ ) return false;
+            ::api::Kernel& kernel = System::call().getKernel();
+            if( isFair == NULL )
+            {
+                semaphore_ = kernel.createSemaphore(permits);
+            }
+            else
+            {
+                semaphore_ = kernel.createSemaphore(permits, *isFair);
+            }
+            return semaphore_ != NULL ? semaphore_->isConstructed() : false;        
+        }        
 
         /**
          * Copy constructor.
@@ -119,9 +171,9 @@ namespace system
         const bool& isConstructed_;    
       
         /**
-         * Kernel semaphore interface.
+         * System semaphore interface.
          */    
-        ::api::Semaphore* kernel_;
+        ::api::Semaphore* semaphore_;
   
     };
 }
