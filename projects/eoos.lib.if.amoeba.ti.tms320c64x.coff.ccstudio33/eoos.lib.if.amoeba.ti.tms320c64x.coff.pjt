@@ -1,0 +1,33 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="D:\baigudin\git\baigudin\eoos-if-amoeba\projects\eoos.lib.if.amoeba.ti.tms320c64x.coff.ccstudio33\"
+ProjectType=Library
+CPUFamily=TMS320C64XX
+Tool="Archiver"
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="..\..\..\eoos\source\system\system.Main.cpp"
+Source="..\..\..\eoos\source\system\system.System.cpp"
+Source="..\..\source\kernel\kernel.Interrupt.cpp"
+Source="..\..\source\kernel\kernel.Kernel.cpp"
+Source="..\..\source\kernel\kernel.Main.cpp"
+Source="..\..\source\kernel\kernel.Scheduler.cpp"
+
+["Archiver" Settings: "Debug"]
+Options=-r -o"..\..\libraries\eoos.if.amoeba.ti.tms320c64x.coff.debug.lib"
+
+["Archiver" Settings: "Release"]
+Options=-r -o"..\..\libraries\eoos.if.amoeba.ti.tms320c64x.coff.lib"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\..\eoos\include" -i"%OS_PATH%\src\core\tms_c64xx" -i"%OS_PATH%\src\rts\source" -i"%OS_PATH%\src\mapi" -mv6400 --mem_model:data=far
+
+["Compiler" Settings: "Release"]
+Options=-o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\..\eoos\include" -i"%OS_PATH%\src\core\tms_c64xx" -mv6400 --mem_model:data=far
+
