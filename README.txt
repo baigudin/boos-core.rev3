@@ -1,6 +1,7 @@
 EOOS RT Evolution One - Embedded Object Operating System
 --------------------------------------------------------
 The folder content:
- - LIBRARIES directory contains compiled libraries of the kernel and target processor kernels.
+ - INCLUDE directory contains header files of the system API.
+ - LIBRARIES directory contains compiled libraries of the system.
  - PROJECTS directory contains projects for easily starting development.
- - SYSTEM directory contains header API and source code files.
+ - SOURCE directory contains source code files of the system.

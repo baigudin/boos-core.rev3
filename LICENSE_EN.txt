@@ -1,0 +1,61 @@
+                  EMBEDDED TEAM TRIAL LICENSE
+
+THIS END USER LICENSE AGREEMENT (EULA) IS A LEGAL AGREEMENT BETWEEN YOU 
+(EITHER AS AN INDIVIDUAL OR ON BEHALF OF AN ENTITY) AND SERGEY BAIGUDIN 
+(RIGHT HOLDER) REGARDING YOUR USE OF EMBEDDED TEAM'S SOFTWARE. IF YOU DO 
+NOT AGREE TO ALL OF THE EULA TERMS, DO NOT USE OR COPY THE SOFTWARE.
+
+1.   SUMMARY
+
+1.1. You must agree to all of the terms of the EULA to use the software.
+1.2. The software is only used for 30 days, which begin from data when 
+     you have legally gotten the software.
+1.3. The legally getting means that the right holder knows all 
+     circumstance how you have gotten the software.
+1.4. You can have totally only one trial time period if you do not have 
+     another agreement with the right holder.
+1.5. If you do not send any notification about you do not want using 
+     the software to the right holder in 5 days, you automatically 
+     have agreed with the EULA.
+
+2.   GRANT OF LICENSE
+
+2.1. You are given a non-exclusive license to use the software during 
+     the trial time period.
+2.2. You CAN learn source code of the software.
+2.3. You CAN compile and link the software with your programs separately 
+     or together.
+2.4. You CAN execute and debug results of the compilations.
+2.5. You CANNOT modify the software and its source code.
+2.6. You CANNOT separate any source code parts of the software 
+     in all cases.
+2.7. You CANNOT create your software by using basic principles 
+     of the software.
+2.8. You CANNOT use the software and all programs, which was created 
+     by using the software, when the trial time period is over.
+2.9. You CANNOT transfer the non-exclusive license to use the software 
+     to other individuals or entities.
+
+3.   INTELLECTUAL PROPERTY OWNERSHIP
+
+3.1. You agree that the software and the authorship, systems, ideas, 
+     methods of operation, documentation and other information contained 
+     in the software are proprietary intellectual property and/or the 
+     valuable trade secrets of the right holder and that the right holder 
+     are protected by civil and criminal law, and by the law of copyright, 
+     trade secret, trademark and patent of the Russian Federation, 
+     European Union and the United States, as well as other countries 
+     and international treaties. The EULA does not grant you any rights 
+     to the intellectual property, including any trademarks or 
+     service marks of the right holder. The right holder reserves 
+     all rights not expressly granted to you in the EULA. 
+
+4.   RIGHT HOLDER CONTACT INFORMATION 
+
+     Should you have any questions concerning the EULA, or if you desire 
+     to contact the right holder for any reason, please contact me at:
+
+     Sergey Baigudin
+     Phone number: +7.812.907.6432
+     E-mail: info@embedded.team
+     Web site: www.embedded.team

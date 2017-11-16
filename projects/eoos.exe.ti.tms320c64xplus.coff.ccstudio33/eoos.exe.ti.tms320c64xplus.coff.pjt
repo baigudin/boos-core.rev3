@@ -12,35 +12,32 @@ Config="Debug"
 Config="Release"
 
 [Source Files]
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Boot.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Boot.ll.asm"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Interrupt.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Interrupt.ll.asm"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Pll.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Processor.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Register.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\driver.Timer.cpp"
-Source="..\..\source\system\system.Escalator.cpp"
-Source="..\..\source\system\system.Interrupt.cpp"
+Source="..\..\source\kernel\kernel.Kernel.cpp"
+Source="..\..\source\kernel\kernel.Main.cpp"
+Source="..\..\source\kernel\kernel.Scheduler.cpp"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Boot.cpp"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Boot.ll.asm"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Interrupt.cpp"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Interrupt.ll.asm"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Pll.cpp"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Processor.cpp"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Registers.cpp"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\module.Timer.cpp"
 Source="..\..\source\system\system.Main.cpp"
-Source="..\..\source\system\system.Mutex.cpp"
-Source="..\..\source\system\system.Semaphore.cpp"
 Source="..\..\source\system\system.System.cpp"
-Source="..\..\source\system\system.Thread.cpp"
-Source="..\..\source\system\system.Timer.cpp"
-Source="..\..\source\system\system.TimerInterrupt.cpp"
 Source="Debug\eoos.tms320c64xplus.debug.map"
+Source="Release\eoos.tms320c64xplus.map"
 Source="source\Board.cpp"
 Source="source\Configuration.cpp"
 Source="source\libraries\rts64plus.v6.0.11.lib"
 Source="source\Main.cpp"
-Source="..\..\source\driver\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd"
+Source="..\..\source\module\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd"
 
 ["Compiler" Settings: "Debug"]
-Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\source\include" -mv6400+ --mem_model:data=far
+Options=-g -fr"$(Proj_dir)\Debug" -ff"$(Proj_dir)\Debug" -i"$(Proj_dir)\..\..\include" -i"$(Proj_dir)\..\..\source\module\include" -mv6400+ --mem_model:data=far
 
 ["Compiler" Settings: "Release"]
-Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\source\include" -mv6400+ --mem_model:data=far
+Options=-g -o3 -fr"$(Proj_dir)\Release" -ff"$(Proj_dir)\Release" -i"$(Proj_dir)\..\..\include" -i"$(Proj_dir)\..\..\source\module\include" -mv6400+ --mem_model:data=far
 
 ["Linker" Settings: "Debug"]
 Options=-c -h -m".\Debug\eoos.tms320c64xplus.debug.map" -o".\Debug\eoos.tms320c64xplus.debug.out" -s -w -x
@@ -54,9 +51,15 @@ ExcludeFromBuild=true
 ["Debug\eoos.tms320c64xplus.debug.map" Settings: "Release"]
 ExcludeFromBuild=true
 
-["..\..\source\driver\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Debug"]
+["Release\eoos.tms320c64xplus.map" Settings: "Debug"]
+ExcludeFromBuild=true
+
+["Release\eoos.tms320c64xplus.map" Settings: "Release"]
+ExcludeFromBuild=true
+
+["..\..\source\module\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Debug"]
 LinkOrder=1
 
-["..\..\source\driver\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Release"]
+["..\..\source\module\cpu\ti\tms320c64xplus\memory\memory.tms320c64xplus.coff.cmd" Settings: "Release"]
 LinkOrder=1
 

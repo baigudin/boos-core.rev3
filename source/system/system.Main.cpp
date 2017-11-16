@@ -6,94 +6,91 @@
  * @license   http://embedded.team/license/
  */
 #include "system.Main.hpp" 
-#include "system.System.hpp"
-#include "system.Interrupt.hpp"
+#include "system.TaskMain.hpp"
 #include "system.Thread.hpp"
-#include "driver.Processor.hpp"
-#include "Allocator.hpp"
-#include "Board.hpp"
+#include "system.Resource.hpp"
+#include "Allocator.hpp" 
 
 namespace system
 {
     /**
      * The method which will be stated first.
      * 
+     * @param config the operating system configuration.         
+     * @param kernel a kernel resources factory.
      * @return error code or zero.
-     */   
-    int32 Main::main()
+     */
+    int32 Main::main(::api::Kernel& kernel)
     {
         int32 stage = 0;
         int32 error = -1;
-        const ::Configuration config = ::Configuration();
+        system_ = NULL;
+        global_ = NULL;
+        kernel_ = &kernel;
         do
         {
-            // Stage 1 
+            // Stage 1: Create the system resource factory
             stage++;
-            if( not ::Allocator::initialize(config) ) break;        
-            // Stage 2 
-            stage++;
-            if( not ::driver::Processor::initialize(config) ) break;    
-            // Stage 3
-            stage++;
-            if( not ::Board::initialize(config) ) break;
-            // Stage 4 
-            stage++;
-            if( not ::system::Interrupt::initialize() ) break;      
-            // Stage 5
-            stage++;
-            if( not ::system::Thread::initialize() ) break;      
-            // Stage 6
-            stage++;
-            if( not ::system::System::initialize() ) break;      
+            system_ = new Resource(kernel);
+            if(system_ == NULL || not system_->isConstructed()) break; 
+            // Stage 2: Set heap interrupt controller
+            stage++;        
+            ::api::Heap* heap = NULL;
+            if(heap == NULL || not heap->isConstructed()) break;
+            global_ = &kernel.getGlobalInterrupt();
+            heap->setToggle(global_);
             // Stage complete
             stage = -1;
-            {
-                Thread main;
-                if(main.isConstructed())
-                {
-                    main.start();
-                    ::system::Thread::execute();
-                    error = main.error();
-                }
-            }
+            int32 stack = kernel.getStackSize();
+            TaskMain task(stack);
+            Thread thread(task);
+            if( not thread.isConstructed() ) break; 
+            thread.start();
+            thread.yield();
+            thread.join();
+            error = task.error();
         }
         while(false);
         switch(stage)
         {
             default:
-            case  6: ::system::System::deinitialize();
-            case  5: ::system::Thread::deinitialize();
-            case  4: ::system::Interrupt::deinitialize();
-            case  3: ::Board::deinitialize();      
-            case  2: ::driver::Processor::deinitialize();
-            case  1: ::Allocator::deinitialize();      
-            case  0: break;
+            case 2: 
+                global_ = NULL;
+                            
+            case 1: 
+                delete system_;
+                
+            case 0: 
+                break;
         }
         return error;
     }
+    
+    /**
+     * Returns the operating system factory resource.
+     *        
+     * @return the operating system interface.
+     */
+    ::api::System& Main::getSystem()
+    {
+        if(system_ == NULL) kernel_->getGlobalInterrupt().disable();
+        return *system_;
+    }
+    
+    /**
+     * The operating system factory resource (no boot).
+     */
+    ::api::System* Main::system_;
+    
+    /**
+     * The operating system global interrupt resource (no boot).
+     */
+    ::api::Toggle* Main::global_;
+    
+    /**
+     * The operating system kernel factory resource (no boot).
+     */
+    ::api::Kernel* Main::kernel_;
+
 }
 
-/**
- * The main function.
- * 
- * The method should be called after default boot initialization, and
- * the following tasks must be:
- * 1. Stack has been set.
- * 2. CPU registers have been set.
- * 3. Run-time initialization has been completed.
- * 4. Global variables have been set.
- * 5. Global constructors have been called.
- * 
- * @return error code or zero.
- */   
-#ifdef EOOS_VENDOR_BOOT
-int main()
-{
-    return ::system::Main::main() & 0x0000ffff;
-}
-#endif // EOOS_VENDOR_BOOT
-
-/**
- * Pointer to constructed heap memory (no boot).
- */
-::api::Heap* ::Allocator::heap_;

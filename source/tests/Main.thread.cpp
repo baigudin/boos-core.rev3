@@ -41,7 +41,10 @@ public:
     {
         volatile uint32 v = 0;  
         volatile bool exe = true;
-        while(exe) v = v + 1;
+        while(exe) 
+        {
+            v = v + 1;
+        }
     }
     
     /**
@@ -81,7 +84,8 @@ int32 Main::main()
     // Start the threads
     thr1.start();  
     thr2.start();
-    thr3.start();  
+    thr3.start();
+    Thread::getCurrent().sleep(3000);
     // Wait the threads will be completed
     thr1.join();
     thr2.join();  
